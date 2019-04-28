@@ -4,19 +4,15 @@ import "github.com/urfave/cli"
 
 var (
 	commands = []cli.Command{
-
 		{
-			Name:      "list",
-			ShortName: "ls",
-			Usage:     "list versions installed",
-			Subcommands: []cli.Command{
-				{
-					Name:   "known",
-					Usage:  "list the versions of go available",
-					Action: listKnown,
-				},
-			},
+			Name:   "ls",
+			Usage:  "list installed versions",
 			Action: list,
+		},
+		{
+			Name:   "ls-remote",
+			Usage:  "list remote versions available for install",
+			Action: listRemote,
 		},
 	}
 )

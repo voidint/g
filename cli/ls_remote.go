@@ -76,7 +76,7 @@ func goversions() []string {
 	}
 }
 
-func listKnown(c *cli.Context) {
+func listRemote(c *cli.Context) {
 	for _, v := range goversions() {
 		fmt.Println(v)
 	}
