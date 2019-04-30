@@ -6,13 +6,19 @@ var (
 	commands = []cli.Command{
 		{
 			Name:   "ls",
-			Usage:  "list installed versions",
+			Usage:  "List installed versions",
 			Action: list,
 		},
 		{
 			Name:   "ls-remote",
-			Usage:  "list remote versions available for install",
+			Usage:  "List remote versions available for install",
 			Action: listRemote,
+		},
+		{
+			Name:      "use",
+			Usage:     "Switch to specified version",
+			UsageText: "g use <version>",
+			Action:    use,
 		},
 	}
 )
