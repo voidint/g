@@ -5,7 +5,9 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"sort"
 
+	"github.com/Masterminds/semver"
 	"github.com/urfave/cli"
 )
 
@@ -17,14 +19,21 @@ func list(c *cli.Context) (err error) {
 		fmt.Printf("No version installed yet\n\n")
 		return nil
 	}
-	// TODO 排序
-
+	items := make([]*semver.Version, 0, len(infos))
 	for i := range infos {
 		if !infos[i].IsDir() {
 			continue
 		}
-		fmt.Println(infos[i].Name())
+		v, err := semver.NewVersion(infos[i].Name())
+		if err != nil || v == nil {
+			continue
+		}
+		items = append(items, v)
 	}
-	fmt.Println()
+	sort.Sort(semver.Collection(items))
+
+	for i := range items {
+		fmt.Println(items[i].String())
+	}
 	return nil
 }
