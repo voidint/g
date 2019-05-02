@@ -10,9 +10,10 @@ var (
 			Action: list,
 		},
 		{
-			Name:   "ls-remote",
-			Usage:  "List remote versions available for install",
-			Action: listRemote,
+			Name:      "ls-remote",
+			Usage:     "List remote versions available for install",
+			UsageText: "g ls-remote [stable|archived]",
+			Action:    listRemote,
 		},
 		{
 			Name:      "use",

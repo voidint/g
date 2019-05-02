@@ -11,7 +11,7 @@ import (
 func Run() {
 	app := cli.NewApp()
 	app.Name = "g"
-	app.Usage = ""
+	app.Usage = "Golang version manager"
 	app.Version = "0.1.0"
 	app.Copyright = "Copyright (c) 2019, 2019, voidint. All rights reserved."
 	app.Authors = []cli.Author{
