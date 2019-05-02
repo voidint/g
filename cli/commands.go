@@ -21,5 +21,11 @@ var (
 			UsageText: "g use <version>",
 			Action:    use,
 		},
+		{
+			Name:      "uninstall",
+			Usage:     "Uninstall a version",
+			UsageText: "g uninstall <version>",
+			Action:    uninstall,
+		},
 	}
 )
