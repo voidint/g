@@ -9,10 +9,10 @@ import (
 	"github.com/urfave/cli"
 )
 
-func use(c *cli.Context) (err error) {
-	version := c.Args().First()
+func use(ctx *cli.Context) (err error) {
+	version := ctx.Args().First()
 	if version == "" {
-		return cli.ShowSubcommandHelp(c)
+		return cli.ShowSubcommandHelp(ctx)
 	}
 	homeDir, _ := os.UserHomeDir()
 	rootDir := filepath.Join(homeDir, ".g")

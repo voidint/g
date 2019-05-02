@@ -11,7 +11,7 @@ import (
 	"github.com/urfave/cli"
 )
 
-func list(c *cli.Context) (err error) {
+func list(ctx *cli.Context) (err error) {
 	homeDir, _ := os.UserHomeDir()
 
 	infos, err := ioutil.ReadDir(filepath.Join(homeDir, ".g", "versions"))

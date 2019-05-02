@@ -1,7 +1,7 @@
 package cli
 
 import (
-	"log"
+	"fmt"
 	"os"
 
 	"github.com/urfave/cli"
@@ -32,6 +32,7 @@ func Run() {
 	app.Commands = commands
 
 	if err := app.Run(os.Args); err != nil {
-		log.Fatal(err)
+		fmt.Fprintf(os.Stderr, "[g] %s\n", err.Error())
+		os.Exit(1)
 	}
 }
