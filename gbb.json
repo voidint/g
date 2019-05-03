@@ -1,4 +1,4 @@
 {
     "version": "0.6.0",
-    "tool": "go install"
+    "tool": "go install -v -ldflags '-s -w'"
 }

@@ -1,11 +1,40 @@
 package version
 
 import (
+	"fmt"
 	"net/http"
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
 )
+
+const (
+	// DefaultURL 提供go版本信息的默认网址
+	DefaultURL = "https://golang.org/dl/"
+)
+
+// URLUnreachableError URL不可达错误
+type URLUnreachableError struct {
+	err error
+	url string
+}
+
+// NewURLUnreachableError 返回URL不可达错误实例
+func NewURLUnreachableError(url string, err error) error {
+	return &URLUnreachableError{
+		err: err,
+		url: url,
+	}
+}
+
+func (e *URLUnreachableError) Error() string {
+	var buf strings.Builder
+	buf.WriteString(fmt.Sprintf("URL %q is unreachable", e.url))
+	if e.err != nil {
+		buf.WriteString(" ==> " + e.err.Error())
+	}
+	return buf.String()
+}
 
 // Collector 采集器
 type Collector struct {
