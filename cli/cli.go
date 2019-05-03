@@ -21,14 +21,6 @@ func Run() {
 		},
 	}
 
-	app.Flags = []cli.Flag{
-		cli.BoolFlag{
-			Name:  "D, debug",
-			Usage: "enable debug mode",
-			// Destination: &c.Debug,
-		},
-	}
-
 	app.Commands = commands
 
 	if err := app.Run(os.Args); err != nil {
