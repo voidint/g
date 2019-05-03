@@ -28,8 +28,13 @@ func install(ctx *cli.Context) (err error) {
 		return cli.NewExitError(fmt.Sprintf("[g] %q version has been installed.", vname), 1)
 	}
 
+	var url string
+	if url = os.Getenv("G_MIRROR"); url == "" {
+		url = version.DefaultURL
+	}
+
 	// 查找版本
-	c, err := version.NewCollector("https://golang.google.cn/dl/")
+	c, err := version.NewCollector(url)
 	if err != nil {
 		return cli.NewExitError(fmt.Sprintf("[g] %s", err.Error()), 1)
 	}
