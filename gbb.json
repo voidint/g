@@ -1,4 +1,19 @@
 {
     "version": "0.6.0",
-    "tool": "go install -v -ldflags '-s -w'"
+    "tool": "go install -v -ldflags '-s -w'",
+    "importpath": "github.com/voidint/g/build",
+    "variables": [
+        {
+            "variable": "Build",
+            "value": "{{.Date}}"
+        },
+        {
+            "variable": "Commit",
+            "value": "{{.GitCommit}}"
+        },
+        {
+            "variable": "Branch",
+            "value": "$(git symbolic-ref --short -q HEAD)"
+        }
+    ]
 }

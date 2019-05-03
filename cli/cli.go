@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/urfave/cli"
+	"github.com/voidint/g/build"
 )
 
 // Run 运行g命令行
@@ -12,7 +13,7 @@ func Run() {
 	app := cli.NewApp()
 	app.Name = "g"
 	app.Usage = "Golang version manager"
-	app.Version = "0.1.0"
+	app.Version = build.Version()
 	app.Copyright = "Copyright (c) 2019, 2019, voidint. All rights reserved."
 	app.Authors = []cli.Author{
 		cli.Author{
