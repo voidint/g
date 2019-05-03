@@ -6,6 +6,7 @@ import (
 	"os"
 	"path/filepath"
 	"sort"
+	"strings"
 
 	"github.com/Masterminds/semver"
 	"github.com/urfave/cli"
@@ -33,7 +34,7 @@ func list(ctx *cli.Context) (err error) {
 	sort.Sort(semver.Collection(items))
 
 	for i := range items {
-		fmt.Println(items[i].String())
+		fmt.Println(strings.TrimSuffix(strings.TrimSuffix(items[i].String(), ".0"), ".0"))
 	}
 	return nil
 }
