@@ -29,3 +29,29 @@ func Run() {
 		os.Exit(1)
 	}
 }
+
+func init() {
+	cli.AppHelpTemplate = fmt.Sprintf(`NAME:
+	{{.Name}}{{if .Usage}} - {{.Usage}}{{end}}
+
+USAGE:
+	{{if .UsageText}}{{.UsageText}}{{else}}{{.HelpName}} {{if .VisibleFlags}}[global options]{{end}}{{if .Commands}} command [command options]{{end}} {{if .ArgsUsage}}{{.ArgsUsage}}{{else}}[arguments...]{{end}}{{end}}{{if .Version}}{{if not .HideVersion}}
+
+VERSION:
+	%s{{end}}{{end}}{{if .Description}}
+
+DESCRIPTION:
+	{{.Description}}{{end}}{{if len .Authors}}
+
+AUTHOR{{with $length := len .Authors}}{{if ne 1 $length}}S{{end}}{{end}}:
+	{{range $index, $author := .Authors}}{{if $index}}
+	{{end}}{{$author}}{{end}}{{end}}{{if .VisibleFlags}}
+
+OPTIONS:
+	{{range $index, $option := .VisibleFlags}}{{if $index}}
+	{{end}}{{$option}}{{end}}{{end}}{{if .Copyright}}
+
+COPYRIGHT:
+	{{.Copyright}}{{end}}
+`, build.ShortVersion)
+}

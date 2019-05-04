@@ -3,8 +3,8 @@ package build
 import "strings"
 
 const (
-	// VersionNumber 版本号
-	VersionNumber = "0.1.0"
+	// ShortVersion 短版本号
+	ShortVersion = "0.1.0"
 )
 
 // The value of variables come form `gb build -ldflags '-X "build.Build=xxxxx" -X "build.CommitID=xxxx"' `
@@ -20,7 +20,7 @@ var (
 // Version 生成版本信息
 func Version() string {
 	var buf strings.Builder
-	buf.WriteString(VersionNumber)
+	buf.WriteString(ShortVersion)
 
 	if Build != "" {
 		buf.WriteByte('\n')
