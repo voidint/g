@@ -35,7 +35,7 @@ func init() {
 	{{.Name}}{{if .Usage}} - {{.Usage}}{{end}}
  
  USAGE:
-	{{if .UsageText}}{{.UsageText}}{{else}}{{.HelpName}} {{if .Commands}} command [command options]{{end}} {{if .ArgsUsage}}{{.ArgsUsage}}{{else}}[arguments...]{{end}}{{end}}{{if .Version}}{{if not .HideVersion}}
+	{{if .UsageText}}{{.UsageText}}{{else}}{{.HelpName}} {{if .Commands}} command{{end}} {{if .ArgsUsage}}{{.ArgsUsage}}{{else}}[arguments...]{{end}}{{end}}{{if .Version}}{{if not .HideVersion}}
  
  VERSION:
 	%s{{end}}{{end}}{{if .Description}}
