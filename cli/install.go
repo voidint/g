@@ -56,7 +56,7 @@ func install(ctx *cli.Context) (err error) {
 
 	if _, err = os.Stat(filename); os.IsNotExist(err) {
 		// 本地不存在安装包，从远程下载并检查校验和。
-		if _, err = v.Download(version.ArchiveKind, runtime.GOOS, runtime.GOARCH, filename); err != nil {
+		if _, err = pkg.Download(filename); err != nil {
 			return cli.NewExitError(fmt.Sprintf("[g] %s", err.Error()), 1)
 		}
 		if err = pkg.VerifyChecksum(filename); err != nil {

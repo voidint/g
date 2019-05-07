@@ -36,7 +36,7 @@ func (e *URLUnreachableError) Error() string {
 	return buf.String()
 }
 
-// Collector 采集器
+// Collector go版本信息采集器
 type Collector struct {
 	url string
 	doc *goquery.Document
@@ -67,16 +67,19 @@ func (c *Collector) loadDocument() (err error) {
 }
 
 func (c *Collector) findPackages(table *goquery.Selection) (pkgs []*Package) {
+	alg := strings.TrimSuffix(table.Find("thead").Find("th").Last().Text(), " Checksum")
+
 	table.Find("tr").Not(".first").Each(func(j int, tr *goquery.Selection) {
 		td := tr.Find("td")
 		pkgs = append(pkgs, &Package{
-			FileName: td.Eq(0).Find("a").Text(),
-			URL:      td.Eq(0).Find("a").AttrOr("href", ""),
-			Kind:     td.Eq(1).Text(),
-			OS:       td.Eq(2).Text(),
-			Arch:     td.Eq(3).Text(),
-			Size:     td.Eq(4).Text(),
-			Checksum: td.Eq(5).Text(),
+			FileName:  td.Eq(0).Find("a").Text(),
+			URL:       td.Eq(0).Find("a").AttrOr("href", ""),
+			Kind:      td.Eq(1).Text(),
+			OS:        td.Eq(2).Text(),
+			Arch:      td.Eq(3).Text(),
+			Size:      td.Eq(4).Text(),
+			Checksum:  td.Eq(5).Text(),
+			Algorithm: alg,
 		})
 	})
 	return pkgs

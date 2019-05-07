@@ -1,9 +1,11 @@
 package version
 
 import (
+	"crypto/sha1"
 	"crypto/sha256"
 	"errors"
 	"fmt"
+	"hash"
 	"io"
 	"net/http"
 	"os"
@@ -29,15 +31,6 @@ type Version struct {
 	Packages []*Package
 }
 
-// Download 下载版本另存为指定文件并校验sha256哈希值
-func (v *Version) Download(kind, goos, goarch string, dst string) (size int64, err error) {
-	pkg, err := v.FindPackage(kind, goos, goarch)
-	if err != nil {
-		return 0, err
-	}
-	return pkg.Download(dst)
-}
-
 // ErrPackageNotFound 版本包不存在
 var ErrPackageNotFound = errors.New("installation package not found")
 
@@ -55,13 +48,14 @@ func (v *Version) FindPackage(kind, goos, goarch string) (*Package, error) {
 
 // Package go版本安装包
 type Package struct {
-	FileName string
-	URL      string
-	Kind     string
-	OS       string
-	Arch     string
-	Size     string
-	Checksum string
+	FileName  string
+	URL       string
+	Kind      string
+	OS        string
+	Arch      string
+	Size      string
+	Checksum  string
+	Algorithm string // checksum algorithm
 }
 
 const (
@@ -115,8 +109,12 @@ func (e *DownloadError) Error() string {
 	return buf.String()
 }
 
-// ErrChecksumNotMatched 校验和不匹配
-var ErrChecksumNotMatched = errors.New("file checksum does not match the computed checksum")
+var (
+	// ErrUnsupportedChecksumAlgorithm 不支持的校验和算法
+	ErrUnsupportedChecksumAlgorithm = errors.New("unsupported checksum algorithm")
+	// ErrChecksumNotMatched 校验和不匹配
+	ErrChecksumNotMatched = errors.New("file checksum does not match the computed checksum")
+)
 
 // VerifyChecksum 验证目标文件的校验和与当前安装包的校验和是否一致
 func (pkg *Package) VerifyChecksum(filename string) (err error) {
@@ -126,7 +124,16 @@ func (pkg *Package) VerifyChecksum(filename string) (err error) {
 	}
 	defer f.Close()
 
-	h := sha256.New()
+	var h hash.Hash
+	switch pkg.Algorithm {
+	case "SHA256":
+		h = sha256.New()
+	case "SHA1":
+		h = sha1.New()
+	default:
+		return ErrUnsupportedChecksumAlgorithm
+	}
+
 	if _, err := io.Copy(h, f); err != nil {
 		return err
 	}
