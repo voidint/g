@@ -3,9 +3,17 @@ package cli
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 
 	"github.com/urfave/cli"
 	"github.com/voidint/g/build"
+)
+
+var (
+	rootDir      string
+	downloadsDir string
+	versionsDir  string
+	goroot       string
 )
 
 // Run 运行g命令行
@@ -21,7 +29,20 @@ func Run() {
 			Email: "voidint@126.com",
 		},
 	}
-
+	app.Before = func(ctx *cli.Context) (err error) {
+		homeDir, _ := os.UserHomeDir()
+		rootDir = filepath.Join(homeDir, ".g")
+		goroot = filepath.Join(rootDir, "go")
+		downloadsDir = filepath.Join(rootDir, "downloads")
+		if err = os.MkdirAll(downloadsDir, 0755); err != nil {
+			return err
+		}
+		versionsDir = filepath.Join(rootDir, "versions")
+		if err = os.MkdirAll(versionsDir, 0755); err != nil {
+			return err
+		}
+		return nil
+	}
 	app.Commands = commands
 
 	if err := app.Run(os.Args); err != nil {

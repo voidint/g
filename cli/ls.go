@@ -3,8 +3,6 @@ package cli
 import (
 	"fmt"
 	"io/ioutil"
-	"os"
-	"path/filepath"
 	"sort"
 	"strings"
 
@@ -13,9 +11,7 @@ import (
 )
 
 func list(ctx *cli.Context) (err error) {
-	homeDir, _ := os.UserHomeDir()
-
-	infos, err := ioutil.ReadDir(filepath.Join(homeDir, ".g", "versions"))
+	infos, err := ioutil.ReadDir(versionsDir)
 	if err != nil {
 		fmt.Printf("No version installed yet\n\n")
 		return nil

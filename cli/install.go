@@ -16,14 +16,7 @@ func install(ctx *cli.Context) (err error) {
 	if vname == "" {
 		return cli.ShowSubcommandHelp(ctx)
 	}
-	homeDir, _ := os.UserHomeDir()
-	rootDir := filepath.Join(homeDir, ".g")
-	downloadsDir := filepath.Join(rootDir, "downloads")
-	versionsDir := filepath.Join(rootDir, "versions")
 	targetV := filepath.Join(versionsDir, vname)
-
-	_ = os.MkdirAll(downloadsDir, 0755)
-	_ = os.MkdirAll(versionsDir, 0755)
 
 	// 检查版本是否已经安装
 	if finfo, err := os.Stat(targetV); err == nil && finfo.IsDir() {
@@ -79,10 +72,9 @@ func install(ctx *cli.Context) (err error) {
 		return cli.NewExitError(fmt.Sprintf("[g] %s", err.Error()), 1)
 	}
 	// 重新建立软链接
-	goDir := filepath.Join(rootDir, "go")
-	_ = os.Remove(goDir)
+	_ = os.Remove(goroot)
 
-	if err := os.Symlink(targetV, goDir); err != nil {
+	if err := os.Symlink(targetV, goroot); err != nil {
 		return cli.NewExitError(fmt.Sprintf("[g] %s", err.Error()), 1)
 	}
 	fmt.Println("installed successfully")

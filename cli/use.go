@@ -10,26 +10,23 @@ import (
 )
 
 func use(ctx *cli.Context) (err error) {
-	version := ctx.Args().First()
-	if version == "" {
+	vname := ctx.Args().First()
+	if vname == "" {
 		return cli.ShowSubcommandHelp(ctx)
 	}
-	homeDir, _ := os.UserHomeDir()
-	rootDir := filepath.Join(homeDir, ".g")
-	versionDir := filepath.Join(rootDir, "versions", version)
+	targetV := filepath.Join(versionsDir, vname)
 
-	if finfo, err := os.Stat(versionDir); err != nil || !finfo.IsDir() {
-		return cli.NewExitError(fmt.Sprintf("[g] The %q version does not exist, please install it first.", version), 1)
+	if finfo, err := os.Stat(targetV); err != nil || !finfo.IsDir() {
+		return cli.NewExitError(fmt.Sprintf("[g] The %q version does not exist, please install it first.", vname), 1)
 	}
 
-	goDir := filepath.Join(rootDir, "go")
-	_ = os.Remove(goDir)
+	_ = os.Remove(goroot)
 
-	if err := os.Symlink(versionDir, goDir); err != nil {
+	if err := os.Symlink(targetV, goroot); err != nil {
 		return cli.NewExitError(fmt.Sprintf("[g] %s", err.Error()), 1)
 	}
-	if output, err := exec.Command(filepath.Join(goDir, "bin", "go"), "version").Output(); err == nil {
-		fmt.Println(string(output))
+	if output, err := exec.Command(filepath.Join(goroot, "bin", "go"), "version").Output(); err == nil {
+		fmt.Printf(string(output))
 	}
 	return nil
 }
