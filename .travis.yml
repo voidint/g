@@ -2,14 +2,15 @@ language: go
 
 sudo: false
 
-go:
-    - master
+go: stable
 
 before_install:
     - go get github.com/mattn/goveralls
+    - go get golang.org/x/tools/cmd/cover
 
 script:
     - GOOS=darwin go build
     - GOOS=windows go build
     - GOOS=linux go build
-    - $GOPATH/bin/goveralls -service=travis-ci
+    - go test -v ./...
+    - $HOME/gopath/bin/goveralls -service=travis-ci
