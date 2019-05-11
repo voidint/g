@@ -2,7 +2,8 @@ language: go
 
 sudo: false
 
-go: stable
+go: 
+    - 1.11.10
 
 before_install:
     - go get github.com/mattn/goveralls
@@ -12,5 +13,5 @@ script:
     - GOOS=darwin go build
     - GOOS=windows go build
     - GOOS=linux go build
-    - go test -v ./...
-    - $HOME/gopath/bin/goveralls -service=travis-ci
+    - go test -v -race ./...
+    - $GOPATH/bin/goveralls -service=travis-ci
