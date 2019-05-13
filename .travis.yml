@@ -3,14 +3,15 @@ language: go
 sudo: false
 
 go: 
-    - 1.11.x
+    - master
 
 before_install:
     - go get github.com/mattn/goveralls
-    - go get golang.org/x/tools/cmd/cover
+    - go get github.com/voidint/gbb
 
 script:
-    - GOOS=darwin go build
-    - GOOS=windows go build
-    - GOOS=linux go build
+    - GOOS=darwin gbb --debug -a
+    - GOOS=windows gbb --debug -a
+    - GOOS=linux gbb --debug -a
+    - go test -v ./...
     - $GOPATH/bin/goveralls -service=travis-ci
