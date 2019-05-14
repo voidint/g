@@ -6,10 +6,11 @@ go:
     - master
 
 before_install:
-    - GO111MODULE=on go get github.com/mattn/goveralls@v0.0.2
+    # - GO111MODULE=on go get github.com/mattn/goveralls@v0.0.2
 
 script:
     - GO111MODULE=on GOOS=darwin go build
     - GO111MODULE=on GOOS=windows go build
     - GO111MODULE=on GOOS=linux go build
-    - $GOPATH/bin/goveralls -service=travis-ci
+    - go test -v ./...
+    # - $GOPATH/bin/goveralls -service=travis-ci
