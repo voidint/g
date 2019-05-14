@@ -6,11 +6,14 @@ go:
     - master
 
 before_install:
-    # - GO111MODULE=on go get github.com/mattn/goveralls@v0.0.2
+    - go get -t -v ./...
 
 script:
     - GO111MODULE=on GOOS=darwin go build
     - GO111MODULE=on GOOS=windows go build
     - GO111MODULE=on GOOS=linux go build
-    - go test -v ./...
+    - go test -v -race -coverprofile=coverage.txt -covermode=atomic
     # - $GOPATH/bin/goveralls -service=travis-ci
+
+after_success:
+    - bash <(curl -s https://codecov.io/bash)
