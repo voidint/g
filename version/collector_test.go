@@ -2,6 +2,8 @@ package version
 
 import (
 	"bytes"
+	"errors"
+	"fmt"
 	"io/ioutil"
 	"testing"
 
@@ -83,5 +85,21 @@ func TestAllVersions(t *testing.T) {
 		items, err := c.AllVersions()
 		So(err, ShouldBeNil)
 		So(len(items), ShouldEqual, 66)
+	})
+}
+
+func TestURLUnreachableError(t *testing.T) {
+	Convey("URL不可达错误", t, func() {
+		url := "https://github.com/voidint"
+		core := errors.New("hello error")
+
+		err := NewURLUnreachableError(url, core)
+		So(err, ShouldNotBeNil)
+		e, ok := err.(*URLUnreachableError)
+		So(ok, ShouldBeTrue)
+		So(e, ShouldNotBeNil)
+		So(e.url, ShouldEqual, url)
+		So(e.err, ShouldEqual, core)
+		So(e.Error(), ShouldEqual, fmt.Sprintf("URL %q is unreachable ==> %s", url, core.Error()))
 	})
 }

@@ -12,8 +12,9 @@ script:
     - GO111MODULE=on GOOS=darwin go build
     - GO111MODULE=on GOOS=windows go build
     - GO111MODULE=on GOOS=linux go build
-    - go test -v -race -coverprofile=coverage.txt -covermode=atomic
+    - go test -v -race -coverprofile=coverage.txt -covermode=atomic ./...
     # - $GOPATH/bin/goveralls -service=travis-ci
+    - ./go.test.sh
 
 after_success:
     - bash <(curl -s https://codecov.io/bash)
