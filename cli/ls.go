@@ -12,7 +12,7 @@ import (
 
 func list(ctx *cli.Context) (err error) {
 	infos, err := ioutil.ReadDir(versionsDir)
-	if err != nil {
+	if err != nil || len(infos) <= 0 {
 		fmt.Printf("No version installed yet\n\n")
 		return nil
 	}
