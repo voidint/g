@@ -20,7 +20,7 @@ var (
 func Run() {
 	app := cli.NewApp()
 	app.Name = "g"
-	app.Usage = "Golang version manager"
+	app.Usage = "Golang Version Manager"
 	app.Version = build.Version()
 	app.Copyright = "Copyright (c) 2019, 2019, voidint. All rights reserved."
 	app.Authors = []cli.Author{

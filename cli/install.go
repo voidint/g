@@ -46,8 +46,13 @@ func install(ctx *cli.Context) (err error) {
 	if err != nil {
 		return cli.NewExitError(fmt.Sprintf("[g] %s", err.Error()), 1)
 	}
-
-	filename := filepath.Join(downloadsDir, fmt.Sprintf("go%s.%s-%s.tar.gz", vname, runtime.GOOS, runtime.GOARCH))
+	var ext string
+	if runtime.GOOS == "windows" {
+		ext = "zip"
+	} else {
+		ext = "tar.gz"
+	}
+	filename := filepath.Join(downloadsDir, fmt.Sprintf("go%s.%s-%s.%s", vname, runtime.GOOS, runtime.GOARCH, ext))
 
 	if _, err = os.Stat(filename); os.IsNotExist(err) {
 		// 本地不存在安装包，从远程下载并检查校验和。
@@ -77,6 +82,6 @@ func install(ctx *cli.Context) (err error) {
 	if err := os.Symlink(targetV, goroot); err != nil {
 		return cli.NewExitError(fmt.Sprintf("[g] %s", err.Error()), 1)
 	}
-	fmt.Println("installed successfully")
+	fmt.Println("Installed successfully")
 	return nil
 }
