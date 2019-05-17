@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -e
 
 get_arch() {
     a=$(uname -m)
@@ -23,24 +24,28 @@ main() {
     local os=$(get_os)
     local arch=$(get_arch)
     local dest_file="${HOME}/g1.0.0.${os}-${arch}.tar.gz"
+    local url="https://github.com/voidint/g/releases/download/v1.0.0/g1.0.0.${os}-${arch}.tar.gz"
 
-    echo "Download ${dest_file}"
+    echo "[1/3] Download ${url}"
     rm -f ${dest_file}
-    wget -P ${HOME} "https://github.com/voidint/g/releases/download/v1.0.0/g1.0.0.${os}-${arch}.tar.gz"
-    
+    wget -q -P "${HOME}" "${url}" 
     chmod +x ${dest_file}
 
+    echo "[2/3] Install g to the ${HOME}/bin"
     mkdir -p "${HOME}/bin"
-
-    tar -xzv -f ${dest_file} -C ${HOME}/bin
+    tar -xz -f ${dest_file} -C ${HOME}/bin
     chmod +x ${HOME}/bin/g
 
-    echo "Successfully installed to ${HOME}/bin/g"
+    echo "[3/3] Set environment variables"
+    echo '# ===== set g environment variables =====' >> ${HOME}/.bashrc
+    echo 'export GOROOT="${HOME}/.g/go"' >> ${HOME}/.bashrc
+    echo 'export PATH="${HOME}/bin:${HOME}/.g/go/bin:$PATH"' >> ${HOME}/.bashrc
+    echo 'export G_MIRROR=https://golang.google.cn/dl/' >> ${HOME}/.bashrc 
 
-    echo "export GOROOT=${HOME}/.g/go" >> ~/.bashrc
-    echo "export PATH=${HOME}/bin:${HOME}/.g/go/bin:$PATH" >> ~/.bashrc
-    echo "export G_MIRROR=https://golang.google.cn/dl/" >> ~/.bashrc 
-    source ~/.bashrc 
+    echo '# ===== set g environment variables =====' >> ${HOME}/.zshrc
+    echo 'export GOROOT="${HOME}/.g/go"' >> ${HOME}/.zshrc
+    echo 'export PATH="${HOME}/bin:${HOME}/.g/go/bin:$PATH"' >> ${HOME}/.zshrc
+    echo 'export G_MIRROR=https://golang.google.cn/dl/' >> ${HOME}/.zshrc
 
     exit 0
 }
