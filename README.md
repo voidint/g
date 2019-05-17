@@ -17,10 +17,12 @@
 
 ## 安装
 ### 自动化安装
-- Linux/macOS
+- Linux/macOS（适用于bash、zsh）
+
+    建议安装前清空`GOROOT`、`GOBIN`等环境变量
 
     ```shell
-    $ wget -qO- https://github.com/voidint/g/blob/master/install.sh | bash
+    $ wget -qO- https://raw.githubusercontent.com/voidint/g/master/install.sh | bash
     $ echo "unalias g" >> ~/.bashrc # 可选。若其他程序（如'git'）使用了'g'作为别名。
     $ source ~/.bashrc # 或者 source ~/.zshrc
     ```
@@ -51,7 +53,7 @@ $ g ls-remote stable
 
 ```shell
 $ g install 1.12.4
-installed successfully
+Installed successfully
 $ go version
 go version go1.12.4 darwin/amd64
 ```
@@ -87,7 +89,7 @@ $ g ls-remote
 
 ```shell
 $ g install 1.11.9
-installed successfully
+Installed successfully
 $ go version
 go version go1.11.9 darwin/amd64
 ```
