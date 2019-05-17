@@ -17,20 +17,25 @@
 
 ## 安装
 ### 自动化安装
-敬请期待
+- Linux/macOS
+
+    ```shell
+    $ wget -qO- https://github.com/voidint/g/blob/master/install.sh | bash
+    $ echo "unalias g" >> ~/.bashrc # 可选。若其他程序（如'git'）使用了'g'作为别名。
+    $ source ~/.bashrc # 或者 source ~/.zshrc
+    ```
 
 ### 手动安装
-- 下载对应平台的二进制压缩包。
+- 下载对应平台的[二进制压缩包](https://github.com/voidint/g/releases)。
 - 将压缩包解压至`PATH`环境变量目录下，如`/usr/local/bin`。
 - 编辑shell环境配置文件（`~/.bashrc`、`~/.zshrc`...）
 
     ```shell
-    $ cat > ~/.bashrc <<EOF
-    export GOROOT=~/.g/go
-    export PATH=~/.g/go/bin:$PATH
+    $ cat>>~/.bashrc<<EOF
+    export GOROOT="${HOME}/.g/go"
+    export PATH="${HOME}/.g/go/bin:$PATH"
     export G_MIRROR=https://golang.google.cn/dl/
     EOF
-    $ source ~/.bashrc
     ```
 
 ## 使用
