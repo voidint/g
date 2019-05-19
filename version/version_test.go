@@ -6,6 +6,9 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"io/ioutil"
+	"net/http"
+	"net/http/httptest"
 	"os"
 	"testing"
 	"time"
@@ -95,6 +98,28 @@ func TestDownloadError(t *testing.T) {
 	})
 }
 
+func TestDownload(t *testing.T) {
+	Convey("下载安装包", t, func() {
+		ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			fmt.Fprint(w, "hello world")
+		}))
+		defer ts.Close()
+
+		pkg := &Package{
+			URL: ts.URL,
+		}
+
+		df := fmt.Sprintf("%d.dst", time.Now().UnixNano())
+		defer os.Remove(df)
+
+		_, err := pkg.Download(df)
+		So(err, ShouldBeNil)
+		dd, err := ioutil.ReadFile(df)
+		So(err, ShouldBeNil)
+		So(string(dd), ShouldEqual, "hello world")
+	})
+}
+
 func TestVerifyChecksum(t *testing.T) {
 	Convey("检查安装包校验和", t, func() {
 		filename := fmt.Sprintf("%d.txt", time.Now().Unix())
@@ -118,7 +143,7 @@ func TestVerifyChecksum(t *testing.T) {
 			So(pkg.VerifyChecksum(filename), ShouldBeNil)
 		})
 
-		Convey("SHA1", func() {
+		Convey("校验和不匹配", func() {
 			f.Seek(0, 0)
 			h := sha1.New()
 			_, err = io.Copy(h, f)
@@ -129,6 +154,19 @@ func TestVerifyChecksum(t *testing.T) {
 				Checksum:  fmt.Sprintf("%x", h.Sum(nil)),
 			}
 			So(pkg.VerifyChecksum(filename), ShouldBeNil)
+		})
+
+		Convey("SHA1", func() {
+			f.Seek(0, 0)
+			h := sha1.New()
+			_, err = io.Copy(h, f)
+			So(err, ShouldBeNil)
+
+			pkg := &Package{
+				Algorithm: "SHA1",
+				Checksum:  "hello",
+			}
+			So(pkg.VerifyChecksum(filename), ShouldEqual, ErrChecksumNotMatched)
 		})
 
 		Convey("SHA1024", func() {
