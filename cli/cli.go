@@ -2,9 +2,14 @@ package cli
 
 import (
 	"fmt"
+	"io"
 	"os"
 	"path/filepath"
+	"sort"
+	"strings"
 
+	"github.com/Masterminds/semver"
+	"github.com/fatih/color"
 	"github.com/urfave/cli"
 	"github.com/voidint/g/build"
 )
@@ -80,4 +85,24 @@ func init() {
  COPYRIGHT:
 	{{.Copyright}}{{end}}
 `, build.ShortVersion)
+}
+
+// inuse 返回当前的go版本号
+func inuse(goroot string) (version string) {
+	p, _ := os.Readlink(goroot)
+	return filepath.Base(p)
+}
+
+// render 渲染go版本列表
+func render(curV string, items []*semver.Version, out io.Writer) {
+	sort.Sort(semver.Collection(items))
+
+	for i := range items {
+		v := strings.TrimSuffix(strings.TrimSuffix(items[i].String(), ".0"), ".0")
+		if v == curV {
+			color.New(color.FgGreen).Fprintf(out, "* %s\n", v)
+		} else {
+			fmt.Fprintf(out, "  %s\n", v)
+		}
+	}
 }

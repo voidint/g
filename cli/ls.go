@@ -3,8 +3,7 @@ package cli
 import (
 	"fmt"
 	"io/ioutil"
-	"sort"
-	"strings"
+	"os"
 
 	"github.com/Masterminds/semver"
 	"github.com/urfave/cli"
@@ -27,10 +26,7 @@ func list(ctx *cli.Context) (err error) {
 		}
 		items = append(items, v)
 	}
-	sort.Sort(semver.Collection(items))
 
-	for i := range items {
-		fmt.Println(strings.TrimSuffix(strings.TrimSuffix(items[i].String(), ".0"), ".0"))
-	}
+	render(inuse(goroot), items, os.Stdout)
 	return nil
 }

@@ -6,8 +6,10 @@ require (
 	github.com/Masterminds/semver v1.4.2
 	github.com/PuerkitoBio/goquery v1.5.0
 	github.com/dsnet/compress v0.0.1 // indirect
+	github.com/fatih/color v1.7.0
 	github.com/golang/snappy v0.0.1 // indirect
 	github.com/gopherjs/gopherjs v0.0.0-20190430165422-3e4dfb77656c // indirect
+	github.com/mattn/go-colorable v0.1.2 // indirect
 	github.com/mholt/archiver v3.1.1+incompatible
 	github.com/nwaples/rardecode v1.0.0 // indirect
 	github.com/pierrec/lz4 v2.0.5+incompatible // indirect
