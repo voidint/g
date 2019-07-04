@@ -26,7 +26,7 @@ func use(ctx *cli.Context) (err error) {
 		return cli.NewExitError(fmt.Sprintf("[g] %s", err.Error()), 1)
 	}
 	if output, err := exec.Command(filepath.Join(goroot, "bin", "go"), "version").Output(); err == nil {
-		fmt.Printf(string(output))
+		fmt.Print(string(output))
 	}
 	return nil
 }

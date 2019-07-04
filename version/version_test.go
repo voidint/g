@@ -131,7 +131,7 @@ func TestVerifyChecksum(t *testing.T) {
 		So(err, ShouldBeNil)
 
 		Convey("SHA256", func() {
-			f.Seek(0, 0)
+			_, _ = f.Seek(0, 0)
 			h := sha256.New()
 			_, err = io.Copy(h, f)
 			So(err, ShouldBeNil)

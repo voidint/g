@@ -19,8 +19,8 @@ func Test_inuse(t *testing.T) {
 		versionsDir = filepath.Join(rootDir, "versions")
 		vDir := filepath.Join(versionsDir, "1.12.6")
 
-		os.MkdirAll(versionsDir, 0755)
-		os.MkdirAll(vDir, 0755)
+		_ = os.MkdirAll(versionsDir, 0755)
+		_ = os.MkdirAll(vDir, 0755)
 		defer os.RemoveAll(rootDir)
 
 		So(os.Symlink(vDir, goroot), ShouldBeNil)
