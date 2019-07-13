@@ -43,15 +43,12 @@ func Run() {
 			return err
 		}
 		versionsDir = filepath.Join(rootDir, "versions")
-		if err = os.MkdirAll(versionsDir, 0755); err != nil {
-			return err
-		}
-		return nil
+		return os.MkdirAll(versionsDir, 0755)
 	}
 	app.Commands = commands
 
 	if err := app.Run(os.Args); err != nil {
-		fmt.Fprintf(os.Stderr, "[g] %s\n", err.Error())
+		fmt.Fprintln(os.Stderr, errstring(err))
 		os.Exit(1)
 	}
 }
@@ -105,4 +102,23 @@ func render(curV string, items []*semver.Version, out io.Writer) {
 			fmt.Fprintf(out, "  %s\n", v)
 		}
 	}
+}
+
+// errstring 返回统一格式的错误信息
+func errstring(err error) string {
+	if err == nil {
+		return ""
+	}
+	return wrapstring(err.Error())
+}
+
+func wrapstring(str string) string {
+	if str == "" {
+		return str
+	}
+	words := strings.Fields(str)
+	if len(words) > 0 {
+		words[0] = strings.Title(words[0])
+	}
+	return fmt.Sprintf("[g] %s", strings.Join(words, " "))
 }

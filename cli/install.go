@@ -31,20 +31,20 @@ func install(ctx *cli.Context) (err error) {
 	// 查找版本
 	c, err := version.NewCollector(url)
 	if err != nil {
-		return cli.NewExitError(fmt.Sprintf("[g] %s", err.Error()), 1)
+		return cli.NewExitError(errstring(err), 1)
 	}
 	items, err := c.AllVersions()
 	if err != nil {
-		return cli.NewExitError(fmt.Sprintf("[g] %s", err.Error()), 1)
+		return cli.NewExitError(errstring(err), 1)
 	}
 	v, err := version.FindVersion(items, vname)
 	if err != nil {
-		return cli.NewExitError(fmt.Sprintf("[g] %s", err.Error()), 1)
+		return cli.NewExitError(errstring(err), 1)
 	}
 	// 查找版本下当前平台的安装包
 	pkg, err := v.FindPackage(version.ArchiveKind, runtime.GOOS, runtime.GOARCH)
 	if err != nil {
-		return cli.NewExitError(fmt.Sprintf("[g] %s", err.Error()), 1)
+		return cli.NewExitError(errstring(err), 1)
 	}
 	var ext string
 	if runtime.GOOS == "windows" {
@@ -57,16 +57,16 @@ func install(ctx *cli.Context) (err error) {
 	if _, err = os.Stat(filename); os.IsNotExist(err) {
 		// 本地不存在安装包，从远程下载并检查校验和。
 		if _, err = pkg.Download(filename); err != nil {
-			return cli.NewExitError(fmt.Sprintf("[g] %s", err.Error()), 1)
+			return cli.NewExitError(errstring(err), 1)
 		}
 		if err = pkg.VerifyChecksum(filename); err != nil {
-			return cli.NewExitError(fmt.Sprintf("[g] %s", err.Error()), 1)
+			return cli.NewExitError(errstring(err), 1)
 		}
 	} else {
 		// 本地存在安装包，检查校验和。
 		if err = pkg.VerifyChecksum(filename); err != nil {
 			_ = os.Remove(filename)
-			return cli.NewExitError(fmt.Sprintf("[g] %s", err.Error()), 1)
+			return cli.NewExitError(errstring(err), 1)
 		}
 	}
 	// 删除可能存在的历史垃圾文件
@@ -74,17 +74,17 @@ func install(ctx *cli.Context) (err error) {
 
 	// 解压安装包
 	if err = archiver.Unarchive(filename, versionsDir); err != nil {
-		return cli.NewExitError(fmt.Sprintf("[g] %s", err.Error()), 1)
+		return cli.NewExitError(errstring(err), 1)
 	}
 	// 目录重命名
 	if err = os.Rename(filepath.Join(versionsDir, "go"), targetV); err != nil {
-		return cli.NewExitError(fmt.Sprintf("[g] %s", err.Error()), 1)
+		return cli.NewExitError(errstring(err), 1)
 	}
 	// 重新建立软链接
 	_ = os.Remove(goroot)
 
 	if err := os.Symlink(targetV, goroot); err != nil {
-		return cli.NewExitError(fmt.Sprintf("[g] %s", err.Error()), 1)
+		return cli.NewExitError(errstring(err), 1)
 	}
 	fmt.Println("Installed successfully")
 	return nil

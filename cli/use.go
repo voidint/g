@@ -23,7 +23,7 @@ func use(ctx *cli.Context) (err error) {
 	_ = os.Remove(goroot)
 
 	if err := os.Symlink(targetV, goroot); err != nil {
-		return cli.NewExitError(fmt.Sprintf("[g] %s", err.Error()), 1)
+		return cli.NewExitError(errstring(err), 1)
 	}
 	if output, err := exec.Command(filepath.Join(goroot, "bin", "go"), "version").Output(); err == nil {
 		fmt.Print(string(output))
