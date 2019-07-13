@@ -65,6 +65,7 @@ func install(ctx *cli.Context) (err error) {
 	} else {
 		// 本地存在安装包，检查校验和。
 		if err = pkg.VerifyChecksum(filename); err != nil {
+			_ = os.Remove(filename)
 			return cli.NewExitError(fmt.Sprintf("[g] %s", err.Error()), 1)
 		}
 	}
