@@ -68,6 +68,9 @@ func install(ctx *cli.Context) (err error) {
 			return cli.NewExitError(fmt.Sprintf("[g] %s", err.Error()), 1)
 		}
 	}
+	// 删除可能存在的历史垃圾文件
+	_ = os.RemoveAll(filepath.Join(versionsDir, "go"))
+
 	// 解压安装包
 	if err = archiver.Unarchive(filename, versionsDir); err != nil {
 		return cli.NewExitError(fmt.Sprintf("[g] %s", err.Error()), 1)
