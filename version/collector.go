@@ -85,9 +85,36 @@ func (c *Collector) findPackages(table *goquery.Selection) (pkgs []*Package) {
 	return pkgs
 }
 
+// HasUnstableVersions 返回是否包含非稳定版本的布尔值
+func (c *Collector) HasUnstableVersions() bool {
+	return c.doc.Find("#unstable").Length() > 0
+}
+
 // StableVersions 返回所有稳定版本
 func (c *Collector) StableVersions() (items []*Version, err error) {
-	c.doc.Find("#stable").NextUntil("#archive").Each(func(i int, div *goquery.Selection) {
+	var divs *goquery.Selection
+	if c.HasUnstableVersions() {
+		divs = c.doc.Find("#stable").NextUntil("#unstable")
+	} else {
+		divs = c.doc.Find("#stable").NextUntil("#archive")
+	}
+
+	divs.Each(func(i int, div *goquery.Selection) {
+		vname, ok := div.Attr("id")
+		if !ok {
+			return
+		}
+		items = append(items, &Version{
+			Name:     strings.TrimPrefix(vname, "go"),
+			Packages: c.findPackages(div.Find("table").First()),
+		})
+	})
+	return items, nil
+}
+
+// UnstableVersions 返回所有非稳定版本
+func (c *Collector) UnstableVersions() (items []*Version, err error) {
+	c.doc.Find("#unstable").NextUntil("#archive").Each(func(i int, div *goquery.Selection) {
 		vname, ok := div.Attr("id")
 		if !ok {
 			return
@@ -126,5 +153,11 @@ func (c *Collector) AllVersions() (items []*Version, err error) {
 		return nil, err
 	}
 	items = append(items, archives...)
+
+	unstables, err := c.UnstableVersions()
+	if err != nil {
+		return nil, err
+	}
+	items = append(items, unstables...)
 	return items, nil
 }

@@ -95,7 +95,11 @@ func render(curV string, items []*semver.Version, out io.Writer) {
 	sort.Sort(semver.Collection(items))
 
 	for i := range items {
-		v := strings.TrimSuffix(strings.TrimSuffix(items[i].String(), ".0"), ".0")
+		fields := strings.SplitN(items[i].String(), "-", 2)
+		v := strings.TrimSuffix(strings.TrimSuffix(fields[0], ".0"), ".0")
+		if len(fields) > 1 {
+			v += fields[1]
+		}
 		if v == curV {
 			color.New(color.FgGreen).Fprintf(out, "* %s\n", v)
 		} else {

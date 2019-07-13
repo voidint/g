@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"strings"
 
 	"github.com/Masterminds/semver"
 	"github.com/urfave/cli"
@@ -20,7 +21,12 @@ func list(ctx *cli.Context) (err error) {
 		if !infos[i].IsDir() {
 			continue
 		}
-		v, err := semver.NewVersion(infos[i].Name())
+		vname := infos[i].Name()
+		idx := strings.Index(vname, "beta")
+		if idx > 0 {
+			vname = vname[:idx] + "-" + vname[idx:]
+		}
+		v, err := semver.NewVersion(vname)
 		if err != nil || v == nil {
 			continue
 		}

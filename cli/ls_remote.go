@@ -2,6 +2,7 @@ package cli
 
 import (
 	"os"
+	"strings"
 
 	"github.com/Masterminds/semver"
 	"github.com/urfave/cli"
@@ -10,12 +11,13 @@ import (
 
 const (
 	stableChannel   = "stable"
+	unstableChannel = "unstable"
 	archivedChannel = "archived"
 )
 
 func listRemote(ctx *cli.Context) (err error) {
 	channel := ctx.Args().First()
-	if channel != "" && channel != stableChannel && channel != archivedChannel {
+	if channel != "" && channel != stableChannel && channel != unstableChannel && channel != archivedChannel {
 		return cli.ShowSubcommandHelp(ctx)
 	}
 
@@ -33,6 +35,8 @@ func listRemote(ctx *cli.Context) (err error) {
 	switch channel {
 	case stableChannel:
 		vs, err = c.StableVersions()
+	case unstableChannel:
+		vs, err = c.UnstableVersions()
 	case archivedChannel:
 		vs, err = c.ArchivedVersions()
 	default:
@@ -44,7 +48,12 @@ func listRemote(ctx *cli.Context) (err error) {
 
 	items := make([]*semver.Version, 0, len(vs))
 	for i := range vs {
-		v, err := semver.NewVersion(vs[i].Name)
+		vname := vs[i].Name
+		idx := strings.Index(vname, "beta")
+		if idx > 0 {
+			vname = vname[:idx] + "-" + vname[idx:]
+		}
+		v, err := semver.NewVersion(vname)
 		if err != nil || v == nil {
 			continue
 		}
