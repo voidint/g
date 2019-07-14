@@ -15,7 +15,7 @@ import (
 )
 
 var (
-	rootDir      string
+	ghomeDir     string
 	downloadsDir string
 	versionsDir  string
 	goroot       string
@@ -35,20 +35,18 @@ func Run() {
 		},
 	}
 	app.Before = func(ctx *cli.Context) (err error) {
-		homeDir, _ := os.UserHomeDir()
-		rootDir = filepath.Join(homeDir, ".g")
-		goroot = filepath.Join(rootDir, "go")
-		downloadsDir = filepath.Join(rootDir, "downloads")
+		ghomeDir = ghome()
+		goroot = filepath.Join(ghomeDir, "go")
+		downloadsDir = filepath.Join(ghomeDir, "downloads")
 		if err = os.MkdirAll(downloadsDir, 0755); err != nil {
 			return err
 		}
-		versionsDir = filepath.Join(rootDir, "versions")
+		versionsDir = filepath.Join(ghomeDir, "versions")
 		return os.MkdirAll(versionsDir, 0755)
 	}
 	app.Commands = commands
 
 	if err := app.Run(os.Args); err != nil {
-		fmt.Fprintln(os.Stderr, errstring(err))
 		os.Exit(1)
 	}
 }
@@ -82,6 +80,12 @@ func init() {
  COPYRIGHT:
 	{{.Copyright}}{{end}}
 `, build.ShortVersion)
+}
+
+// ghome 返回g根目录
+func ghome() (dir string) {
+	homeDir, _ := os.UserHomeDir()
+	return filepath.Join(homeDir, ".g")
 }
 
 // inuse 返回当前的go版本号

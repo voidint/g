@@ -13,6 +13,14 @@ import (
 	. "github.com/smartystreets/goconvey/convey"
 )
 
+func Test_ghome(t *testing.T) {
+	Convey("查询ghome路径", t, func() {
+		home, err := os.UserHomeDir()
+		So(err, ShouldBeNil)
+		So(ghome(), ShouldEqual, filepath.Join(home, ".g"))
+	})
+}
+
 func Test_inuse(t *testing.T) {
 	Convey("查询当前使用中的go版本", t, func() {
 		rootDir := filepath.Join(os.TempDir(), fmt.Sprintf(".g_%d", time.Now().Unix()))
