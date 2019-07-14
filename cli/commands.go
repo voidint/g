@@ -24,7 +24,7 @@ var (
 		},
 		{
 			Name:      "install",
-			Usage:     "Download and install a <version>",
+			Usage:     "Download and install a version",
 			UsageText: "g install <version>",
 			Action:    install,
 		},
