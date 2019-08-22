@@ -22,7 +22,16 @@ func list(ctx *cli.Context) (err error) {
 			continue
 		}
 		vname := infos[i].Name()
-		idx := strings.Index(vname, "beta")
+		var idx int
+		if strings.Contains(vname, "alpha") {
+			idx = strings.Index(vname, "alpha")
+
+		} else if strings.Contains(vname, "beta") {
+			idx = strings.Index(vname, "beta")
+
+		} else if strings.Contains(vname, "rc") {
+			idx = strings.Index(vname, "rc")
+		}
 		if idx > 0 {
 			vname = vname[:idx] + "-" + vname[idx:]
 		}

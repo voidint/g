@@ -49,7 +49,16 @@ func listRemote(ctx *cli.Context) (err error) {
 	items := make([]*semver.Version, 0, len(vs))
 	for i := range vs {
 		vname := vs[i].Name
-		idx := strings.Index(vname, "beta")
+		var idx int
+		if strings.Contains(vname, "alpha") {
+			idx = strings.Index(vname, "alpha")
+
+		} else if strings.Contains(vname, "beta") {
+			idx = strings.Index(vname, "beta")
+
+		} else if strings.Contains(vname, "rc") {
+			idx = strings.Index(vname, "rc")
+		}
 		if idx > 0 {
 			vname = vname[:idx] + "-" + vname[idx:]
 		}
