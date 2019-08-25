@@ -116,6 +116,13 @@ var (
 	ErrChecksumNotMatched = errors.New("file checksum does not match the computed checksum")
 )
 
+const (
+	// SHA256 校验和算法-sha256
+	SHA256 = "SHA256"
+	// SHA1 校验和算法-sha1
+	SHA1 = "SHA1"
+)
+
 // VerifyChecksum 验证目标文件的校验和与当前安装包的校验和是否一致
 func (pkg *Package) VerifyChecksum(filename string) (err error) {
 	f, err := os.Open(filename)
@@ -126,9 +133,9 @@ func (pkg *Package) VerifyChecksum(filename string) (err error) {
 
 	var h hash.Hash
 	switch pkg.Algorithm {
-	case "SHA256":
+	case SHA256:
 		h = sha256.New()
-	case "SHA1":
+	case SHA1:
 		h = sha1.New()
 	default:
 		return ErrUnsupportedChecksumAlgorithm

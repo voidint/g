@@ -15,7 +15,7 @@ import (
 )
 
 var (
-	rootDir      string
+	ghomeDir     string
 	downloadsDir string
 	versionsDir  string
 	goroot       string
@@ -35,23 +35,18 @@ func Run() {
 		},
 	}
 	app.Before = func(ctx *cli.Context) (err error) {
-		homeDir, _ := os.UserHomeDir()
-		rootDir = filepath.Join(homeDir, ".g")
-		goroot = filepath.Join(rootDir, "go")
-		downloadsDir = filepath.Join(rootDir, "downloads")
+		ghomeDir = ghome()
+		goroot = filepath.Join(ghomeDir, "go")
+		downloadsDir = filepath.Join(ghomeDir, "downloads")
 		if err = os.MkdirAll(downloadsDir, 0755); err != nil {
 			return err
 		}
-		versionsDir = filepath.Join(rootDir, "versions")
-		if err = os.MkdirAll(versionsDir, 0755); err != nil {
-			return err
-		}
-		return nil
+		versionsDir = filepath.Join(ghomeDir, "versions")
+		return os.MkdirAll(versionsDir, 0755)
 	}
 	app.Commands = commands
 
 	if err := app.Run(os.Args); err != nil {
-		fmt.Fprintf(os.Stderr, "[g] %s\n", err.Error())
 		os.Exit(1)
 	}
 }
@@ -87,6 +82,12 @@ func init() {
 `, build.ShortVersion)
 }
 
+// ghome 返回g根目录
+func ghome() (dir string) {
+	homeDir, _ := os.UserHomeDir()
+	return filepath.Join(homeDir, ".g")
+}
+
 // inuse 返回当前的go版本号
 func inuse(goroot string) (version string) {
 	p, _ := os.Readlink(goroot)
@@ -98,11 +99,34 @@ func render(curV string, items []*semver.Version, out io.Writer) {
 	sort.Sort(semver.Collection(items))
 
 	for i := range items {
-		v := strings.TrimSuffix(strings.TrimSuffix(items[i].String(), ".0"), ".0")
+		fields := strings.SplitN(items[i].String(), "-", 2)
+		v := strings.TrimSuffix(strings.TrimSuffix(fields[0], ".0"), ".0")
+		if len(fields) > 1 {
+			v += fields[1]
+		}
 		if v == curV {
 			color.New(color.FgGreen).Fprintf(out, "* %s\n", v)
 		} else {
 			fmt.Fprintf(out, "  %s\n", v)
 		}
 	}
+}
+
+// errstring 返回统一格式的错误信息
+func errstring(err error) string {
+	if err == nil {
+		return ""
+	}
+	return wrapstring(err.Error())
+}
+
+func wrapstring(str string) string {
+	if str == "" {
+		return str
+	}
+	words := strings.Fields(str)
+	if len(words) > 0 {
+		words[0] = strings.Title(words[0])
+	}
+	return fmt.Sprintf("[g] %s", strings.Join(words, " "))
 }

@@ -1,8 +1,8 @@
 package cli
 
 import (
-	"fmt"
 	"os"
+	"strings"
 
 	"github.com/Masterminds/semver"
 	"github.com/urfave/cli"
@@ -11,12 +11,13 @@ import (
 
 const (
 	stableChannel   = "stable"
+	unstableChannel = "unstable"
 	archivedChannel = "archived"
 )
 
 func listRemote(ctx *cli.Context) (err error) {
 	channel := ctx.Args().First()
-	if channel != "" && channel != stableChannel && channel != archivedChannel {
+	if channel != "" && channel != stableChannel && channel != unstableChannel && channel != archivedChannel {
 		return cli.ShowSubcommandHelp(ctx)
 	}
 
@@ -27,25 +28,41 @@ func listRemote(ctx *cli.Context) (err error) {
 
 	c, err := version.NewCollector(url)
 	if err != nil {
-		return cli.NewExitError(fmt.Sprintf("[g] %s", err.Error()), 1)
+		return cli.NewExitError(errstring(err), 1)
 	}
 
 	var vs []*version.Version
 	switch channel {
 	case stableChannel:
 		vs, err = c.StableVersions()
+	case unstableChannel:
+		vs, err = c.UnstableVersions()
 	case archivedChannel:
 		vs, err = c.ArchivedVersions()
 	default:
 		vs, err = c.AllVersions()
 	}
 	if err != nil {
-		return cli.NewExitError(fmt.Sprintf("[g] %s", err.Error()), 1)
+		return cli.NewExitError(errstring(err), 1)
 	}
 
 	items := make([]*semver.Version, 0, len(vs))
 	for i := range vs {
-		v, err := semver.NewVersion(vs[i].Name)
+		vname := vs[i].Name
+		var idx int
+		if strings.Contains(vname, "alpha") {
+			idx = strings.Index(vname, "alpha")
+
+		} else if strings.Contains(vname, "beta") {
+			idx = strings.Index(vname, "beta")
+
+		} else if strings.Contains(vname, "rc") {
+			idx = strings.Index(vname, "rc")
+		}
+		if idx > 0 {
+			vname = vname[:idx] + "-" + vname[idx:]
+		}
+		v, err := semver.NewVersion(vname)
 		if err != nil || v == nil {
 			continue
 		}

@@ -16,11 +16,11 @@ func uninstall(ctx *cli.Context) (err error) {
 	targetV := filepath.Join(versionsDir, vname)
 
 	if finfo, err := os.Stat(targetV); err != nil || !finfo.IsDir() {
-		return cli.NewExitError(fmt.Sprintf("[g] %q version is not installed.", vname), 1)
+		return cli.NewExitError(fmt.Sprintf("[g] %q version is not installed", vname), 1)
 	}
 
 	if err := os.RemoveAll(targetV); err != nil {
-		return cli.NewExitError(fmt.Sprintf("[g] Uninstall failed ==> %s", err.Error()), 1)
+		return cli.NewExitError(wrapstring(fmt.Sprintf("Uninstall failed: %s", err.Error())), 1)
 	}
 	fmt.Println("Uninstall successfully")
 	return nil
