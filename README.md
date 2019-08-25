@@ -7,6 +7,7 @@
 
 `g`是一个Linux、macOS、Windows下的命令行工具，可以提供一个便捷的多版本[go](https://golang.org/)环境的管理和切换。
 
+![g](https://raw.githubusercontent.com/voidint/g/master/tty.gif)
 
 ## 特性
 - 支持列出可供安装的go版本号
