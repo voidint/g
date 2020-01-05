@@ -23,8 +23,8 @@ get_os(){
 main() {
     local os=$(get_os)
     local arch=$(get_arch)
-    local dest_file="${HOME}/g1.1.0.${os}-${arch}.tar.gz"
-    local url="https://github.com/voidint/g/releases/download/v1.1.0/g1.1.0.${os}-${arch}.tar.gz"
+    local dest_file="${HOME}/g1.1.1.${os}-${arch}.tar.gz"
+    local url="https://github.com/voidint/g/releases/download/v1.1.1/g1.1.1.${os}-${arch}.tar.gz"
 
     echo "[1/3] Download ${url}"
     rm -f ${dest_file}
