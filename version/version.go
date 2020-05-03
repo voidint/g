@@ -10,6 +10,10 @@ import (
 	"net/http"
 	"os"
 	"strings"
+
+	ct "github.com/daviddengcn/go-colortext"
+	wlog "github.com/dixonwille/wlog/v3"
+	"github.com/dixonwille/wmenu/v5"
 )
 
 // ErrVersionNotFound 版本不存在
@@ -36,12 +40,43 @@ var ErrPackageNotFound = errors.New("installation package not found")
 
 // FindPackage 返回指定操作系统和硬件架构的版本包
 func (v *Version) FindPackage(kind, goos, goarch string) (*Package, error) {
+
+	pkgs := make([]*Package, 0)
+	var installPackage *Package
+
 	prefix := fmt.Sprintf("go%s.%s-%s", v.Name, goos, goarch)
 	for i := range v.Packages {
 		if v.Packages[i] == nil || !strings.EqualFold(v.Packages[i].Kind, kind) || !strings.HasPrefix(v.Packages[i].FileName, prefix) {
 			continue
 		}
-		return v.Packages[i], nil
+		pkgs = append(pkgs, v.Packages[i])
+	}
+
+	if len(pkgs) > 1 {
+		menu := wmenu.NewMenu(fmt.Sprintf("There are %d install packages match your OS and ARCH, please select the package you want to install.", len(pkgs)))
+		menu.AddColor(wlog.Color{Code: ct.Green}, wlog.Color{Code: ct.Yellow}, wlog.Color{Code: ct.Magenta}, wlog.Color{Code: ct.Yellow})
+		menu.Action(func(opts []wmenu.Opt) error {
+			var ok bool
+			installPackage, ok = opts[0].Value.(*Package)
+			if !ok {
+				return ErrPackageNotFound
+			}
+			return nil
+		})
+		for index, pkg := range pkgs {
+			if index == 0 {
+				menu.Option(fmt.Sprintf("%s", pkg.URL), pkg, true, nil)
+			} else {
+				menu.Option(fmt.Sprintf("%s", pkg.URL), pkg, false, nil)
+			}
+		}
+		err := menu.Run()
+		if err != nil {
+			return nil, err
+		}
+		return installPackage, nil
+	} else if len(pkgs) == 1 {
+		return pkgs[0], nil
 	}
 	return nil, ErrPackageNotFound
 }

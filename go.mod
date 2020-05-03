@@ -5,6 +5,9 @@ go 1.12
 require (
 	github.com/Masterminds/semver v1.4.2
 	github.com/PuerkitoBio/goquery v1.5.0
+	github.com/daviddengcn/go-colortext v0.0.0-20180409174941-186a3d44e920
+	github.com/dixonwille/wlog/v3 v3.0.1
+	github.com/dixonwille/wmenu/v5 v5.0.0
 	github.com/dsnet/compress v0.0.1 // indirect
 	github.com/fatih/color v1.7.0
 	github.com/golang/snappy v0.0.1 // indirect
@@ -18,5 +21,4 @@ require (
 	github.com/urfave/cli v1.20.0
 	github.com/xi2/xz v0.0.0-20171230120015-48954b6210f8 // indirect
 	golang.org/x/net v0.0.0-20190501004415-9ce7a6920f09 // indirect
-	golang.org/x/sys v0.0.0-20190429190828-d89cdac9e872 // indirect
 )
