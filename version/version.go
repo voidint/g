@@ -43,7 +43,23 @@ func (v *Version) FindPackage(kind, goos, goarch string) (*Package, error) {
 		}
 		return v.Packages[i], nil
 	}
+
 	return nil, ErrPackageNotFound
+}
+
+// FindPackages 返回指定操作系统和硬件架构的版本包
+func (v *Version) FindPackages(kind, goos, goarch string) (pkgs []*Package, err error) {
+	prefix := fmt.Sprintf("go%s.%s-%s", v.Name, goos, goarch)
+	for i := range v.Packages {
+		if v.Packages[i] == nil || !strings.EqualFold(v.Packages[i].Kind, kind) || !strings.HasPrefix(v.Packages[i].FileName, prefix) {
+			continue
+		}
+		pkgs = append(pkgs, v.Packages[i])
+	}
+	if len(pkgs) == 0 {
+		return nil, ErrPackageNotFound
+	}
+	return pkgs, nil
 }
 
 // Package go版本安装包

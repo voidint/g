@@ -1,11 +1,15 @@
 package cli
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
 	"runtime"
 
+	ct "github.com/daviddengcn/go-colortext"
+	wlog "github.com/dixonwille/wlog/v3"
+	"github.com/dixonwille/wmenu/v5"
 	"github.com/mholt/archiver"
 	"github.com/urfave/cli"
 	"github.com/voidint/g/version"
@@ -42,9 +46,36 @@ func install(ctx *cli.Context) (err error) {
 		return cli.NewExitError(errstring(err), 1)
 	}
 	// 查找版本下当前平台的安装包
-	pkg, err := v.FindPackage(version.ArchiveKind, runtime.GOOS, runtime.GOARCH)
+	pkgs, err := v.FindPackages(version.ArchiveKind, runtime.GOOS, runtime.GOARCH)
 	if err != nil {
 		return cli.NewExitError(errstring(err), 1)
+	}
+	var pkg *version.Package
+	// 判断匹配到的安装包个数
+	if len(pkgs) > 1 {
+		menu := wmenu.NewMenu(fmt.Sprintf("There are %d install packages match your OS and ARCH, please select the package you want to install.", len(pkgs)))
+		menu.AddColor(wlog.Color{Code: ct.Green}, wlog.Color{Code: ct.Yellow}, wlog.Color{Code: ct.Magenta}, wlog.Color{Code: ct.Yellow})
+		menu.Action(func(opts []wmenu.Opt) error {
+			var ok bool
+			pkg, ok = opts[0].Value.(*version.Package)
+			if !ok {
+				return errors.New("Assertion failed")
+			}
+			return nil
+		})
+		for index, tmpPkg := range pkgs {
+			if index == 0 {
+				menu.Option(fmt.Sprintf("%s", tmpPkg.FileName), tmpPkg, true, nil)
+			} else {
+				menu.Option(fmt.Sprintf("%s", tmpPkg.FileName), tmpPkg, false, nil)
+			}
+		}
+		err := menu.Run()
+		if err != nil {
+			return cli.NewExitError(errstring(err), 1)
+		}
+	} else {
+		pkg = pkgs[0]
 	}
 	var ext string
 	if runtime.GOOS == "windows" {
