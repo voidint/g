@@ -2,6 +2,7 @@ package cli
 
 import (
 	"fmt"
+	"github.com/mholt/archiver"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -9,7 +10,6 @@ import (
 	ct "github.com/daviddengcn/go-colortext"
 	"github.com/dixonwille/wlog/v3"
 	"github.com/dixonwille/wmenu/v5"
-	"github.com/mholt/archiver"
 	"github.com/urfave/cli"
 	"github.com/voidint/g/version"
 )
@@ -86,9 +86,15 @@ func install(ctx *cli.Context) (err error) {
 
 	if _, err = os.Stat(filename); os.IsNotExist(err) {
 		// 本地不存在安装包，从远程下载并检查校验和。
-		if _, err = pkg.Download(filename); err != nil {
+		var fn = pkg.Download
+		if ctx.Bool("progress") {
+			fn = pkg.DownloadWithProgress
+		}
+
+		if _, err = fn(filename); err != nil {
 			return cli.NewExitError(errstring(err), 1)
 		}
+
 		if err = pkg.VerifyChecksum(filename); err != nil {
 			return cli.NewExitError(errstring(err), 1)
 		}

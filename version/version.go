@@ -9,7 +9,10 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"path"
 	"strings"
+
+	progressbar "github.com/schollz/progressbar/v3"
 )
 
 // ErrVersionNotFound 版本不存在
@@ -100,6 +103,39 @@ func (pkg *Package) Download(dst string) (size int64, err error) {
 		return 0, NewDownloadError(pkg.URL, err)
 	}
 	return size, nil
+}
+
+// DownloadWithProgress downloading file form specified url with verbosely progress bar
+func (pkg *Package) DownloadWithProgress(dst string) (size int64, err error) {
+	req, err := http.NewRequest("GET", pkg.URL, nil)
+	if err != nil {
+		return 0, err
+	}
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return 0, err
+	}
+	defer resp.Body.Close()
+
+	f, err := os.OpenFile(dst, os.O_CREATE|os.O_WRONLY, 0644)
+	if err != nil {
+		return 0, err
+	}
+	defer f.Close()
+
+	bar := progressbar.DefaultBytes(
+		resp.ContentLength,
+		fmt.Sprintf("downloading %s", path.Base(dst)),
+	)
+
+	// write bytes from steam
+	size, err = io.Copy(io.MultiWriter(f, bar), resp.Body)
+	if err != nil || size <= 0 {
+		return 0, NewDownloadError(pkg.URL, err)
+	}
+
+	return size, err
 }
 
 // DownloadError 下载失败错误
