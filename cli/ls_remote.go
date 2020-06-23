@@ -21,12 +21,7 @@ func listRemote(ctx *cli.Context) (err error) {
 		return cli.ShowSubcommandHelp(ctx)
 	}
 
-	var url string
-	if url = os.Getenv("G_MIRROR"); url == "" {
-		url = version.DefaultURL
-	}
-
-	c, err := version.NewCollector(url)
+	c, err := version.NewCollector(version.RankedURL())
 	if err != nil {
 		return cli.NewExitError(errstring(err), 1)
 	}

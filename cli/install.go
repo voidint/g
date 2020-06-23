@@ -2,7 +2,6 @@ package cli
 
 import (
 	"fmt"
-	"github.com/mholt/archiver"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -10,6 +9,7 @@ import (
 	ct "github.com/daviddengcn/go-colortext"
 	"github.com/dixonwille/wlog/v3"
 	"github.com/dixonwille/wmenu/v5"
+	"github.com/mholt/archiver"
 	"github.com/urfave/cli"
 	"github.com/voidint/g/version"
 )
@@ -26,13 +26,8 @@ func install(ctx *cli.Context) (err error) {
 		return cli.NewExitError(fmt.Sprintf("[g] %q version has been installed.", vname), 1)
 	}
 
-	var url string
-	if url = os.Getenv("G_MIRROR"); url == "" {
-		url = version.DefaultURL
-	}
-
 	// 查找版本
-	c, err := version.NewCollector(url)
+	c, err := version.NewCollector(version.RankedURL())
 	if err != nil {
 		return cli.NewExitError(errstring(err), 1)
 	}
