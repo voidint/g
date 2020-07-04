@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	stdurl "net/url"
 	"strings"
 	"time"
 
@@ -61,14 +62,21 @@ func (e *URLUnreachableError) Error() string {
 
 // Collector go版本信息采集器
 type Collector struct {
-	url string
-	doc *goquery.Document
+	url  string
+	pURL *stdurl.URL
+	doc  *goquery.Document
 }
 
 // NewCollector 返回采集器实例
 func NewCollector(url string) (*Collector, error) {
+	pURL, err := stdurl.Parse(url)
+	if err != nil {
+		return nil, err
+	}
+
 	c := Collector{
-		url: url,
+		url:  url,
+		pURL: pURL,
 	}
 	if err := c.loadDocument(); err != nil {
 		return nil, err
@@ -94,9 +102,13 @@ func (c *Collector) findPackages(table *goquery.Selection) (pkgs []*Package) {
 
 	table.Find("tr").Not(".first").Each(func(j int, tr *goquery.Selection) {
 		td := tr.Find("td")
+		href := td.Eq(0).Find("a").AttrOr("href", "")
+		if strings.HasPrefix(href, "/") { // relative paths
+			href = fmt.Sprintf("%s://%s%s", c.pURL.Scheme, c.pURL.Host, href)
+		}
 		pkgs = append(pkgs, &Package{
 			FileName:  td.Eq(0).Find("a").Text(),
-			URL:       td.Eq(0).Find("a").AttrOr("href", ""),
+			URL:       href,
 			Kind:      td.Eq(1).Text(),
 			OS:        td.Eq(2).Text(),
 			Arch:      td.Eq(3).Text(),

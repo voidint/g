@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -e
 
-get_arch() {
+function get_arch() {
     a=$(uname -m)
     case ${a} in
     "x86_64" | "amd64" )
@@ -10,21 +10,25 @@ get_arch() {
     "i386" | "i486" | "i586")
         echo "386"
         ;;
+    "aarch64" | "arm64")
+        echo "arm64"
+        ;;
     *)
         echo ${NIL}
         ;;
     esac
 }
 
-get_os(){
+function get_os(){
     echo $(uname -s | awk '{print tolower($0)}')
 }
 
 main() {
+    local release="1.1.3"
     local os=$(get_os)
     local arch=$(get_arch)
-    local dest_file="${HOME}/g1.1.2.${os}-${arch}.tar.gz"
-    local url="https://github.com/voidint/g/releases/download/v1.1.2/g1.1.2.${os}-${arch}.tar.gz"
+    local dest_file="${HOME}/g${release}.${os}-${arch}.tar.gz"
+    local url="https://github.com/voidint/g/releases/download/v${release}/g${release}.${os}-${arch}.tar.gz"
 
     echo "[1/3] Download ${url}"
     rm -f ${dest_file}
