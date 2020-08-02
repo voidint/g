@@ -13,7 +13,7 @@ var (
 		{
 			Name:      "ls-remote",
 			Usage:     "List remote versions available for install",
-			UsageText: "g ls-remote [stable|archived]",
+			UsageText: "g ls-remote [stable|archived|unstable]",
 			Action:    listRemote,
 		},
 		{
