@@ -3,8 +3,10 @@ package version
 import (
 	"fmt"
 	"net/http"
+	"os"
 	stdurl "net/url"
 	"strings"
+	"time"
 
 	"github.com/PuerkitoBio/goquery"
 )
@@ -12,6 +14,7 @@ import (
 const (
 	// DefaultURL 提供go版本信息的默认网址
 	DefaultURL = "https://golang.org/dl/"
+	MirrorURL  = "https://golang.google.cn/dl/"
 )
 
 // URLUnreachableError URL不可达错误
@@ -26,6 +29,26 @@ func NewURLUnreachableError(url string, err error) error {
 		err: err,
 		url: url,
 	}
+}
+
+func RankedURL() string {
+	if tmp := strings.TrimSpace(os.Getenv("G_MIRROR")); len(tmp) > 0 {
+		return tmp
+	}
+
+	var (
+		client = http.Client{
+			Timeout: 2 * time.Second,
+		}
+		url = DefaultURL
+	)
+
+	resp, err := client.Get(url)
+	if err != nil || (resp != nil && resp.StatusCode != http.StatusOK) {
+		url = MirrorURL
+	}
+
+	return url
 }
 
 func (e *URLUnreachableError) Error() string {
