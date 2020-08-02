@@ -12,7 +12,7 @@ import (
 	"path"
 	"strings"
 
-	progressbar "github.com/schollz/progressbar/v3"
+	"github.com/schollz/progressbar/v3"
 )
 
 // ErrVersionNotFound 版本不存在

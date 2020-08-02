@@ -26,13 +26,7 @@ var (
 			Name:      "install",
 			Usage:     "Download and install a version",
 			UsageText: "g install <version>",
-			Flags: []cli.Flag{
-				cli.BoolFlag{
-					Name:  "progress,p",
-					Usage: "install package while showing progress bar",
-				},
-			},
-			Action: install,
+			Action:    install,
 		},
 		{
 			Name:      "uninstall",

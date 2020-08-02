@@ -26,8 +26,13 @@ func install(ctx *cli.Context) (err error) {
 		return cli.NewExitError(fmt.Sprintf("[g] %q version has been installed.", vname), 1)
 	}
 
+	var url string
+	if url = os.Getenv("G_MIRROR"); url == "" {
+		url = version.DefaultURL
+	}
+
 	// 查找版本
-	c, err := version.NewCollector(version.RankedURL())
+	c, err := version.NewCollector(url)
 	if err != nil {
 		return cli.NewExitError(errstring(err), 1)
 	}
@@ -81,12 +86,7 @@ func install(ctx *cli.Context) (err error) {
 
 	if _, err = os.Stat(filename); os.IsNotExist(err) {
 		// 本地不存在安装包，从远程下载并检查校验和。
-		var fn = pkg.Download
-		if ctx.Bool("progress") {
-			fn = pkg.DownloadWithProgress
-		}
-
-		if _, err = fn(filename); err != nil {
+		if _, err = pkg.DownloadWithProgress(filename); err != nil {
 			return cli.NewExitError(errstring(err), 1)
 		}
 

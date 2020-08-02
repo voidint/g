@@ -1,6 +1,6 @@
 module github.com/voidint/g
 
-go 1.12
+go 1.14
 
 require (
 	github.com/Masterminds/semver v1.5.0
