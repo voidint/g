@@ -6,7 +6,7 @@
 [![codebeat badge](https://codebeat.co/badges/0b4bf243-95da-444c-b163-6cb8a35d1f8d)](https://codebeat.co/projects/github-com-voidint-g-master)
 [![Go Report Card](https://goreportcard.com/badge/github.com/voidint/g)](https://goreportcard.com/report/github.com/voidint/g)
 
-注意：`master`分支可能处于开发之中并**非稳定版本**，请通过tag下载稳定版本的源代码，或通过[release](https://github.com/voidint/g/releases)下载已编译的二进制可执行文件。
+**注意：**`master`分支可能处于开发之中并**非稳定版本**，请通过tag下载稳定版本的源代码，或通过[release](https://github.com/voidint/g/releases)下载已编译的二进制可执行文件。
 
 
 `g`是一个Linux、macOS、Windows下的命令行工具，可以提供一个便捷的多版本[go](https://golang.org/)环境的管理和切换。
@@ -27,7 +27,7 @@
 
     ```shell
     # 建议安装前清空`GOROOT`、`GOBIN`等环境变量
-    $ wget -qO- https://raw.githubusercontent.com/voidint/g/master/install.sh | bash
+    $ curl -L https://raw.githubusercontent.com/voidint/g/master/install.sh | bash
     $ echo "unalias g" >> ~/.bashrc # 可选。若其他程序（如'git'）使用了'g'作为别名。
     $ source ~/.bashrc # 或者 source ~/.zshrc
     ```
