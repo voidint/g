@@ -4,7 +4,7 @@ set -e
 function get_arch() {
     a=$(uname -m)
     case ${a} in
-    "x86_64" | "amd64" )
+    "x86_64" | "amd64")
         echo "amd64"
         ;;
     "i386" | "i486" | "i586")
@@ -19,7 +19,7 @@ function get_arch() {
     esac
 }
 
-function get_os(){
+function get_os() {
     echo $(uname -s | awk '{print tolower($0)}')
 }
 
@@ -30,14 +30,13 @@ main() {
     local dest_file="${HOME}/g${release}.${os}-${arch}.tar.gz"
     local url="https://github.com/voidint/g/releases/download/v${release}/g${release}.${os}-${arch}.tar.gz"
 
-    echo "[1/3] Download ${url}"
+    echo "[1/3] Downloading ${url}"
     rm -f "${dest_file}"
     if [ -x "$(command -v wget)" ]; then
         wget -q -P "${HOME}" "${url}"
     else
-        curl -L -o "${HOME}/g${release}.${os}-${arch}.tar.gz" "${url}"
+        curl -L -o "${dest_file}" "${url}"
     fi
-    chmod +x "${dest_file}"
 
     echo "[2/3] Install g to the ${HOME}/bin"
     mkdir -p "${HOME}/bin"
@@ -46,20 +45,24 @@ main() {
 
     echo "[3/3] Set environment variables"
     if [ -x "$(command -v bash)" ]; then
-        cat >> ${HOME}/.bashrc <<'EOF'
+        cat >>${HOME}/.bashrc <<-'EOF'
+
         # ===== set g environment variables =====
         export GOROOT="${HOME}/.g/go"
         export PATH="${HOME}/bin:${HOME}/.g/go/bin:$PATH"
         export G_MIRROR=https://golang.google.cn/dl/
+
 EOF
     fi
 
     if [ -x "$(command -v zsh)" ]; then
-        cat >> ${HOME}/.zshrc <<'EOF'
+        cat >>${HOME}/.zshrc <<-'EOF'
+
         # ===== set g environment variables =====
         export GOROOT="${HOME}/.g/go"
         export PATH="${HOME}/bin:${HOME}/.g/go/bin:$PATH"
         export G_MIRROR=https://golang.google.cn/dl/
+
 EOF
     fi
     exit 0
