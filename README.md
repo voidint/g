@@ -38,7 +38,7 @@
 - 编辑shell环境配置文件（`~/.bashrc`、`~/.zshrc`...）
 
     ```shell
-    $ cat>>~/.bashrc<<EOF
+    $ cat>>~/.bashrc<<'EOF'
     export GOROOT="${HOME}/.g/go"
     export PATH="${HOME}/.g/go/bin:$PATH"
     export G_MIRROR=https://golang.google.cn/dl/
