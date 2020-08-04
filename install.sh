@@ -35,7 +35,7 @@ main() {
     if [ -x "$(command -v wget)" ]; then
         wget -q -P "${HOME}" "${url}"
     else
-        curl -L -o "${dest_file}" "${url}"
+        curl -s -S -L -o "${dest_file}" "${url}"
     fi
 
     echo "[2/3] Install g to the ${HOME}/bin"
@@ -46,25 +46,22 @@ main() {
     echo "[3/3] Set environment variables"
     if [ -x "$(command -v bash)" ]; then
         cat >>${HOME}/.bashrc <<-'EOF'
-
-        # ===== set g environment variables =====
-        export GOROOT="${HOME}/.g/go"
-        export PATH="${HOME}/bin:${HOME}/.g/go/bin:$PATH"
-        export G_MIRROR=https://golang.google.cn/dl/
-
-EOF
+		# ===== set g environment variables =====
+		export GOROOT="${HOME}/.g/go"
+		export PATH="${HOME}/bin:${HOME}/.g/go/bin:$PATH"
+		export G_MIRROR=https://golang.google.cn/dl/
+		EOF
     fi
 
     if [ -x "$(command -v zsh)" ]; then
         cat >>${HOME}/.zshrc <<-'EOF'
-
-        # ===== set g environment variables =====
-        export GOROOT="${HOME}/.g/go"
-        export PATH="${HOME}/bin:${HOME}/.g/go/bin:$PATH"
-        export G_MIRROR=https://golang.google.cn/dl/
-
-EOF
+		# ===== set g environment variables =====
+		export GOROOT="${HOME}/.g/go"
+		export PATH="${HOME}/bin:${HOME}/.g/go/bin:$PATH"
+		export G_MIRROR=https://golang.google.cn/dl/
+		EOF
     fi
+
     exit 0
 }
 
