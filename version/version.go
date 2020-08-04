@@ -11,7 +11,9 @@ import (
 	"os"
 	"path"
 	"strings"
+	"time"
 
+	"github.com/k0kubun/go-ansi"
 	"github.com/schollz/progressbar/v3"
 )
 
@@ -86,7 +88,7 @@ const (
 	InstallerKind = "Installer"
 )
 
-// Download 下载版本另存为指定文件并校验sha256哈希值
+// Download 下载版本另存为指定文件
 func (pkg *Package) Download(dst string) (size int64, err error) {
 	resp, err := http.Get(pkg.URL)
 	if err != nil {
@@ -95,7 +97,7 @@ func (pkg *Package) Download(dst string) (size int64, err error) {
 	defer resp.Body.Close()
 	f, err := os.Create(dst)
 	if err != nil {
-		return 0, err
+		return 0, NewDownloadError(pkg.URL, err)
 	}
 	defer f.Close()
 	size, err = io.Copy(f, resp.Body)
@@ -105,37 +107,41 @@ func (pkg *Package) Download(dst string) (size int64, err error) {
 	return size, nil
 }
 
-// DownloadWithProgress downloading file form specified url with verbosely progress bar
+// DownloadWithProgress 下载版本另存为指定文件且显示下载进度
 func (pkg *Package) DownloadWithProgress(dst string) (size int64, err error) {
-	req, err := http.NewRequest("GET", pkg.URL, nil)
+	resp, err := http.Get(pkg.URL)
 	if err != nil {
-		return 0, err
-	}
-
-	resp, err := http.DefaultClient.Do(req)
-	if err != nil {
-		return 0, err
+		return 0, NewDownloadError(pkg.URL, err)
 	}
 	defer resp.Body.Close()
 
 	f, err := os.OpenFile(dst, os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
-		return 0, err
+		return 0, NewDownloadError(pkg.URL, err)
 	}
 	defer f.Close()
 
-	bar := progressbar.DefaultBytes(
+	bar := progressbar.NewOptions64(
 		resp.ContentLength,
-		fmt.Sprintf("downloading %s", path.Base(dst)),
+		progressbar.OptionSetDescription(fmt.Sprintf("Downloading %s", path.Base(dst))),
+		progressbar.OptionSetWriter(ansi.NewAnsiStdout()),
+		progressbar.OptionShowBytes(true),
+		progressbar.OptionThrottle(65*time.Millisecond),
+		progressbar.OptionShowCount(),
+		progressbar.OptionOnCompletion(func() {
+			fmt.Fprint(ansi.NewAnsiStdout(), "\n")
+		}),
+		// progressbar.OptionSpinnerType(70),
+		// progressbar.OptionSetWidth(10),
+		// progressbar.OptionFullWidth(),
 	)
+	bar.RenderBlank()
 
-	// write bytes from steam
 	size, err = io.Copy(io.MultiWriter(f, bar), resp.Body)
-	if err != nil || size <= 0 {
-		return 0, NewDownloadError(pkg.URL, err)
+	if err != nil {
+		return size, NewDownloadError(pkg.URL, err)
 	}
-
-	return size, err
+	return size, nil
 }
 
 // DownloadError 下载失败错误
