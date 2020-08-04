@@ -90,11 +90,13 @@ func install(ctx *cli.Context) (err error) {
 			return cli.NewExitError(errstring(err), 1)
 		}
 
+		fmt.Println("Verify checksum")
 		if err = pkg.VerifyChecksum(filename); err != nil {
 			return cli.NewExitError(errstring(err), 1)
 		}
 	} else {
 		// 本地存在安装包，检查校验和。
+		fmt.Println("Verify checksum")
 		if err = pkg.VerifyChecksum(filename); err != nil {
 			_ = os.Remove(filename)
 			return cli.NewExitError(errstring(err), 1)

@@ -13,6 +13,7 @@ require (
 	github.com/frankban/quicktest v1.9.0 // indirect
 	github.com/golang/snappy v0.0.1 // indirect
 	github.com/gopherjs/gopherjs v0.0.0-20200217142428-fce0ec30dd00 // indirect
+	github.com/k0kubun/go-ansi v0.0.0-20180517002512-3bf9e2903213
 	github.com/mholt/archiver v3.1.1+incompatible
 	github.com/nwaples/rardecode v1.1.0 // indirect
 	github.com/pierrec/lz4 v2.5.2+incompatible // indirect
