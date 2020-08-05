@@ -4,7 +4,7 @@ set -e
 function get_arch() {
     a=$(uname -m)
     case ${a} in
-    "x86_64" | "amd64" )
+    "x86_64" | "amd64")
         echo "amd64"
         ;;
     "i386" | "i486" | "i586")
@@ -19,15 +19,15 @@ function get_arch() {
     esac
 }
 
-function get_os(){
+function get_os() {
     echo $(uname -s | awk '{print tolower($0)}')
 }
 
-function package(){
+function package() {
     printf "============Pakcage for %s============\n" $3
     local rootdir=${1}
     local release=${2}
-    local osarch=(${3//_/ }) 
+    local osarch=(${3//_/ })
     local os=${osarch[0]}
     local arch=${osarch[1]}
 
@@ -35,8 +35,7 @@ function package(){
     GOOS=${os} GOARCH=${arch} gbb
 
     local bindir=""
-    if [ $(get_os) = ${os} ] && [ $(get_arch) = ${arch} ]
-    then
+    if [ $(get_os) = ${os} ] && [ $(get_arch) = ${arch} ]; then
         bindir=$GOPATH/bin
     else
         bindir=$GOPATH/bin/${os}_${arch}
@@ -45,8 +44,7 @@ function package(){
     cd ${bindir}
 
     printf "[3/4] Package\n"
-    if [ ${os} == "windows" ]
-    then 
+    if [ ${os} == "windows" ]; then
         zip $rootdir/g${release}.${os}-${arch}.zip ./g.exe
     else
         tar -czv -f $rootdir/g${release}.${os}-${arch}.tar.gz ./g
@@ -56,8 +54,7 @@ function package(){
     cd ${rootdir}
 }
 
-
-main(){
+main() {
     export CGO_ENABLED="0"
     export GO111MODULE="on"
     export GOPROXY="https://goproxy.cn,direct"
@@ -65,9 +62,7 @@ main(){
     local release="1.1.3"
     local rootdir="$(pwd)"
 
-
-    for item in "darwin_amd64" "linux_386" "linux_amd64" "linux_arm" "linux_arm64" "windows_386" "windows_amd64"
-    do 
+    for item in "darwin_amd64" "linux_386" "linux_amd64" "linux_arm" "linux_arm64" "windows_386" "windows_amd64"; do
         package ${rootdir} ${release} ${item}
     done
 }
