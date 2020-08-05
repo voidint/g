@@ -34,5 +34,11 @@ var (
 			UsageText: "g uninstall <version>",
 			Action:    uninstall,
 		},
+		{
+			Name:      "clean",
+			Usage:     "Remove files from the package download directory",
+			UsageText: "g clean",
+			Action:    clean,
+		},
 	}
 )
