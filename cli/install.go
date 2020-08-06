@@ -90,18 +90,20 @@ func install(ctx *cli.Context) (err error) {
 			return cli.NewExitError(errstring(err), 1)
 		}
 
-		fmt.Println("Verify checksum")
+		fmt.Println("Computing checksum with", pkg.Algorithm)
 		if err = pkg.VerifyChecksum(filename); err != nil {
 			return cli.NewExitError(errstring(err), 1)
 		}
 	} else {
 		// 本地存在安装包，检查校验和。
-		fmt.Println("Verify checksum")
+		fmt.Println("Computing checksum with", pkg.Algorithm)
 		if err = pkg.VerifyChecksum(filename); err != nil {
 			_ = os.Remove(filename)
 			return cli.NewExitError(errstring(err), 1)
 		}
 	}
+	fmt.Println("Checksums matched")
+
 	// 删除可能存在的历史垃圾文件
 	_ = os.RemoveAll(filepath.Join(versionsDir, "go"))
 
@@ -119,6 +121,6 @@ func install(ctx *cli.Context) (err error) {
 	if err := os.Symlink(targetV, goroot); err != nil {
 		return cli.NewExitError(errstring(err), 1)
 	}
-	fmt.Println("Installed successfully")
+	fmt.Printf("Now using go%s\n", v.Name)
 	return nil
 }

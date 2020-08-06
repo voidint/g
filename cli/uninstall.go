@@ -22,6 +22,6 @@ func uninstall(ctx *cli.Context) (err error) {
 	if err := os.RemoveAll(targetV); err != nil {
 		return cli.NewExitError(wrapstring(fmt.Sprintf("Uninstall failed: %s", err.Error())), 1)
 	}
-	fmt.Println("Uninstall successfully")
+	fmt.Printf("Uninstalled go%s\n", vname)
 	return nil
 }

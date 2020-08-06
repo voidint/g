@@ -9,7 +9,6 @@ import (
 	"io"
 	"net/http"
 	"os"
-	"path"
 	"strings"
 	"time"
 
@@ -123,7 +122,8 @@ func (pkg *Package) DownloadWithProgress(dst string) (size int64, err error) {
 
 	bar := progressbar.NewOptions64(
 		resp.ContentLength,
-		progressbar.OptionSetDescription(fmt.Sprintf("Downloading %s", path.Base(dst))),
+		progressbar.OptionSetWidth(15),
+		progressbar.OptionSetDescription("Downloading"),
 		progressbar.OptionSetWriter(ansi.NewAnsiStdout()),
 		progressbar.OptionShowBytes(true),
 		progressbar.OptionThrottle(65*time.Millisecond),
@@ -131,8 +131,7 @@ func (pkg *Package) DownloadWithProgress(dst string) (size int64, err error) {
 		progressbar.OptionOnCompletion(func() {
 			fmt.Fprint(ansi.NewAnsiStdout(), "\n")
 		}),
-		// progressbar.OptionSpinnerType(70),
-		// progressbar.OptionSetWidth(10),
+		// progressbar.OptionSpinnerType(35),
 		// progressbar.OptionFullWidth(),
 	)
 	bar.RenderBlank()
