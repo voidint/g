@@ -27,15 +27,15 @@
 
     ```shell
     # 建议安装前清空`GOROOT`、`GOBIN`等环境变量
-    $ curl -s -S -L https://raw.githubusercontent.com/voidint/g/master/install.sh | bash
+    $ curl -sSL https://raw.githubusercontent.com/voidint/g/master/install.sh | bash
     $ echo "unalias g" >> ~/.bashrc # 可选。若其他程序（如'git'）使用了'g'作为别名。
     $ source ~/.bashrc # 或者 source ~/.zshrc
     ```
 
 ### 手动安装
-- 下载对应平台的[二进制压缩包](https://github.com/voidint/g/releases)。
-- 将压缩包解压至`PATH`环境变量目录下，如`/usr/local/bin`。
-- 编辑shell环境配置文件（`~/.bashrc`、`~/.zshrc`...）
+- 下载[release](https://github.com/voidint/g/releases)的二进制压缩包
+- 将压缩包解压至`PATH`环境变量目录下（如`/usr/local/bin`）
+- 编辑shell环境配置文件（如`~/.bashrc`、`~/.zshrc`...）
 
     ```shell
     $ cat>>~/.bashrc<<'EOF'
@@ -44,23 +44,28 @@
     export G_MIRROR=https://golang.google.cn/dl/
     EOF
     ```
+- 启用环境变量
+    ```shell
+    $ source ~/.bashrc # 或source ~/.zshrc
+    ```
 
 ## 使用
 查询当前可供安装的`stable`状态的go版本
 
 ```shell
 $ g ls-remote stable
-  1.11.9
-  1.12.4
+  1.13.15
+  1.14.7
 ```
 
-安装目标go版本`1.12.4`
+安装目标go版本`1.14.7`
 
 ```shell
-$ g install 1.12.4
-Installed successfully
-$ go version
-go version go1.12.4 darwin/amd64
+$ g install 1.14.7
+Downloading 100% |███████████████| (119/119 MB, 9.939 MB/s) [12s:0s]
+Computing checksum with SHA256
+Checksums matched
+Now using go1.14.7
 ```
 
 
@@ -68,7 +73,12 @@ go version go1.12.4 darwin/amd64
 
 ```shell
 $ g ls
-* 1.12.4
+  1.7.6
+  1.11.13
+  1.12.17
+  1.13.15
+  1.14.6
+* 1.14.7
 ```
 
 查询可供安装的所有go版本
@@ -80,41 +90,25 @@ $ g ls-remote
   1.3
   1.3.1
   ...    // 省略若干版本
-  1.11.7
-  1.11.8
-  1.11.9
-  1.12
-  1.12.1
-  1.12.2
-  1.12.3
-* 1.12.4
+  1.14.5
+  1.14.6
+* 1.14.7
+  1.15rc1
 ```
 
-安装目标go版本`1.11.9`
-
-```shell
-$ g install 1.11.9
-Installed successfully
-$ go version
-go version go1.11.9 darwin/amd64
-```
 
 切换到另一个已安装的go版本
 
 ```shell
-$ g ls
-* 1.11.9
-  1.12.4
-$ g use 1.12.4
-go version go1.12.4 darwin/amd64
-
+$ g use 1.14.6
+go version go1.14.6 darwin/amd64
 ```
 
 卸载一个已安装的go版本
 
 ```shell
-g uninstall 1.11.9
-Uninstall successfully
+$ g uninstall 1.14.7
+Uninstalled go1.14.7
 ```
 ## FAQ
 - 环境变量`G_MIRROR`有什么作用？
