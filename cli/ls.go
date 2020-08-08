@@ -3,10 +3,10 @@ package cli
 import (
 	"fmt"
 	"io/ioutil"
-	"os"
 	"strings"
 
 	"github.com/Masterminds/semver"
+	"github.com/k0kubun/go-ansi"
 	"github.com/urfave/cli"
 )
 
@@ -42,6 +42,6 @@ func list(ctx *cli.Context) (err error) {
 		items = append(items, v)
 	}
 
-	render(inuse(goroot), items, os.Stdout)
+	render(inuse(goroot), items, ansi.NewAnsiStdout())
 	return nil
 }
