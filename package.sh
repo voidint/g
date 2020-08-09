@@ -59,7 +59,7 @@ main() {
     export GO111MODULE="on"
     export GOPROXY="https://goproxy.cn,direct"
 
-    local release="1.1.3"
+    local release="1.2.0"
     local rootdir="$(pwd)"
 
     for item in "darwin_amd64" "linux_386" "linux_amd64" "linux_arm" "linux_arm64" "windows_386" "windows_amd64"; do
