@@ -11,7 +11,7 @@
 
 `g`是一个Linux、macOS、Windows下的命令行工具，可以提供一个便捷的多版本[go](https://golang.org/)环境的管理和切换。
 
-[![asciicast](https://asciinema.org/a/zB8o8Sy4ZtgpAOvLEfZLOehcK.svg)](https://asciinema.org/a/zB8o8Sy4ZtgpAOvLEfZLOehcK)
+[![asciicast](https://asciinema.org/a/356685.svg)](https://asciinema.org/a/356685)
 
 ## 特性
 - 支持列出可供安装的go版本号
