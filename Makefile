@@ -1,7 +1,7 @@
 .PHONY: build clean test
 
 GO111MODULE=on
-GOPROXY="https://goproxy.cn,direct"
+GOPROXY=https://goproxy.cn,direct
 
 BIN=g
 DIR_SRC=.
