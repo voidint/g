@@ -1,26 +1,31 @@
-.PHONY: build clean test
+ifeq ("$(GOPATH)", "$(shell pwd)")
+    $(error Please clear the `GOPATH=$(GOPATH)` environment variable first)
+endif
 
 GO111MODULE=on
 GOPROXY=https://goproxy.cn,direct
 
-BIN=g
-DIR_SRC=.
+GO = CGO_ENABLED=0 go
+BUILD_DATE := $(shell date '+%Y-%m-%d %H:%M:%S')
+GIT_BRANCH := $(shell git symbolic-ref --short -q HEAD)
+GIT_COMMIT_HASH := $(shell git rev-parse --verify HEAD)
+GO_FLAGS := -v -ldflags="-X 'github.com/voidint/g/build.Build=$(BUILD_DATE)' -X 'github.com/voidint/g/build.Commit=$(GIT_COMMIT_HASH)' -X 'github.com/voidint/g/build.Branch=$(GIT_BRANCH)'"
 
-# GO_ENV=CGO_ENABLED=0
-GO_FLAGS=-ldflags="-X 'github.com/voidint/g/build.Build=`date '+%Y-%m-%d %H:%M:%S'`' -X 'github.com/voidint/g/build.Commit=`git rev-parse --verify HEAD`' -X 'github.com/voidint/g/build.Branch=`git symbolic-ref --short -q HEAD`' -extldflags"
 
-build:$(DIR_SRC)/main.go
+all: install test clean
+
+build:
 	@echo "GO111MODULE=$(GO111MODULE)"
 	@echo "GOPROXY=$(GOPROXY)"
-	go build $(GO_FLAGS) -o $(BIN) $(DIR_SRC)
+	$(GO) build $(GO_FLAGS)
 
 install: build
-	go install $(GO_FLAGS) $(DIR_SRC)
+	$(GO) install $(GO_FLAGS)
 
 test:
-	go test ./...
+	$(GO) test -v ./...
 
 clean:
-	go clean -x ./...
+	$(GO) clean -x
 
-all: clean build
+.PHONY: all build install test clean
