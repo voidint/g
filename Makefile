@@ -1,7 +1,4 @@
-ifeq ("$(GOPATH)", "$(shell pwd)")
-    $(error Please clear the `GOPATH=$(GOPATH)` environment variable first)
-endif
-
+GOPATH=
 GO111MODULE=on
 GOPROXY=https://goproxy.cn,direct
 
