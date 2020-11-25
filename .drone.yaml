@@ -1,0 +1,14 @@
+kind: pipeline
+name: default
+type: docker
+
+steps:
+  - name: build
+    image: golang:1.15.5
+    environment:
+      GITEA_TOKEN:
+        from_secret: gitea_token
+      GOPROXY: "https://mirrors.aliyun.com/goproxy,https://goproxy.cn,direct"
+    commands:
+      - make clean build
+      - ./g ls-remote
