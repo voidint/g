@@ -10,7 +10,7 @@ import (
 	"github.com/dixonwille/wlog/v3"
 	"github.com/dixonwille/wmenu/v5"
 	"github.com/mholt/archiver/v3"
-	"github.com/urfave/cli"
+	"github.com/urfave/cli/v2"
 	"github.com/voidint/g/version"
 )
 

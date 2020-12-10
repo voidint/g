@@ -6,7 +6,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/urfave/cli"
+	"github.com/urfave/cli/v2"
 )
 
 func clean(ctx *cli.Context) (err error) {

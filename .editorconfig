@@ -10,20 +10,12 @@ trim_trailing_whitespace = true
 
 [*.go]
 indent_style = tab
-indent_size = 4
+indent_size = 2
 
-[Dockerfile]
+[{Makefile, Dockerfile}]
 indent_style = tab
 indent_size = 4
 
-[Makefile]
-indent_style = tab
-indent_size = 4
-
-[.travis.yml]
+[.{yml, yaml, json}]
 indent_style = space
-indent_size = 4
-
-[*.json]
-indent_style = space
-indent_size = 4
+indent_size = 2

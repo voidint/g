@@ -9,8 +9,7 @@ require (
 	github.com/dixonwille/wlog/v3 v3.0.1
 	github.com/dixonwille/wmenu/v5 v5.0.0
 	github.com/fatih/color v1.9.0
-	github.com/frankban/quicktest v1.9.0 // indirect
-	github.com/gopherjs/gopherjs v0.0.0-20200217142428-fce0ec30dd00 // indirect
+	github.com/frankban/quicktest v1.11.2 // indirect
 	github.com/k0kubun/go-ansi v0.0.0-20180517002512-3bf9e2903213
 	github.com/mholt/archiver/v3 v3.3.0
 	github.com/nwaples/rardecode v1.1.0 // indirect
@@ -19,6 +18,6 @@ require (
 	github.com/smartystreets/assertions v1.1.0 // indirect
 	github.com/smartystreets/goconvey v1.6.4
 	github.com/ulikunitz/xz v0.5.7 // indirect
-	github.com/urfave/cli v1.22.4
+	github.com/urfave/cli/v2 v2.3.0
 	golang.org/x/net v0.0.0-20200505041828-1ed23360d12c // indirect
 )

@@ -6,7 +6,7 @@ import (
 
 	"github.com/Masterminds/semver"
 	"github.com/k0kubun/go-ansi"
-	"github.com/urfave/cli"
+	"github.com/urfave/cli/v2"
 	"github.com/voidint/g/version"
 )
 
