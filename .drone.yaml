@@ -10,5 +10,7 @@ steps:
         from_secret: gitea_token
       GOPROXY: "https://mirrors.aliyun.com/goproxy,https://goproxy.cn,direct"
     commands:
-      - make clean build
+      - make test
+      - make clean
+      - make build
       - ./g ls-remote
