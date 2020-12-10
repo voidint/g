@@ -27,9 +27,9 @@ func listRemote(ctx *cli.Context) (err error) {
 		url = version.DefaultURL
 	}
 
-	c, err := version.NewCollector(url)
+	c, err := version.NewCollector(ctx, url)
 	if err != nil {
-		return cli.NewExitError(errstring(err), 1)
+		return cli.Exit(errstring(err), 1)
 	}
 
 	var vs []*version.Version
@@ -44,7 +44,7 @@ func listRemote(ctx *cli.Context) (err error) {
 		vs, err = c.AllVersions()
 	}
 	if err != nil {
-		return cli.NewExitError(errstring(err), 1)
+		return cli.Exit(errstring(err), 1)
 	}
 
 	items := make([]*semver.Version, 0, len(vs))

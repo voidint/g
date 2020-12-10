@@ -2,11 +2,15 @@ package version
 
 import (
 	"fmt"
+	"github.com/PuerkitoBio/goquery"
+	"github.com/urfave/cli/v2"
+	"github.com/voidint/g/build"
+	"golang.org/x/net/proxy"
+	"log"
 	"net/http"
 	stdurl "net/url"
 	"strings"
-
-	"github.com/PuerkitoBio/goquery"
+	"time"
 )
 
 const (
@@ -39,22 +43,25 @@ func (e *URLUnreachableError) Error() string {
 
 // Collector go版本信息采集器
 type Collector struct {
-	url  string
-	pURL *stdurl.URL
-	doc  *goquery.Document
+	url        string
+	sock5Proxy string
+	pURL       *stdurl.URL
+	doc        *goquery.Document
 }
 
 // NewCollector 返回采集器实例
-func NewCollector(url string) (*Collector, error) {
+func NewCollector(ctx *cli.Context, url string) (*Collector, error) {
 	pURL, err := stdurl.Parse(url)
 	if err != nil {
 		return nil, err
 	}
 
 	c := Collector{
-		url:  url,
-		pURL: pURL,
+		url:        url,
+		pURL:       pURL,
+		sock5Proxy: ctx.String(build.FlagSock5Proxy),
 	}
+
 	if err := c.loadDocument(); err != nil {
 		return nil, err
 	}
@@ -62,7 +69,37 @@ func NewCollector(url string) (*Collector, error) {
 }
 
 func (c *Collector) loadDocument() (err error) {
-	resp, err := http.Get(c.url)
+	timeout := 60 * time.Second
+
+	// setup a http client
+	httpTransport := &http.Transport{
+		IdleConnTimeout: timeout,
+	}
+	httpClient := &http.Client{
+		Timeout:   timeout,
+		Transport: httpTransport,
+	}
+
+	// create a socks5 dialer
+	if c.sock5Proxy != "" {
+		dialer, err := proxy.SOCKS5("tcp", c.sock5Proxy, nil, proxy.Direct)
+		if err != nil {
+			return NewURLUnreachableError(c.url, err)
+		}
+
+		// set our socks5 as the dialer
+		if contextDialer, ok := dialer.(proxy.ContextDialer); ok {
+			log.Printf("Performing using socks5 proxy `%s`\n", c.sock5Proxy)
+			httpTransport.DialContext = contextDialer.DialContext
+			httpTransport.Proxy = http.ProxyFromEnvironment
+		} else {
+			return fmt.Errorf("%s get context dialer error", c.sock5Proxy)
+		}
+	}
+
+	// do requests
+	resp, err := httpClient.Get(c.url)
+
 	if err != nil {
 		return NewURLUnreachableError(c.url, err)
 	}

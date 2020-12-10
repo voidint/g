@@ -47,6 +47,15 @@ func Run() {
 
 	app.Commands = commands
 
+	app.Flags = []cli.Flag{
+		&cli.StringFlag{
+			Name:     build.FlagSock5Proxy,
+			Usage:    "Performing request using sock5 proxy, eg. `localhost:1080`",
+			Required: false,
+			EnvVars:  []string{"G_SOCKS5", "G_PROXY", "G_SOCK5_PROXY"},
+		},
+	}
+
 	if err := app.Run(os.Args); err != nil {
 		os.Exit(1)
 	}

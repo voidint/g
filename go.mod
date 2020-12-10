@@ -19,5 +19,5 @@ require (
 	github.com/smartystreets/goconvey v1.6.4
 	github.com/ulikunitz/xz v0.5.7 // indirect
 	github.com/urfave/cli/v2 v2.3.0
-	golang.org/x/net v0.0.0-20200505041828-1ed23360d12c // indirect
+	golang.org/x/net v0.0.0-20200505041828-1ed23360d12c
 )
