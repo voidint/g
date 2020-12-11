@@ -2,15 +2,15 @@ package version
 
 import (
 	"fmt"
-	"github.com/PuerkitoBio/goquery"
-	"github.com/urfave/cli/v2"
-	"github.com/voidint/g/build"
-	"golang.org/x/net/proxy"
 	"log"
 	"net/http"
 	stdurl "net/url"
 	"strings"
-	"time"
+
+	"github.com/PuerkitoBio/goquery"
+	"github.com/urfave/cli/v2"
+	"github.com/voidint/g/build"
+	"golang.org/x/net/proxy"
 )
 
 const (
@@ -69,14 +69,11 @@ func NewCollector(ctx *cli.Context, url string) (*Collector, error) {
 }
 
 func (c *Collector) loadDocument() (err error) {
-	timeout := 60 * time.Second
-
 	// setup a http client
 	httpTransport := &http.Transport{
-		IdleConnTimeout: timeout,
+		Proxy: http.ProxyFromEnvironment,
 	}
 	httpClient := &http.Client{
-		Timeout:   timeout,
 		Transport: httpTransport,
 	}
 
@@ -91,7 +88,6 @@ func (c *Collector) loadDocument() (err error) {
 		if contextDialer, ok := dialer.(proxy.ContextDialer); ok {
 			log.Printf("Performing using socks5 proxy `%s`\n", c.sock5Proxy)
 			httpTransport.DialContext = contextDialer.DialContext
-			httpTransport.Proxy = http.ProxyFromEnvironment
 		} else {
 			return fmt.Errorf("%s get context dialer error", c.sock5Proxy)
 		}
