@@ -5,7 +5,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/urfave/cli"
+	"github.com/urfave/cli/v2"
 )
 
 func uninstall(ctx *cli.Context) (err error) {
@@ -16,11 +16,11 @@ func uninstall(ctx *cli.Context) (err error) {
 	targetV := filepath.Join(versionsDir, vname)
 
 	if finfo, err := os.Stat(targetV); err != nil || !finfo.IsDir() {
-		return cli.NewExitError(fmt.Sprintf("[g] %q version is not installed", vname), 1)
+		return cli.Exit(fmt.Sprintf("[g] %q version is not installed", vname), 1)
 	}
 
 	if err := os.RemoveAll(targetV); err != nil {
-		return cli.NewExitError(wrapstring(fmt.Sprintf("Uninstall failed: %s", err.Error())), 1)
+		return cli.Exit(wrapstring(fmt.Sprintf("Uninstall failed: %s", err.Error())), 1)
 	}
 	fmt.Printf("Uninstalled go%s\n", vname)
 	return nil

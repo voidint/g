@@ -1,9 +1,9 @@
 package cli
 
-import "github.com/urfave/cli"
+import "github.com/urfave/cli/v2"
 
 var (
-	commands = []cli.Command{
+	commands = []*cli.Command{
 		{
 			Name:      "ls",
 			Usage:     "List installed versions",

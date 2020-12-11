@@ -1,4 +1,5 @@
 # g
+
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/voidint/g)
 [![Build Status](https://travis-ci.org/voidint/g.svg?branch=master)](https://travis-ci.org/voidint/g)
 [![GoDoc](https://godoc.org/github.com/voidint/g?status.svg)](https://godoc.org/github.com/voidint/g)
@@ -6,10 +7,10 @@
 [![codebeat badge](https://codebeat.co/badges/0b4bf243-95da-444c-b163-6cb8a35d1f8d)](https://codebeat.co/projects/github-com-voidint-g-master)
 [![Go Report Card](https://goreportcard.com/badge/github.com/voidint/g)](https://goreportcard.com/report/github.com/voidint/g)
 
-**注意：**`master`分支可能处于开发之中并**非稳定版本**，请通过tag下载稳定版本的源代码，或通过[release](https://github.com/voidint/g/releases)下载已编译的二进制可执行文件。
+**注意：<del>**`master`分支可能处于开发之中并**非稳定版本**，</del>请通过 tag 下载稳定版本的源代码，或通过 [release](https://github.com/voidint/g/releases) 下载已编译的二进制可执行文件。
 
 
-`g`是一个Linux、macOS、Windows下的命令行工具，可以提供一个便捷的多版本[go](https://golang.org/)环境的管理和切换。
+`g` 是 Linux、macOS、Windows 下的命令行工具，提供一个便捷的多版本 [Golang](https://golang.org/) 软件包下载以及开发环境的管理和切换。
 
 [![asciicast](https://asciinema.org/a/356685.svg)](https://asciinema.org/a/356685)
 
@@ -109,10 +110,16 @@ go version go1.14.6 darwin/amd64
 $ g uninstall 1.14.7
 Uninstalled go1.14.7
 ```
+
 ## FAQ
+
 - 环境变量`G_MIRROR`有什么作用？
 
     由于中国大陆无法自由访问Golang官网，导致查询及下载go版本都变得困难，因此可以通过该环境变量指定一个镜像站点（如`https://golang.google.cn/dl/`），g将从该站点查询、下载可用的go版本。
+
+- 如果在中国大陆还是无法访问怎么办？
+
+    由于某些众所周知的原因，在中国大陆有时访问 Golang 官网会比较困难。因此，g 加入全局的 `--sock5-proxy` 选项用于使用 sock5 代理访问，例如：使用 `g --sock5-proxy=localhost:1086 ls-remote` 即可通过本地的 1086 代理端口访问。
 
 - 支持哪些Windows版本？
 
