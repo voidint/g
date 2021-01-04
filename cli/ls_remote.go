@@ -23,7 +23,7 @@ func listRemote(ctx *cli.Context) (err error) {
 	}
 
 	var url string
-	if url = os.Getenv("G_MIRROR"); url == "" {
+	if url = os.Getenv(mirrorEnv); url == "" {
 		url = version.DefaultURL
 	}
 

@@ -5,7 +5,6 @@ import (
 	"io"
 	"os"
 	"path/filepath"
-	"runtime"
 	"sort"
 	"strings"
 
@@ -79,14 +78,19 @@ func init() {
 `, build.ShortVersion)
 }
 
+const (
+	experimentalEnv = "G_EXPERIMENTAL"
+	homeEnv         = "G_HOME"
+	mirrorEnv       = "G_MIRROR"
+)
+
 // ghome 返回g根目录
 func ghome() (dir string) {
-	if runtime.GOOS == "windows" {
-		if dir = os.Getenv("G_HOME"); dir != "" {
+	if experimental := os.Getenv(experimentalEnv); experimental == "true" {
+		if dir = os.Getenv(homeEnv); dir != "" {
 			return dir
 		}
 	}
-
 	homeDir, _ := os.UserHomeDir()
 	return filepath.Join(homeDir, ".g")
 }
