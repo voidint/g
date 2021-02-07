@@ -105,7 +105,7 @@ func inuse(goroot string) (version string) {
 func render(curV string, items []*semver.Version, out io.Writer) {
 	sort.Sort(semver.Collection(items))
 
-	for i := range items {
+	for i:=len(items)-1;i>=0;i-- {
 		fields := strings.SplitN(items[i].String(), "-", 2)
 		v := strings.TrimSuffix(strings.TrimSuffix(fields[0], ".0"), ".0")
 		if len(fields) > 1 {

@@ -47,7 +47,7 @@ func Test_render(t *testing.T) {
 		items := []*semver.Version{v0, v1, v2, v3}
 
 		render("1.8.1", items, &buf)
-		So(buf.String(), ShouldEqual, "  1.7\n* 1.8.1\n  1.11.11\n  1.13beta1\n")
+		So(buf.String(), ShouldEqual, "  1.13beta1\n  1.11.11\n* 1.8.1\n  1.7\n")
 	})
 }
 
