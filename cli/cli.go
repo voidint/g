@@ -27,7 +27,7 @@ func Run() {
 	app.Name = "g"
 	app.Usage = "Golang Version Manager"
 	app.Version = build.Version()
-	app.Copyright = "Copyright (c) 2019-2020, voidint. All rights reserved."
+	app.Copyright = "Copyright (c) 2019-2021, voidint. All rights reserved."
 	app.Authors = []cli.Author{{Name: "voidint", Email: "voidint@126.com"}}
 
 	app.Before = func(ctx *cli.Context) (err error) {
