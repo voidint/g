@@ -5,7 +5,6 @@ import (
 	"io"
 	"os"
 	"path/filepath"
-	"runtime"
 	"sort"
 	"strings"
 
@@ -28,11 +27,8 @@ func Run() {
 	app.Name = "g"
 	app.Usage = "Golang Version Manager"
 	app.Version = build.Version()
-	app.Copyright = "Copyright (c) 2019-2020, voidint. All rights reserved."
-	app.Authors = []*cli.Author{
-		{Name: "voidint", Email: "voidint@126.com"},
-		{Name: "mingcheng", Email: "mingcheng@outlook.com"},
-	}
+	app.Copyright = "Copyright (c) 2019-2021, voidint. All rights reserved."
+	app.Authors = []cli.Author{{Name: "voidint", Email: "voidint@126.com"}}
 
 	app.Before = func(ctx *cli.Context) (err error) {
 		ghomeDir = ghome()
@@ -92,14 +88,19 @@ func init() {
 `, build.ShortVersion)
 }
 
+const (
+	experimentalEnv = "G_EXPERIMENTAL"
+	homeEnv         = "G_HOME"
+	mirrorEnv       = "G_MIRROR"
+)
+
 // ghome 返回g根目录
 func ghome() (dir string) {
-	if runtime.GOOS == "windows" {
-		if dir = os.Getenv("G_HOME"); dir != "" {
+	if experimental := os.Getenv(experimentalEnv); experimental == "true" {
+		if dir = os.Getenv(homeEnv); dir != "" {
 			return dir
 		}
 	}
-
 	homeDir, _ := os.UserHomeDir()
 	return filepath.Join(homeDir, ".g")
 }

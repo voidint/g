@@ -1,8 +1,4 @@
-GOPATH=
-GO111MODULE=on
-GOPROXY=https://goproxy.cn,direct
-
-GO = CGO_ENABLED=0 go
+GO = CGO_ENABLED=0 GO111MODULE=on GOPROXY=https://goproxy.cn,direct go
 BUILD_DATE := $(shell date '+%Y-%m-%d %H:%M:%S')
 GIT_BRANCH := $(shell git symbolic-ref --short -q HEAD)
 GIT_COMMIT_HASH := $(shell git rev-parse --verify HEAD)
@@ -12,8 +8,6 @@ GO_FLAGS := -v -ldflags="-X 'github.com/voidint/g/build.Build=$(BUILD_DATE)' -X 
 all: install test clean
 
 build:
-	@echo "GO111MODULE=$(GO111MODULE)"
-	@echo "GOPROXY=$(GOPROXY)"
 	$(GO) build $(GO_FLAGS)
 
 install: build
