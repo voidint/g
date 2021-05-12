@@ -28,7 +28,10 @@ func Run() {
 	app.Usage = "Golang Version Manager"
 	app.Version = build.Version()
 	app.Copyright = "Copyright (c) 2019-2021, voidint. All rights reserved."
-	app.Authors = []cli.Author{{Name: "voidint", Email: "voidint@126.com"}}
+	app.Authors = []*cli.Author{
+		{Name: "voidint\t", Email: "voidint@126.com"},
+		{Name: "mingcheng\t", Email: "mingcheng@outlook.com"},
+	}
 
 	app.Before = func(ctx *cli.Context) (err error) {
 		ghomeDir = ghome()
