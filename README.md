@@ -109,6 +109,13 @@ go version go1.14.6 darwin/amd64
 $ g uninstall 1.14.7
 Uninstalled go1.14.7
 ```
+
+## 环境变量
+|  name   | default  | description|
+|  ----  | ----  | ---- |
+| G_HOME  | /usr/local/g |  g 安装位置 自动安转脚本运行前设置会使用此安转位置   |
+| G_MIRROR  |  |   Golang Downloads Mirrors  自动安转脚本运行前设置会使用此镜像地址下载 go  |
+
 ## FAQ
 - 环境变量`G_MIRROR`有什么作用？
 
