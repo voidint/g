@@ -13,3 +13,5 @@
 
 .vscode
 .idea
+bin
+dest
