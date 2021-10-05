@@ -24,34 +24,21 @@ function get_os() {
 }
 
 function package() {
-    printf "============Pakcage for %s============\n" $3
-    local rootdir=${1}
-    local release=${2}
-    local osarch=(${3//_/ })
+    printf "============Pakcage for %s============\n" $2
+    local release=${1}
+    local osarch=(${2//_/ })
     local os=${osarch[0]}
     local arch=${osarch[1]}
 
-    printf "[1/4] Cross compile@%s_%s\n" ${os} ${arch}
+    printf "[1/2] Cross compile@%s_%s\n" ${os} ${arch}
     GOOS=${os} GOARCH=${arch} gbb
 
-    local bindir=""
-    if [ $(get_os) = ${os} ] && [ $(get_arch) = ${arch} ]; then
-        bindir=$GOPATH/bin
-    else
-        bindir=$GOPATH/bin/${os}_${arch}
-    fi
-    printf "[2/4] Change directory to %s\n" ${bindir}
-    cd ${bindir}
-
-    printf "[3/4] Package\n"
+    printf "[2/2] Package\n"
     if [ ${os} == "windows" ]; then
-        zip $rootdir/g${release}.${os}-${arch}.zip ./g.exe
+        zip g${release}.${os}-${arch}.zip ./g.exe
     else
-        tar -czv -f $rootdir/g${release}.${os}-${arch}.tar.gz ./g
+        tar -czv -f g${release}.${os}-${arch}.tar.gz ./g
     fi
-
-    printf "[4/4] Change directory to %s\n\n" ${rootdir}
-    cd ${rootdir}
 }
 
 main() {
@@ -59,12 +46,12 @@ main() {
     export GO111MODULE="on"
     export GOPROXY="https://goproxy.cn,direct"
 
-    local release="1.2.0"
-    local rootdir="$(pwd)"
+    local release="1.2.1"
 
-    for item in "darwin_amd64" "linux_386" "linux_amd64" "linux_arm" "linux_arm64" "windows_386" "windows_amd64"; do
-        package ${rootdir} ${release} ${item}
+    for item in "darwin_amd64" "darwin_arm64" "linux_386" "linux_amd64" "linux_arm" "linux_arm64" "windows_386" "windows_amd64" "windows_arm" "windows_arm64"; do
+        package ${release} ${item}
     done
+    go clean
 }
 
 main

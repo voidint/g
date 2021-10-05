@@ -1,6 +1,6 @@
 {
     "version": "0.6.1",
-    "tool": "go install -v -trimpath -ldflags '-s -w'",
+    "tool": "go build -v -trimpath -ldflags '-s -w'",
     "importpath": "github.com/voidint/g/build",
     "variables": [
         {
