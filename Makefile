@@ -49,5 +49,6 @@ test:
 
 clean:
 	$(GO) clean -x
+	rm -r bin
 
 .PHONY: all build install test clean build-linux build-darwin build-windows build-linux-386 build-linux-amd64 build-linux-arm build-linux-arm64 build-darwin-amd64 build-darwin-arm64 build-windows-386 build-windows-amd64 build-windows-arm build-windows-arm64
