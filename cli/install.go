@@ -3,6 +3,7 @@ package cli
 import (
 	"fmt"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"runtime"
 
@@ -118,9 +119,19 @@ func install(ctx *cli.Context) (err error) {
 	// 重新建立软链接
 	_ = os.Remove(goroot)
 
-	if err := os.Symlink(targetV, goroot); err != nil {
+	if err := mkSymlink(targetV, goroot); err != nil {
 		return cli.NewExitError(errstring(err), 1)
 	}
 	fmt.Printf("Now using go%s\n", v.Name)
 	return nil
+}
+
+func mkSymlink(oldname, newname string) (err error) {
+	if runtime.GOOS == "windows" {
+		// Windows 10下无特权用户无法创建符号链接，优先调用mklink /j创建'目录联接'
+		if err = exec.Command("cmd", "/c", "mklink", "/j", newname, oldname).Run(); err == nil {
+			return nil
+		}
+	}
+	return os.Symlink(oldname, newname)
 }

@@ -32,7 +32,7 @@ func Test_inuse(t *testing.T) {
 		_ = os.MkdirAll(vDir, 0755)
 		defer os.RemoveAll(rootDir)
 
-		So(os.Symlink(vDir, goroot), ShouldBeNil)
+		So(mkSymlink(vDir, goroot), ShouldBeNil)
 		So(inuse(goroot), ShouldEqual, "1.12.6")
 	})
 }
