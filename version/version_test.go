@@ -3,6 +3,7 @@ package version
 import (
 	"crypto/sha1"
 	"crypto/sha256"
+	"encoding/hex"
 	"errors"
 	"fmt"
 	"io"
@@ -176,4 +177,25 @@ func TestVerifyChecksum(t *testing.T) {
 			So(pkg.VerifyChecksum(filename), ShouldEqual, ErrUnsupportedChecksumAlgorithm)
 		})
 	})
+}
+
+var (
+	target = "2db6a5d25815b56072465a2cacc8ed426c18f1d5fc26c1fc8c4f5a7188658264"
+	source = []byte{45, 182, 165, 210, 88, 21, 181, 96, 114, 70, 90, 44, 172, 200, 237, 66, 108, 24, 241, 213, 252, 38, 193, 252, 140, 79, 90, 113, 136, 101, 130, 100}
+)
+
+func BenchmarkEqualHexFmt(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		if target == fmt.Sprintf("%x", source) {
+
+		}
+	}
+}
+
+func BenchmarkEqualHexEncodeToString(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		if target == hex.EncodeToString(source) {
+
+		}
+	}
 }
