@@ -130,12 +130,12 @@ func (pkg *Package) DownloadWithProgress(dst string) (size int64, err error) {
 		progressbar.OptionThrottle(65*time.Millisecond),
 		progressbar.OptionShowCount(),
 		progressbar.OptionOnCompletion(func() {
-			fmt.Fprint(ansi.NewAnsiStdout(), "\n")
+			_, _ = fmt.Fprint(ansi.NewAnsiStdout(), "\n")
 		}),
 		// progressbar.OptionSpinnerType(35),
 		// progressbar.OptionFullWidth(),
 	)
-	bar.RenderBlank()
+	_ = bar.RenderBlank()
 
 	size, err = io.Copy(io.MultiWriter(f, bar), resp.Body)
 	if err != nil {
@@ -199,7 +199,7 @@ func (pkg *Package) VerifyChecksum(filename string) (err error) {
 		return ErrUnsupportedChecksumAlgorithm
 	}
 
-	if _, err := io.Copy(h, f); err != nil {
+	if _, err = io.Copy(h, f); err != nil {
 		return err
 	}
 
