@@ -3,6 +3,7 @@ package version
 import (
 	"crypto/sha1"
 	"crypto/sha256"
+	"encoding/hex"
 	"errors"
 	"fmt"
 	"hash"
@@ -201,7 +202,8 @@ func (pkg *Package) VerifyChecksum(filename string) (err error) {
 	if _, err := io.Copy(h, f); err != nil {
 		return err
 	}
-	if pkg.Checksum != fmt.Sprintf("%x", h.Sum(nil)) {
+
+	if pkg.Checksum != hex.EncodeToString(h.Sum(nil)) {
 		return ErrChecksumNotMatched
 	}
 	return nil
