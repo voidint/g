@@ -11,7 +11,7 @@ import (
 
 const (
 	// DefaultURL 提供go版本信息的默认网址
-	DefaultURL = "https://golang.org/dl/"
+	DefaultURL = "https://go.dev/dl/"
 )
 
 // URLUnreachableError URL不可达错误
