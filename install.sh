@@ -15,6 +15,7 @@ function get_arch() {
         ;;
     "armv6l" | "armv7l")
         echo "arm"
+	;;
     *)
         echo ${NIL}
         ;;
