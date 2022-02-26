@@ -13,6 +13,8 @@ function get_arch() {
     "aarch64" | "arm64")
         echo "arm64"
         ;;
+    "armv6l" | "armv7l")
+        echo "arm"
     *)
         echo ${NIL}
         ;;
