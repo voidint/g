@@ -1,32 +1,45 @@
 module github.com/voidint/g
 
-go 1.15
+go 1.18
 
 require (
 	github.com/Masterminds/semver v1.5.0
-	github.com/PuerkitoBio/goquery v1.5.1
-	github.com/cpuguy83/go-md2man/v2 v2.0.0 // indirect
+	github.com/PuerkitoBio/goquery v1.8.0
 	github.com/daviddengcn/go-colortext v1.0.0
 	github.com/dixonwille/wlog/v3 v3.0.1
-	github.com/dixonwille/wmenu/v5 v5.0.0
-	github.com/fatih/color v1.9.0
-	github.com/frankban/quicktest v1.11.2 // indirect
-	github.com/golang/snappy v0.0.4 // indirect
-	github.com/google/go-cmp v0.5.3 // indirect
-	github.com/gopherjs/gopherjs v0.0.0-20200217142428-fce0ec30dd00 // indirect
+	github.com/dixonwille/wmenu/v5 v5.1.0
+	github.com/fatih/color v1.13.0
 	github.com/k0kubun/go-ansi v0.0.0-20180517002512-3bf9e2903213
-	github.com/kr/text v0.2.0 // indirect
-	github.com/mholt/archiver/v3 v3.3.0
-	github.com/nwaples/rardecode v1.1.1 // indirect
-	github.com/pierrec/lz4 v2.6.1+incompatible // indirect
-	github.com/schollz/progressbar/v3 v3.3.4
-	github.com/smartystreets/assertions v1.1.0 // indirect
-	github.com/smartystreets/goconvey v1.6.4
+	github.com/mholt/archiver/v3 v3.5.1
+	github.com/schollz/progressbar/v3 v3.8.6
+	github.com/smartystreets/goconvey v1.7.2
+	github.com/urfave/cli v1.22.5
+)
+
+require (
+	github.com/andybalholm/brotli v1.0.4 // indirect
+	github.com/andybalholm/cascadia v1.3.1 // indirect
+	github.com/cpuguy83/go-md2man/v2 v2.0.1 // indirect
+	github.com/dsnet/compress v0.0.2-0.20210315054119-f66993602bf5 // indirect
+	github.com/golang/snappy v0.0.4 // indirect
+	github.com/gopherjs/gopherjs v0.0.0-20200217142428-fce0ec30dd00 // indirect
+	github.com/jtolds/gls v4.20.0+incompatible // indirect
+	github.com/klauspost/compress v1.15.1 // indirect
+	github.com/klauspost/pgzip v1.2.5 // indirect
+	github.com/mattn/go-colorable v0.1.12 // indirect
+	github.com/mattn/go-isatty v0.0.14 // indirect
+	github.com/mattn/go-runewidth v0.0.13 // indirect
+	github.com/mitchellh/colorstring v0.0.0-20190213212951-d06e56a500db // indirect
+	github.com/nwaples/rardecode v1.1.3 // indirect
+	github.com/pierrec/lz4/v4 v4.1.14 // indirect
+	github.com/rivo/uniseg v0.2.0 // indirect
+	github.com/russross/blackfriday/v2 v2.1.0 // indirect
+	github.com/smartystreets/assertions v1.2.0 // indirect
 	github.com/ulikunitz/xz v0.5.10 // indirect
-	github.com/urfave/cli v1.22.4
-	golang.org/x/net v0.0.0-20201021035429-f5854403a974 // indirect
-	golang.org/x/sys v0.0.0-20201119102817-f84b799fce68 // indirect
-	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1 // indirect
-	gopkg.in/check.v1 v1.0.0-20180628173108-788fd7840127 // indirect
+	github.com/xi2/xz v0.0.0-20171230120015-48954b6210f8 // indirect
+	golang.org/x/crypto v0.0.0-20220321153916-2c7772ba3064 // indirect
+	golang.org/x/net v0.0.0-20220325170049-de3da57026de // indirect
+	golang.org/x/sys v0.0.0-20220330033206-e17cdc41300f // indirect
+	golang.org/x/term v0.0.0-20210927222741-03fcf44c2211 // indirect
 	gopkg.in/yaml.v2 v2.2.8 // indirect
 )
