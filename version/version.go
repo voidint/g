@@ -4,7 +4,6 @@ import (
 	"crypto/sha1"
 	"crypto/sha256"
 	"encoding/hex"
-	"errors"
 	"fmt"
 	"hash"
 	"io"
@@ -15,10 +14,8 @@ import (
 
 	"github.com/k0kubun/go-ansi"
 	"github.com/schollz/progressbar/v3"
+	"github.com/voidint/g/errs"
 )
-
-// ErrVersionNotFound 版本不存在
-var ErrVersionNotFound = errors.New("version not found")
 
 // FindVersion 返回指定名称的版本
 func FindVersion(all []*Version, name string) (*Version, error) {
@@ -27,7 +24,7 @@ func FindVersion(all []*Version, name string) (*Version, error) {
 			return all[i], nil
 		}
 	}
-	return nil, ErrVersionNotFound
+	return nil, errs.ErrVersionNotFound
 }
 
 // Version go版本
@@ -35,9 +32,6 @@ type Version struct {
 	Name     string // 版本名，如'1.12.4'
 	Packages []*Package
 }
-
-// ErrPackageNotFound 版本包不存在
-var ErrPackageNotFound = errors.New("installation package not found")
 
 // FindPackage 返回指定操作系统和硬件架构的版本包
 func (v *Version) FindPackage(kind, goos, goarch string) (*Package, error) {
@@ -49,7 +43,7 @@ func (v *Version) FindPackage(kind, goos, goarch string) (*Package, error) {
 		return v.Packages[i], nil
 	}
 
-	return nil, ErrPackageNotFound
+	return nil, errs.ErrPackageNotFound
 }
 
 // FindPackages 返回指定操作系统和硬件架构的版本包
@@ -62,7 +56,7 @@ func (v *Version) FindPackages(kind, goos, goarch string) (pkgs []*Package, err 
 		pkgs = append(pkgs, v.Packages[i])
 	}
 	if len(pkgs) == 0 {
-		return nil, ErrPackageNotFound
+		return nil, errs.ErrPackageNotFound
 	}
 	return pkgs, nil
 }
@@ -92,17 +86,17 @@ const (
 func (pkg *Package) Download(dst string) (size int64, err error) {
 	resp, err := http.Get(pkg.URL)
 	if err != nil {
-		return 0, NewDownloadError(pkg.URL, err)
+		return 0, errs.NewDownloadError(pkg.URL, err)
 	}
 	defer resp.Body.Close()
 	f, err := os.Create(dst)
 	if err != nil {
-		return 0, NewDownloadError(pkg.URL, err)
+		return 0, errs.NewDownloadError(pkg.URL, err)
 	}
 	defer f.Close()
 	size, err = io.Copy(f, resp.Body)
 	if err != nil {
-		return 0, NewDownloadError(pkg.URL, err)
+		return 0, errs.NewDownloadError(pkg.URL, err)
 	}
 	return size, nil
 }
@@ -111,13 +105,13 @@ func (pkg *Package) Download(dst string) (size int64, err error) {
 func (pkg *Package) DownloadWithProgress(dst string) (size int64, err error) {
 	resp, err := http.Get(pkg.URL)
 	if err != nil {
-		return 0, NewDownloadError(pkg.URL, err)
+		return 0, errs.NewDownloadError(pkg.URL, err)
 	}
 	defer resp.Body.Close()
 
 	f, err := os.OpenFile(dst, os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
-		return 0, NewDownloadError(pkg.URL, err)
+		return 0, errs.NewDownloadError(pkg.URL, err)
 	}
 	defer f.Close()
 
@@ -139,40 +133,10 @@ func (pkg *Package) DownloadWithProgress(dst string) (size int64, err error) {
 
 	size, err = io.Copy(io.MultiWriter(f, bar), resp.Body)
 	if err != nil {
-		return size, NewDownloadError(pkg.URL, err)
+		return size, errs.NewDownloadError(pkg.URL, err)
 	}
 	return size, nil
 }
-
-// DownloadError 下载失败错误
-type DownloadError struct {
-	url string
-	err error
-}
-
-// NewDownloadError 返回下载失败错误实例
-func NewDownloadError(url string, err error) error {
-	return &DownloadError{
-		url: url,
-		err: err,
-	}
-}
-
-func (e *DownloadError) Error() string {
-	var buf strings.Builder
-	buf.WriteString(fmt.Sprintf("Installation package(%s) download failed", e.url))
-	if e.err != nil {
-		buf.WriteString(" ==> " + e.err.Error())
-	}
-	return buf.String()
-}
-
-var (
-	// ErrUnsupportedChecksumAlgorithm 不支持的校验和算法
-	ErrUnsupportedChecksumAlgorithm = errors.New("unsupported checksum algorithm")
-	// ErrChecksumNotMatched 校验和不匹配
-	ErrChecksumNotMatched = errors.New("file checksum does not match the computed checksum")
-)
 
 const (
 	// SHA256 校验和算法-sha256
@@ -196,7 +160,7 @@ func (pkg *Package) VerifyChecksum(filename string) (err error) {
 	case SHA1:
 		h = sha1.New()
 	default:
-		return ErrUnsupportedChecksumAlgorithm
+		return errs.ErrUnsupportedChecksumAlgorithm
 	}
 
 	if _, err = io.Copy(h, f); err != nil {
@@ -204,7 +168,7 @@ func (pkg *Package) VerifyChecksum(filename string) (err error) {
 	}
 
 	if pkg.Checksum != hex.EncodeToString(h.Sum(nil)) {
-		return ErrChecksumNotMatched
+		return errs.ErrChecksumNotMatched
 	}
 	return nil
 }

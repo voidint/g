@@ -15,6 +15,7 @@ import (
 	"time"
 
 	. "github.com/smartystreets/goconvey/convey"
+	"github.com/voidint/g/errs"
 )
 
 func TestFindVersion(t *testing.T) {
@@ -37,7 +38,7 @@ func TestFindVersion(t *testing.T) {
 		So(v.Name, ShouldEqual, "1.11.10")
 
 		v, err = FindVersion(items, "1.11.11")
-		So(err, ShouldEqual, ErrVersionNotFound)
+		So(err, ShouldEqual, errs.ErrVersionNotFound)
 		So(v, ShouldBeNil)
 	})
 }
@@ -78,7 +79,7 @@ func TestFindPackage(t *testing.T) {
 		So(pkg.Arch, ShouldEqual, "x86-64")
 
 		pkg, err = v.FindPackage(ArchiveKind, "darwin", "386")
-		So(err, ShouldEqual, ErrPackageNotFound)
+		So(err, ShouldEqual, errs.ErrPackageNotFound)
 		So(pkg, ShouldBeNil)
 	})
 }
@@ -88,13 +89,13 @@ func TestDownloadError(t *testing.T) {
 		url := "https://dl.google.com/go/go1.12.5.linux-amd64.tar.gz"
 		core := errors.New("hello error")
 
-		err := NewDownloadError(url, core)
+		err := errs.NewDownloadError(url, core)
 		So(err, ShouldNotBeNil)
-		e, ok := err.(*DownloadError)
+		e, ok := err.(*errs.DownloadError)
 		So(ok, ShouldBeTrue)
 		So(e, ShouldNotBeNil)
-		So(e.url, ShouldEqual, url)
-		So(e.err, ShouldEqual, core)
+		So(e.URL, ShouldEqual, url)
+		So(e.Err, ShouldEqual, core)
 		So(e.Error(), ShouldEqual, fmt.Sprintf("Installation package(%s) download failed ==> %s", url, core.Error()))
 	})
 }
@@ -167,14 +168,14 @@ func TestVerifyChecksum(t *testing.T) {
 				Algorithm: "SHA1",
 				Checksum:  "hello",
 			}
-			So(pkg.VerifyChecksum(filename), ShouldEqual, ErrChecksumNotMatched)
+			So(pkg.VerifyChecksum(filename), ShouldEqual, errs.ErrChecksumNotMatched)
 		})
 
 		Convey("SHA1024", func() {
 			pkg := &Package{
 				Algorithm: "SHA1024",
 			}
-			So(pkg.VerifyChecksum(filename), ShouldEqual, ErrUnsupportedChecksumAlgorithm)
+			So(pkg.VerifyChecksum(filename), ShouldEqual, errs.ErrUnsupportedChecksumAlgorithm)
 		})
 	})
 }

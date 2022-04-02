@@ -35,6 +35,12 @@ var (
 			Action:    uninstall,
 		},
 		{
+			Name:      "update",
+			Usage:     "Fetch the newest version of g",
+			UsageText: "g update",
+			Action:    update,
+		},
+		{
 			Name:      "clean",
 			Usage:     "Remove files from the package download directory",
 			UsageText: "g clean",

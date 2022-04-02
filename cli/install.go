@@ -70,7 +70,7 @@ func install(ctx *cli.Context) (err error) {
 				menu.Option(" "+pkgs[i].FileName, pkgs[i], false, nil)
 			}
 		}
-		if err := menu.Run(); err != nil {
+		if err = menu.Run(); err != nil {
 			return cli.NewExitError(errstring(err), 1)
 		}
 	} else {
@@ -119,7 +119,7 @@ func install(ctx *cli.Context) (err error) {
 	// 重新建立软链接
 	_ = os.Remove(goroot)
 
-	if err := mkSymlink(targetV, goroot); err != nil {
+	if err = mkSymlink(targetV, goroot); err != nil {
 		return cli.NewExitError(errstring(err), 1)
 	}
 	fmt.Printf("Now using go%s\n", v.Name)

@@ -7,35 +7,13 @@ import (
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
+	"github.com/voidint/g/errs"
 )
 
 const (
 	// DefaultURL 提供go版本信息的默认网址
 	DefaultURL = "https://go.dev/dl/"
 )
-
-// URLUnreachableError URL不可达错误
-type URLUnreachableError struct {
-	err error
-	url string
-}
-
-// NewURLUnreachableError 返回URL不可达错误实例
-func NewURLUnreachableError(url string, err error) error {
-	return &URLUnreachableError{
-		err: err,
-		url: url,
-	}
-}
-
-func (e *URLUnreachableError) Error() string {
-	var buf strings.Builder
-	buf.WriteString(fmt.Sprintf("URL %q is unreachable", e.url))
-	if e.err != nil {
-		buf.WriteString(" ==> " + e.err.Error())
-	}
-	return buf.String()
-}
 
 // Collector go版本信息采集器
 type Collector struct {
@@ -55,7 +33,7 @@ func NewCollector(url string) (*Collector, error) {
 		url:  url,
 		pURL: pURL,
 	}
-	if err := c.loadDocument(); err != nil {
+	if err = c.loadDocument(); err != nil {
 		return nil, err
 	}
 	return &c, nil
@@ -64,11 +42,11 @@ func NewCollector(url string) (*Collector, error) {
 func (c *Collector) loadDocument() (err error) {
 	resp, err := http.Get(c.url)
 	if err != nil {
-		return NewURLUnreachableError(c.url, err)
+		return errs.NewURLUnreachableError(c.url, err)
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode != http.StatusOK {
-		return NewURLUnreachableError(c.url, nil)
+		return errs.NewURLUnreachableError(c.url, nil)
 	}
 	c.doc, err = goquery.NewDocumentFromReader(resp.Body)
 	return err

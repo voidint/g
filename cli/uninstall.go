@@ -19,7 +19,7 @@ func uninstall(ctx *cli.Context) (err error) {
 		return cli.NewExitError(fmt.Sprintf("[g] %q version is not installed", vname), 1)
 	}
 
-	if err := os.RemoveAll(targetV); err != nil {
+	if err = os.RemoveAll(targetV); err != nil {
 		return cli.NewExitError(wrapstring(fmt.Sprintf("Uninstall failed: %s", err.Error())), 1)
 	}
 	fmt.Printf("Uninstalled go%s\n", vname)
