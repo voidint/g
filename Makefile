@@ -43,12 +43,15 @@ build-windows-arm:
 build-windows-arm64:
 	GOOS=windows GOARCH=arm64 $(GO) build $(GO_FLAGS) -o bin/windows-arm64/g.exe
 
+package:
+	sh ./package.sh
 
 test:
 	$(GO) test -v ./...
 
 clean:
 	$(GO) clean -x
-	rm -r bin
+	rm -f sha256sum.txt
+	rm -rf bin
 
-.PHONY: all build install test clean build-linux build-darwin build-windows build-linux-386 build-linux-amd64 build-linux-arm build-linux-arm64 build-darwin-amd64 build-darwin-arm64 build-windows-386 build-windows-amd64 build-windows-arm build-windows-arm64
+.PHONY: all build install test package clean build-linux build-darwin build-windows build-linux-386 build-linux-amd64 build-linux-arm build-linux-arm64 build-darwin-amd64 build-darwin-arm64 build-windows-386 build-windows-amd64 build-windows-arm build-windows-arm64
