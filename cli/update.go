@@ -1,7 +1,9 @@
 package cli
 
 import (
+	"bufio"
 	"fmt"
+	"net/http"
 	"runtime"
 	"strings"
 
@@ -9,10 +11,11 @@ import (
 	"github.com/urfave/cli"
 	"github.com/voidint/g/build"
 	"github.com/voidint/g/github"
+	"github.com/voidint/g/pkg/checksum"
 )
 
-func update(ctx *cli.Context) (err error) {
-	up := github.NewReleaseUpdater(findAsset)
+func update(*cli.Context) (err error) {
+	up := github.NewReleaseUpdater()
 
 	// 检查更新
 	latest, yes, err := up.CheckForUpdates(semver.MustParse(build.ShortVersion), "voidint", "g")
@@ -26,7 +29,7 @@ func update(ctx *cli.Context) (err error) {
 	fmt.Printf("A new version of g(%s) is available\n", latest.TagName)
 
 	// 应用更新
-	if err = up.Apply(latest); err != nil {
+	if err = up.Apply(latest, findAsset, findChecksum); err != nil {
 		return cli.NewExitError(errstring(err), 1)
 	}
 	fmt.Println("Update completed")
@@ -45,4 +48,42 @@ func findAsset(items []github.Asset) (idx int) {
 		}
 	}
 	return -1
+}
+
+func findChecksum(items []github.Asset) (algo checksum.Algorithm, expectedChecksum string, err error) {
+	ext := "tar.gz"
+	if runtime.GOOS == "windows" {
+		ext = "zip"
+	}
+	suffix := fmt.Sprintf("%s-%s.%s", runtime.GOOS, runtime.GOARCH, ext)
+
+	var checksumFileURL string
+	for i := range items {
+		if items[i].Name == "sha256sum.txt" {
+			checksumFileURL = items[i].BrowserDownloadURL
+			break
+		}
+	}
+	if checksumFileURL == "" {
+		return checksum.SHA256, "", checksum.ErrChecksumFileNotFound
+	}
+
+	resp, err := http.Get(checksumFileURL)
+	if err != nil {
+		return checksum.SHA256, "", err
+	}
+	defer resp.Body.Close()
+
+	scanner := bufio.NewScanner(resp.Body)
+	for scanner.Scan() {
+		line := scanner.Text()
+		if !strings.HasSuffix(line, suffix) {
+			continue
+		}
+		return checksum.SHA256, strings.Fields(line)[0], nil
+	}
+	if err = scanner.Err(); err != nil {
+		return checksum.SHA256, "", err
+	}
+	return checksum.SHA256, "", checksum.ErrChecksumFileNotFound
 }

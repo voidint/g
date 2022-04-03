@@ -8,7 +8,6 @@ import (
 	"testing"
 
 	"github.com/PuerkitoBio/goquery"
-	"github.com/voidint/g/errs"
 
 	. "github.com/smartystreets/goconvey/convey"
 )
@@ -272,9 +271,9 @@ func TestURLUnreachableError(t *testing.T) {
 		url := "https://github.com/voidint"
 		core := errors.New("hello error")
 
-		err := errs.NewURLUnreachableError(url, core)
+		err := NewURLUnreachableError(url, core)
 		So(err, ShouldNotBeNil)
-		e, ok := err.(*errs.URLUnreachableError)
+		e, ok := err.(*URLUnreachableError)
 		So(ok, ShouldBeTrue)
 		So(e, ShouldNotBeNil)
 		So(e.URL(), ShouldEqual, url)

@@ -1,20 +1,20 @@
 package version
 
 import (
-	"crypto/sha1"
-	"crypto/sha256"
-	"encoding/hex"
+	"errors"
 	"fmt"
-	"hash"
-	"io"
-	"net/http"
 	"os"
 	"strings"
-	"time"
 
-	"github.com/k0kubun/go-ansi"
-	"github.com/schollz/progressbar/v3"
-	"github.com/voidint/g/errs"
+	"github.com/voidint/g/pkg/checksum"
+	myhttp "github.com/voidint/g/pkg/http"
+)
+
+var (
+	// ErrVersionNotFound 版本不存在
+	ErrVersionNotFound = errors.New("version not found")
+	// ErrPackageNotFound 版本包不存在
+	ErrPackageNotFound = errors.New("installation package not found")
 )
 
 // FindVersion 返回指定名称的版本
@@ -24,7 +24,7 @@ func FindVersion(all []*Version, name string) (*Version, error) {
 			return all[i], nil
 		}
 	}
-	return nil, errs.ErrVersionNotFound
+	return nil, ErrVersionNotFound
 }
 
 // Version go版本
@@ -43,7 +43,7 @@ func (v *Version) FindPackage(kind, goos, goarch string) (*Package, error) {
 		return v.Packages[i], nil
 	}
 
-	return nil, errs.ErrPackageNotFound
+	return nil, ErrPackageNotFound
 }
 
 // FindPackages 返回指定操作系统和硬件架构的版本包
@@ -56,7 +56,7 @@ func (v *Version) FindPackages(kind, goos, goarch string) (pkgs []*Package, err 
 		pkgs = append(pkgs, v.Packages[i])
 	}
 	if len(pkgs) == 0 {
-		return nil, errs.ErrPackageNotFound
+		return nil, ErrPackageNotFound
 	}
 	return pkgs, nil
 }
@@ -82,60 +82,9 @@ const (
 	InstallerKind = "Installer"
 )
 
-// Download 下载版本另存为指定文件
-func (pkg *Package) Download(dst string) (size int64, err error) {
-	resp, err := http.Get(pkg.URL)
-	if err != nil {
-		return 0, errs.NewDownloadError(pkg.URL, err)
-	}
-	defer resp.Body.Close()
-	f, err := os.Create(dst)
-	if err != nil {
-		return 0, errs.NewDownloadError(pkg.URL, err)
-	}
-	defer f.Close()
-	size, err = io.Copy(f, resp.Body)
-	if err != nil {
-		return 0, errs.NewDownloadError(pkg.URL, err)
-	}
-	return size, nil
-}
-
 // DownloadWithProgress 下载版本另存为指定文件且显示下载进度
 func (pkg *Package) DownloadWithProgress(dst string) (size int64, err error) {
-	resp, err := http.Get(pkg.URL)
-	if err != nil {
-		return 0, errs.NewDownloadError(pkg.URL, err)
-	}
-	defer resp.Body.Close()
-
-	f, err := os.OpenFile(dst, os.O_CREATE|os.O_WRONLY, 0644)
-	if err != nil {
-		return 0, errs.NewDownloadError(pkg.URL, err)
-	}
-	defer f.Close()
-
-	bar := progressbar.NewOptions64(
-		resp.ContentLength,
-		progressbar.OptionSetWidth(15),
-		progressbar.OptionSetDescription("Downloading"),
-		progressbar.OptionSetWriter(ansi.NewAnsiStdout()),
-		progressbar.OptionShowBytes(true),
-		progressbar.OptionThrottle(65*time.Millisecond),
-		progressbar.OptionShowCount(),
-		progressbar.OptionOnCompletion(func() {
-			_, _ = fmt.Fprint(ansi.NewAnsiStdout(), "\n")
-		}),
-		// progressbar.OptionSpinnerType(35),
-		// progressbar.OptionFullWidth(),
-	)
-	_ = bar.RenderBlank()
-
-	size, err = io.Copy(io.MultiWriter(f, bar), resp.Body)
-	if err != nil {
-		return size, errs.NewDownloadError(pkg.URL, err)
-	}
-	return size, nil
+	return myhttp.Download(pkg.URL, dst, os.O_CREATE|os.O_WRONLY, 0644, true)
 }
 
 const (
@@ -147,28 +96,14 @@ const (
 
 // VerifyChecksum 验证目标文件的校验和与当前安装包的校验和是否一致
 func (pkg *Package) VerifyChecksum(filename string) (err error) {
-	f, err := os.Open(filename)
-	if err != nil {
-		return err
-	}
-	defer f.Close()
-
-	var h hash.Hash
+	var algo checksum.Algorithm
 	switch pkg.Algorithm {
 	case SHA256:
-		h = sha256.New()
+		algo = checksum.SHA256
 	case SHA1:
-		h = sha1.New()
+		algo = checksum.SHA1
 	default:
-		return errs.ErrUnsupportedChecksumAlgorithm
+		return checksum.ErrUnsupportedChecksumAlgorithm
 	}
-
-	if _, err = io.Copy(h, f); err != nil {
-		return err
-	}
-
-	if pkg.Checksum != hex.EncodeToString(h.Sum(nil)) {
-		return errs.ErrChecksumNotMatched
-	}
-	return nil
+	return checksum.VerifyFile(algo, pkg.Checksum, filename)
 }

@@ -1,6 +1,7 @@
 package github
 
 import (
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -12,7 +13,8 @@ import (
 	"github.com/Masterminds/semver"
 	"github.com/go-resty/resty/v2"
 	"github.com/mholt/archiver/v3"
-	"github.com/voidint/g/errs"
+	"github.com/voidint/g/pkg/checksum"
+	myhttp "github.com/voidint/g/pkg/http"
 	"github.com/voidint/go-update"
 )
 
@@ -36,15 +38,13 @@ func (a Asset) IsCompressedFile() bool {
 
 // ReleaseUpdater 版本更新器
 type ReleaseUpdater struct {
-	findAsset func(items []Asset) (idx int)
-	client    *resty.Client
+	client *resty.Client
 }
 
 // NewReleaseUpdater 返回版本更新器实例
-func NewReleaseUpdater(assetFinder func(items []Asset) (idx int)) *ReleaseUpdater {
+func NewReleaseUpdater() *ReleaseUpdater {
 	return &ReleaseUpdater{
-		findAsset: assetFinder,
-		client:    resty.New(),
+		client: resty.New(),
 	}
 }
 
@@ -67,13 +67,27 @@ func (up ReleaseUpdater) CheckForUpdates(current *semver.Version, owner, repo st
 	return nil, false, nil
 }
 
+// ErrAssetNotFound 资源不存在
+var ErrAssetNotFound = errors.New("asset not found")
+
 // Apply 更新指定版本
-func (up ReleaseUpdater) Apply(rel *Release) (err error) {
-	idx := up.findAsset(rel.Assets)
+func (up ReleaseUpdater) Apply(rel *Release,
+	findAsset func([]Asset) (idx int),
+	findChecksum func([]Asset) (algo checksum.Algorithm, expectedChecksum string, err error),
+) error {
+	// 查找下载链接
+	idx := findAsset(rel.Assets)
 	if idx < 0 {
-		return errs.ErrPackageNotFound
+		return ErrAssetNotFound
 	}
 
+	// 查找校验和
+	algo, expectedChecksum, err := findChecksum(rel.Assets)
+	if err != nil {
+		return err
+	}
+
+	// 下载文件
 	tmpDir, err := os.MkdirTemp("", strconv.FormatInt(time.Now().UnixNano(), 10))
 	if err != nil {
 		return err
@@ -83,17 +97,25 @@ func (up ReleaseUpdater) Apply(rel *Release) (err error) {
 	url := rel.Assets[idx].BrowserDownloadURL
 	srcFilename := filepath.Join(tmpDir, filepath.Base(url))
 	dstFilename := srcFilename
-
-	if _, err = up.client.R().SetOutput(srcFilename).Get(url); err != nil {
+	if _, err = myhttp.Download(url, srcFilename, os.O_WRONLY|os.O_CREATE, 0644, true); err != nil {
 		return err
 	}
 
+	// 检查校验和
+	fmt.Println("Computing checksum with", algo)
+	if err = checksum.VerifyFile(algo, expectedChecksum, srcFilename); err != nil {
+		return err
+	}
+	fmt.Println("Checksums matched")
+
+	// 解压缩下载文件
 	if rel.Assets[idx].IsCompressedFile() {
 		if dstFilename, err = up.unarchive(srcFilename, tmpDir); err != nil {
 			return err
 		}
 	}
 
+	// 更新文件
 	dstFile, err := os.Open(dstFilename)
 	if err != nil {
 		return nil
