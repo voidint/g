@@ -6,7 +6,7 @@ import (
 
 	"github.com/Masterminds/semver"
 	"github.com/k0kubun/go-ansi"
-	"github.com/urfave/cli"
+	"github.com/urfave/cli/v2"
 	"github.com/voidint/g/version"
 )
 
@@ -29,7 +29,7 @@ func listRemote(ctx *cli.Context) (err error) {
 
 	c, err := version.NewCollector(url)
 	if err != nil {
-		return cli.NewExitError(errstring(err), 1)
+		return cli.Exit(errstring(err), 1)
 	}
 
 	var vs []*version.Version
@@ -44,7 +44,7 @@ func listRemote(ctx *cli.Context) (err error) {
 		vs, err = c.AllVersions()
 	}
 	if err != nil {
-		return cli.NewExitError(errstring(err), 1)
+		return cli.Exit(errstring(err), 1)
 	}
 
 	items := make([]*semver.Version, 0, len(vs))

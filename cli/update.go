@@ -8,7 +8,7 @@ import (
 	"strings"
 
 	"github.com/Masterminds/semver"
-	"github.com/urfave/cli"
+	"github.com/urfave/cli/v2"
 	"github.com/voidint/g/build"
 	"github.com/voidint/g/github"
 	"github.com/voidint/g/pkg/checksum"
@@ -20,7 +20,7 @@ func update(*cli.Context) (err error) {
 	// 检查更新
 	latest, yes, err := up.CheckForUpdates(semver.MustParse(build.ShortVersion), "voidint", "g")
 	if err != nil {
-		return cli.NewExitError(errstring(err), 1)
+		return cli.Exit(errstring(err), 1)
 	}
 	if !yes {
 		fmt.Printf("You are up to date! g v%s is the latest version.\n", build.ShortVersion)
@@ -30,7 +30,7 @@ func update(*cli.Context) (err error) {
 
 	// 应用更新
 	if err = up.Apply(latest, findAsset, findChecksum); err != nil {
-		return cli.NewExitError(errstring(err), 1)
+		return cli.Exit(errstring(err), 1)
 	}
 	fmt.Println("Update completed")
 	return nil

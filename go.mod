@@ -14,7 +14,7 @@ require (
 	github.com/mholt/archiver/v3 v3.5.1
 	github.com/schollz/progressbar/v3 v3.8.6
 	github.com/smartystreets/goconvey v1.7.2
-	github.com/urfave/cli v1.22.5
+	github.com/urfave/cli/v2 v2.4.0
 	github.com/voidint/go-update v1.0.0
 )
 
@@ -43,5 +43,4 @@ require (
 	golang.org/x/net v0.0.0-20220401154927-543a649e0bdd // indirect
 	golang.org/x/sys v0.0.0-20220330033206-e17cdc41300f // indirect
 	golang.org/x/term v0.0.0-20210927222741-03fcf44c2211 // indirect
-	gopkg.in/yaml.v2 v2.2.8 // indirect
 )

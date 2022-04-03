@@ -7,10 +7,10 @@ import (
 
 	"github.com/Masterminds/semver"
 	"github.com/k0kubun/go-ansi"
-	"github.com/urfave/cli"
+	"github.com/urfave/cli/v2"
 )
 
-func list(ctx *cli.Context) (err error) {
+func list(*cli.Context) (err error) {
 	infos, err := ioutil.ReadDir(versionsDir)
 	if err != nil || len(infos) <= 0 {
 		fmt.Printf("No version installed yet\n\n")

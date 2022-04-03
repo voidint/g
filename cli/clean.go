@@ -6,13 +6,13 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/urfave/cli"
+	"github.com/urfave/cli/v2"
 )
 
 func clean(ctx *cli.Context) (err error) {
 	entries, err := ioutil.ReadDir(downloadsDir)
 	if err != nil {
-		return cli.NewExitError(errstring(err), 1)
+		return cli.Exit(errstring(err), 1)
 	}
 
 	for i := range entries {
