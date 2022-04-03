@@ -9,16 +9,17 @@
 **注意：**`master`分支可能处于开发之中并**非稳定版本**，请通过tag下载稳定版本的源代码，或通过[release](https://github.com/voidint/g/releases)下载已编译的二进制可执行文件。
 
 
-`g`是一个Linux、macOS、Windows下的命令行工具，可以提供一个便捷的多版本[go](https://golang.org/)环境的管理和切换。
+`g`是一个 Linux、macOS、Windows 下的命令行工具，可以提供一个便捷的多版本 [go](https://golang.org/) 环境的管理和切换。
 
 [![asciicast](https://asciinema.org/a/356685.svg)](https://asciinema.org/a/356685)
 
 ## 特性
-- 支持列出可供安装的go版本号
-- 支持列出已安装的go版本号
-- 支持在本地安装多个go版本
-- 支持卸载已安装的go版本
-- 支持在已安装的go版本之间自由切换
+- 支持列出可供安装的 go 版本号
+- 支持列出已安装的 go 版本号
+- 支持在本地安装多个 go 版本
+- 支持卸载已安装的 go 版本
+- 支持在已安装的 go 版本之间自由切换
+- 支持软件自我更新
 
 ## 安装
 ### 自动化安装
@@ -109,6 +110,18 @@ go version go1.14.6 darwin/amd64
 $ g uninstall 1.14.7
 Uninstalled go1.14.7
 ```
+
+更新 g 软件本身
+
+```shell
+$ g update
+A new version of g(v1.2.2) is available
+Downloading 100% |███████████████| (3.7/3.7 MB, 2.358 MB/s)
+Computing checksum with SHA256
+Checksums matched
+Update completed
+```
+
 ## FAQ
 - 环境变量`G_MIRROR`有什么作用？
 
