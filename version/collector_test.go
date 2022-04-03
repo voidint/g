@@ -277,8 +277,8 @@ func TestURLUnreachableError(t *testing.T) {
 		e, ok := err.(*errs.URLUnreachableError)
 		So(ok, ShouldBeTrue)
 		So(e, ShouldNotBeNil)
-		So(e.URL, ShouldEqual, url)
-		So(e.Err, ShouldEqual, core)
+		So(e.URL(), ShouldEqual, url)
+		So(e.Err(), ShouldEqual, core)
 		So(e.Error(), ShouldEqual, fmt.Sprintf("URL %q is unreachable ==> %s", url, core.Error()))
 	})
 }

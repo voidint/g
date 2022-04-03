@@ -94,8 +94,8 @@ func TestDownloadError(t *testing.T) {
 		e, ok := err.(*errs.DownloadError)
 		So(ok, ShouldBeTrue)
 		So(e, ShouldNotBeNil)
-		So(e.URL, ShouldEqual, url)
-		So(e.Err, ShouldEqual, core)
+		So(e.URL(), ShouldEqual, url)
+		So(e.Err(), ShouldEqual, core)
 		So(e.Error(), ShouldEqual, fmt.Sprintf("Installation package(%s) download failed ==> %s", url, core.Error()))
 	})
 }
