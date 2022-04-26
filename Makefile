@@ -15,7 +15,7 @@ install: build
 
 build-all: build-linux build-darwin build-windows
 
-build-linux: build-linux-386 build-linux-amd64 build-linux-arm build-linux-arm64
+build-linux: build-linux-386 build-linux-amd64 build-linux-arm build-linux-arm64 build-linux-s390x
 build-linux-386:
 	GOOS=linux GOARCH=386 $(GO) build $(GO_FLAGS) -o bin/linux-386/g
 build-linux-amd64:
