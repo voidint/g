@@ -24,6 +24,8 @@ build-linux-arm:
 	GOOS=linux GOARCH=arm $(GO) build $(GO_FLAGS) -o bin/linux-arm/g
 build-linux-arm64:
 	GOOS=linux GOARCH=arm64 $(GO) build $(GO_FLAGS) -o bin/linux-arm64/g
+build-linux-s390x:
+        GOOS=linux GOARCH=s390x $(GO) build $(GO_FLAGS) -o  bin/linux-s390x/g
 
 
 build-darwin: build-darwin-amd64 build-darwin-arm64

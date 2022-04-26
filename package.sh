@@ -13,6 +13,12 @@ function get_arch() {
     "aarch64" | "arm64")
         echo "arm64"
         ;;
+    "armv6l" | "armv7l")
+        echo "arm"
+        ;;
+    "s390x")
+        echo "s390x"
+        ;;
     *)
         echo ${NIL}
         ;;
@@ -50,7 +56,7 @@ main() {
 
     local release="1.3.0"
 
-    for item in "darwin_amd64" "darwin_arm64" "linux_386" "linux_amd64" "linux_arm" "linux_arm64" "windows_386" "windows_amd64" "windows_arm" "windows_arm64"; do
+    for item in "darwin_amd64" "darwin_arm64" "linux_386" "linux_amd64" "linux_arm" "linux_arm64" "linux_s390x" "windows_386" "windows_amd64" "windows_arm" "windows_arm64"; do
         package ${release} ${item}
     done
 

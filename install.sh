@@ -16,6 +16,9 @@ function get_arch() {
     "armv6l" | "armv7l")
         echo "arm"
 	;;
+    "s390x")
+        echo "s390x"
+        ;;
     *)
         echo ${NIL}
         ;;
