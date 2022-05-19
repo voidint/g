@@ -82,6 +82,7 @@ const (
 	experimentalEnv = "G_EXPERIMENTAL"
 	homeEnv         = "G_HOME"
 	mirrorEnv       = "G_MIRROR"
+	dlURLEnv        = "G_DL_URL"
 )
 
 // ghome 返回g根目录

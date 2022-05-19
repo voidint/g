@@ -27,7 +27,9 @@ func listRemote(ctx *cli.Context) (err error) {
 		url = version.DefaultURL
 	}
 
-	c, err := version.NewCollector(url)
+	dlURL := os.Getenv(dlURLEnv)
+
+	c, err := version.NewCollector(url, dlURL)
 	if err != nil {
 		return cli.Exit(errstring(err), 1)
 	}

@@ -32,8 +32,10 @@ func install(ctx *cli.Context) (err error) {
 		url = version.DefaultURL
 	}
 
+	dlURL := os.Getenv(dlURLEnv)
+
 	// 查找版本
-	c, err := version.NewCollector(url)
+	c, err := version.NewCollector(url, dlURL)
 	if err != nil {
 		return cli.Exit(errstring(err), 1)
 	}
