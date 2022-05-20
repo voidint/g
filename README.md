@@ -127,6 +127,10 @@ Update completed
 
     由于中国大陆无法自由访问Golang官网，导致查询及下载go版本都变得困难，因此可以通过该环境变量指定一个镜像站点（如`https://golang.google.cn/dl/`），g将从该站点查询、下载可用的go版本。
 
+- 环境变量`G_DL_URL`有什么作用？
+
+    设置`G_MIRROR`环境变量后，最终go的下载地址会重定向到`https://dl.google.com`，有的网络可能无法访问，可以通过该环境变量指定阿里云`https://mirrors.aliyun.com/golang`等类似地址辅助下载。
+
 - 是否支持网络代理？
 
     支持。可在`HTTP_PROXY`、`HTTPS_PROXY`、`http_proxy`、`https_proxy`等环境变量中设置网络代理地址。
