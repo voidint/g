@@ -12,6 +12,7 @@ import (
 	"github.com/voidint/g/build"
 	"github.com/voidint/g/github"
 	"github.com/voidint/g/pkg/checksum"
+	"github.com/voidint/g/pkg/errs"
 )
 
 func update(*cli.Context) (err error) {
@@ -65,7 +66,7 @@ func findChecksum(items []github.Asset) (algo checksum.Algorithm, expectedChecks
 		}
 	}
 	if checksumFileURL == "" {
-		return checksum.SHA256, "", checksum.ErrChecksumFileNotFound
+		return checksum.SHA256, "", errs.ErrChecksumFileNotFound
 	}
 
 	resp, err := http.Get(checksumFileURL)
@@ -85,5 +86,5 @@ func findChecksum(items []github.Asset) (algo checksum.Algorithm, expectedChecks
 	if err = scanner.Err(); err != nil {
 		return checksum.SHA256, "", err
 	}
-	return checksum.SHA256, "", checksum.ErrChecksumFileNotFound
+	return checksum.SHA256, "", errs.ErrChecksumFileNotFound
 }

@@ -1,20 +1,13 @@
 package version
 
 import (
-	"errors"
 	"fmt"
 	"os"
 	"strings"
 
 	"github.com/voidint/g/pkg/checksum"
+	"github.com/voidint/g/pkg/errs"
 	myhttp "github.com/voidint/g/pkg/http"
-)
-
-var (
-	// ErrVersionNotFound 版本不存在
-	ErrVersionNotFound = errors.New("version not found")
-	// ErrPackageNotFound 版本包不存在
-	ErrPackageNotFound = errors.New("installation package not found")
 )
 
 // FindVersion 返回指定名称的版本
@@ -24,7 +17,7 @@ func FindVersion(all []*Version, name string) (*Version, error) {
 			return all[i], nil
 		}
 	}
-	return nil, ErrVersionNotFound
+	return nil, errs.ErrVersionNotFound
 }
 
 // Version go版本
@@ -43,7 +36,7 @@ func (v *Version) FindPackage(kind, goos, goarch string) (*Package, error) {
 		return v.Packages[i], nil
 	}
 
-	return nil, ErrPackageNotFound
+	return nil, errs.ErrPackageNotFound
 }
 
 // FindPackages 返回指定操作系统和硬件架构的版本包
@@ -56,21 +49,22 @@ func (v *Version) FindPackages(kind, goos, goarch string) (pkgs []*Package, err 
 		pkgs = append(pkgs, v.Packages[i])
 	}
 	if len(pkgs) == 0 {
-		return nil, ErrPackageNotFound
+		return nil, errs.ErrPackageNotFound
 	}
 	return pkgs, nil
 }
 
 // Package go版本安装包
 type Package struct {
-	FileName  string
-	URL       string
-	Kind      string
-	OS        string
-	Arch      string
-	Size      string
-	Checksum  string
-	Algorithm string // checksum algorithm
+	FileName    string
+	URL         string
+	Kind        string
+	OS          string
+	Arch        string
+	Size        string
+	Checksum    string
+	ChecksumURL string
+	Algorithm   string // checksum algorithm
 }
 
 const (
@@ -96,6 +90,13 @@ const (
 
 // VerifyChecksum 验证目标文件的校验和与当前安装包的校验和是否一致
 func (pkg *Package) VerifyChecksum(filename string) (err error) {
+	if pkg.Checksum == "" && pkg.ChecksumURL != "" {
+		data, err := myhttp.DownloadAsBytes(pkg.ChecksumURL)
+		if err != nil {
+			return err
+		}
+		pkg.Checksum = string(data)
+	}
 	var algo checksum.Algorithm
 	switch pkg.Algorithm {
 	case SHA256:
@@ -103,7 +104,7 @@ func (pkg *Package) VerifyChecksum(filename string) (err error) {
 	case SHA1:
 		algo = checksum.SHA1
 	default:
-		return checksum.ErrUnsupportedChecksumAlgorithm
+		return errs.ErrUnsupportedChecksumAlgorithm
 	}
 	return checksum.VerifyFile(algo, pkg.Checksum, filename)
 }

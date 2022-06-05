@@ -1,4 +1,4 @@
-package version
+package official
 
 import (
 	"fmt"
@@ -7,45 +7,18 @@ import (
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
+	"github.com/voidint/g/pkg/errs"
+	"github.com/voidint/g/version"
 )
 
-// URLUnreachableError URL不可达错误
-type URLUnreachableError struct {
-	err error
-	url string
-}
-
-// NewURLUnreachableError 返回URL不可达错误实例
-func NewURLUnreachableError(url string, err error) error {
-	return &URLUnreachableError{
-		err: err,
-		url: url,
-	}
-}
-
-func (e URLUnreachableError) Error() string {
-	var buf strings.Builder
-	buf.WriteString(fmt.Sprintf("URL %q is unreachable", e.url))
-	if e.err != nil {
-		buf.WriteString(" ==> " + e.err.Error())
-	}
-	return buf.String()
-}
-
-func (e URLUnreachableError) Err() error {
-	return e.err
-}
-
-func (e URLUnreachableError) URL() string {
-	return e.url
-}
+// var _ collector.Collector = (*Collector)(nil)
 
 const (
-	// DefaultURL 提供go版本信息的默认网址
-	DefaultURL = "https://go.dev/dl/"
+	// DefaultDownloadPageURL 官方下载站点网址
+	DefaultDownloadPageURL = "https://go.dev/dl/"
 )
 
-// Collector go版本信息采集器
+// Collector 官方站点版本采集器
 type Collector struct {
 	url  string
 	pURL *stdurl.URL
@@ -72,17 +45,17 @@ func NewCollector(url string) (*Collector, error) {
 func (c *Collector) loadDocument() (err error) {
 	resp, err := http.Get(c.url)
 	if err != nil {
-		return NewURLUnreachableError(c.url, err)
+		return errs.NewURLUnreachableError(c.url, err)
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode != http.StatusOK {
-		return NewURLUnreachableError(c.url, nil)
+		return errs.NewURLUnreachableError(c.url, nil)
 	}
 	c.doc, err = goquery.NewDocumentFromReader(resp.Body)
 	return err
 }
 
-func (c *Collector) findPackages(table *goquery.Selection) (pkgs []*Package) {
+func (c *Collector) findPackages(table *goquery.Selection) (pkgs []*version.Package) {
 	alg := strings.TrimSuffix(table.Find("thead").Find("th").Last().Text(), " Checksum")
 
 	table.Find("tr").Not(".first").Each(func(j int, tr *goquery.Selection) {
@@ -91,7 +64,7 @@ func (c *Collector) findPackages(table *goquery.Selection) (pkgs []*Package) {
 		if strings.HasPrefix(href, "/") { // relative paths
 			href = fmt.Sprintf("%s://%s%s", c.pURL.Scheme, c.pURL.Host, href)
 		}
-		pkgs = append(pkgs, &Package{
+		pkgs = append(pkgs, &version.Package{
 			FileName:  td.Eq(0).Find("a").Text(),
 			URL:       href,
 			Kind:      td.Eq(1).Text(),
@@ -105,15 +78,15 @@ func (c *Collector) findPackages(table *goquery.Selection) (pkgs []*Package) {
 	return pkgs
 }
 
-// HasUnstableVersions 返回是否包含非稳定版本的布尔值
-func (c *Collector) HasUnstableVersions() bool {
+// hasUnstableVersions 返回是否包含非稳定版本的布尔值
+func (c *Collector) hasUnstableVersions() bool {
 	return c.doc.Find("#unstable").Length() > 0
 }
 
 // StableVersions 返回所有稳定版本
-func (c *Collector) StableVersions() (items []*Version, err error) {
+func (c *Collector) StableVersions() (items []*version.Version, err error) {
 	var divs *goquery.Selection
-	if c.HasUnstableVersions() {
+	if c.hasUnstableVersions() {
 		divs = c.doc.Find("#stable").NextUntil("#unstable")
 	} else {
 		divs = c.doc.Find("#stable").NextUntil("#archive")
@@ -124,7 +97,7 @@ func (c *Collector) StableVersions() (items []*Version, err error) {
 		if !ok {
 			return
 		}
-		items = append(items, &Version{
+		items = append(items, &version.Version{
 			Name:     strings.TrimPrefix(vname, "go"),
 			Packages: c.findPackages(div.Find("table").First()),
 		})
@@ -133,13 +106,13 @@ func (c *Collector) StableVersions() (items []*Version, err error) {
 }
 
 // UnstableVersions 返回所有非稳定版本
-func (c *Collector) UnstableVersions() (items []*Version, err error) {
+func (c *Collector) UnstableVersions() (items []*version.Version, err error) {
 	c.doc.Find("#unstable").NextUntil("#archive").Each(func(i int, div *goquery.Selection) {
 		vname, ok := div.Attr("id")
 		if !ok {
 			return
 		}
-		items = append(items, &Version{
+		items = append(items, &version.Version{
 			Name:     strings.TrimPrefix(vname, "go"),
 			Packages: c.findPackages(div.Find("table").First()),
 		})
@@ -148,13 +121,13 @@ func (c *Collector) UnstableVersions() (items []*Version, err error) {
 }
 
 // ArchivedVersions 返回已归档版本
-func (c *Collector) ArchivedVersions() (items []*Version, err error) {
+func (c *Collector) ArchivedVersions() (items []*version.Version, err error) {
 	c.doc.Find("#archive").Find("div.toggle").Each(func(i int, div *goquery.Selection) {
 		vname, ok := div.Attr("id")
 		if !ok {
 			return
 		}
-		items = append(items, &Version{
+		items = append(items, &version.Version{
 			Name:     strings.TrimPrefix(vname, "go"),
 			Packages: c.findPackages(div.Find("table").First()),
 		})
@@ -163,7 +136,7 @@ func (c *Collector) ArchivedVersions() (items []*Version, err error) {
 }
 
 // AllVersions 返回所有已知版本
-func (c *Collector) AllVersions() (items []*Version, err error) {
+func (c *Collector) AllVersions() (items []*version.Version, err error) {
 	items, err = c.StableVersions()
 	if err != nil {
 		return nil, err

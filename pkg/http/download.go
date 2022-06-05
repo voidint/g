@@ -4,60 +4,27 @@ import (
 	"fmt"
 	"io"
 	"io/fs"
+	"io/ioutil"
 	"net/http"
 	"os"
-	"strings"
 	"time"
 
 	"github.com/k0kubun/go-ansi"
 	"github.com/schollz/progressbar/v3"
+	"github.com/voidint/g/pkg/errs"
 )
-
-// DownloadError 下载失败错误
-type DownloadError struct {
-	url string
-	err error
-}
-
-// NewDownloadError 返回下载失败错误实例
-func NewDownloadError(url string, err error) error {
-	return &DownloadError{
-		url: url,
-		err: err,
-	}
-}
-
-// Error 返回错误字符串
-func (e DownloadError) Error() string {
-	var buf strings.Builder
-	buf.WriteString(fmt.Sprintf("Resource(%s) download failed", e.url))
-	if e.err != nil {
-		buf.WriteString(" ==> " + e.err.Error())
-	}
-	return buf.String()
-}
-
-// Err 返回错误对象
-func (e DownloadError) Err() error {
-	return e.err
-}
-
-// URL 返回资源URL
-func (e DownloadError) URL() string {
-	return e.url
-}
 
 // Download 下载资源并另存为
 func Download(srcURL string, filename string, flag int, perm fs.FileMode, withProgress bool) (size int64, err error) {
 	resp, err := http.Get(srcURL)
 	if err != nil {
-		return 0, NewDownloadError(srcURL, err)
+		return 0, errs.NewDownloadError(srcURL, err)
 	}
 	defer resp.Body.Close()
 
 	f, err := os.OpenFile(filename, flag, perm)
 	if err != nil {
-		return 0, NewDownloadError(srcURL, err)
+		return 0, errs.NewDownloadError(srcURL, err)
 	}
 	defer f.Close()
 
@@ -84,4 +51,14 @@ func Download(srcURL string, filename string, flag int, perm fs.FileMode, withPr
 		dst = f
 	}
 	return io.Copy(dst, resp.Body)
+}
+
+// DownloadAsBytes 返回下载资源的原始字节切片
+func DownloadAsBytes(srcURL string) (data []byte, err error) {
+	resp, err := http.Get(srcURL)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+	return ioutil.ReadAll(resp.Body)
 }

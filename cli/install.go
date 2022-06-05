@@ -12,6 +12,8 @@ import (
 	"github.com/dixonwille/wmenu/v5"
 	"github.com/mholt/archiver/v3"
 	"github.com/urfave/cli/v2"
+	"github.com/voidint/g/collector"
+	"github.com/voidint/g/collector/official"
 	"github.com/voidint/g/version"
 )
 
@@ -29,11 +31,11 @@ func install(ctx *cli.Context) (err error) {
 
 	var url string
 	if url = os.Getenv(mirrorEnv); url == "" {
-		url = version.DefaultURL
+		url = official.DefaultDownloadPageURL
 	}
 
 	// 查找版本
-	c, err := version.NewCollector(url)
+	c, err := collector.NewCollector(url)
 	if err != nil {
 		return cli.Exit(errstring(err), 1)
 	}

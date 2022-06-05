@@ -4,19 +4,11 @@ import (
 	"crypto/sha1"
 	"crypto/sha256"
 	"encoding/hex"
-	"errors"
 	"hash"
 	"io"
 	"os"
-)
 
-var (
-	// ErrUnsupportedChecksumAlgorithm 不支持的校验和算法
-	ErrUnsupportedChecksumAlgorithm = errors.New("unsupported checksum algorithm")
-	// ErrChecksumNotMatched 校验和不匹配
-	ErrChecksumNotMatched = errors.New("file checksum does not match the computed checksum")
-	// ErrChecksumFileNotFound 校验和文件不存在
-	ErrChecksumFileNotFound = errors.New("checksum file not found")
+	"github.com/voidint/g/pkg/errs"
 )
 
 // Algorithm 校验和算法
@@ -44,7 +36,7 @@ func VerifyFile(algo Algorithm, expectedChecksum, filename string) (err error) {
 	case SHA1:
 		h = sha1.New()
 	default:
-		return ErrUnsupportedChecksumAlgorithm
+		return errs.ErrUnsupportedChecksumAlgorithm
 	}
 
 	if _, err = io.Copy(h, f); err != nil {
@@ -52,7 +44,7 @@ func VerifyFile(algo Algorithm, expectedChecksum, filename string) (err error) {
 	}
 
 	if expectedChecksum != hex.EncodeToString(h.Sum(nil)) {
-		return ErrChecksumNotMatched
+		return errs.ErrChecksumNotMatched
 	}
 	return nil
 }
