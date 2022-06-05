@@ -10,9 +10,9 @@ import (
 	"github.com/Masterminds/semver"
 	"github.com/urfave/cli/v2"
 	"github.com/voidint/g/build"
-	"github.com/voidint/g/github"
 	"github.com/voidint/g/pkg/checksum"
 	"github.com/voidint/g/pkg/errs"
+	"github.com/voidint/g/pkg/sdk/github"
 )
 
 func update(*cli.Context) (err error) {
