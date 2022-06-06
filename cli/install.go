@@ -79,6 +79,23 @@ func install(ctx *cli.Context) (err error) {
 		pkg = pkgs[0]
 	}
 
+	var checksumNotFound, skipChecksum bool
+	if pkg.Checksum == "" && pkg.ChecksumURL == "" {
+		checksumNotFound = true
+		menu := wmenu.NewMenu("Checksum file not found, do you want to continue?")
+		menu.IsYesNo(wmenu.DefN)
+		menu.Action(func(opts []wmenu.Opt) error {
+			skipChecksum = opts[0].Value.(string) == "yes"
+			return nil
+		})
+		if err = menu.Run(); err != nil {
+			return cli.Exit(errstring(err), 1)
+		}
+	}
+	if checksumNotFound && !skipChecksum {
+		return
+	}
+
 	var ext string
 	if runtime.GOOS == "windows" {
 		ext = "zip"
@@ -93,19 +110,25 @@ func install(ctx *cli.Context) (err error) {
 			return cli.Exit(errstring(err), 1)
 		}
 
-		fmt.Println("Computing checksum with", pkg.Algorithm)
-		if err = pkg.VerifyChecksum(filename); err != nil {
-			return cli.Exit(errstring(err), 1)
+		if !skipChecksum {
+			fmt.Println("Computing checksum with", pkg.Algorithm)
+			if err = pkg.VerifyChecksum(filename); err != nil {
+				return cli.Exit(errstring(err), 1)
+			}
+			fmt.Println("Checksums matched")
 		}
+
 	} else {
-		// 本地存在安装包，检查校验和。
-		fmt.Println("Computing checksum with", pkg.Algorithm)
-		if err = pkg.VerifyChecksum(filename); err != nil {
-			_ = os.Remove(filename)
-			return cli.Exit(errstring(err), 1)
+		if !skipChecksum {
+			// 本地存在安装包，检查校验和。
+			fmt.Println("Computing checksum with", pkg.Algorithm)
+			if err = pkg.VerifyChecksum(filename); err != nil {
+				_ = os.Remove(filename)
+				return cli.Exit(errstring(err), 1)
+			}
+			fmt.Println("Checksums matched")
 		}
 	}
-	fmt.Println("Checksums matched")
 
 	// 删除可能存在的历史垃圾文件
 	_ = os.RemoveAll(filepath.Join(versionsDir, "go"))
