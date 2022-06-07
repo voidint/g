@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/voidint/g/version"
 )
 
 func Test_getGoVersion(t *testing.T) {
@@ -184,7 +185,7 @@ func Test_getKind(t *testing.T) {
 				FileName: "go1.10.1.darwin-amd64.pkg",
 				URL:      "https://mirrors.aliyun.com/golang/go1.10.1.darwin-amd64.pkg",
 			},
-			Expected: "Installer",
+			Expected: version.InstallerKind,
 		},
 		{
 			In: &goFileItem{
@@ -205,7 +206,7 @@ func Test_getKind(t *testing.T) {
 				FileName: "go1.10.1.linux-arm64.tar.gz",
 				URL:      "https://mirrors.aliyun.com/golang/go1.10.1.linux-arm64.tar.gz",
 			},
-			Expected: "Archive",
+			Expected: version.ArchiveKind,
 		},
 		{
 			In: &goFileItem{
@@ -219,21 +220,21 @@ func Test_getKind(t *testing.T) {
 				FileName: "go1.10.1.windows-386.msi",
 				URL:      "https://mirrors.aliyun.com/golang/go1.10.1.windows-386.msi",
 			},
-			Expected: "Installer",
+			Expected: version.InstallerKind,
 		},
 		{
 			In: &goFileItem{
 				FileName: "go1.10.1.windows-386.zip",
 				URL:      "https://mirrors.aliyun.com/golang/go1.10.1.windows-386.zip",
 			},
-			Expected: "Archive",
+			Expected: version.ArchiveKind,
 		},
 		{
 			In: &goFileItem{
 				FileName: "go1.10.2.src.tar.gz",
 				URL:      "https://mirrors.aliyun.com/golang/go1.10.2.src.tar.gz",
 			},
-			Expected: "Source",
+			Expected: version.SourceKind,
 		},
 	}
 	t.Run("从文件名中获取文件类型", func(t *testing.T) {

@@ -43,13 +43,13 @@ func (item goFileItem) isPackageFile() bool {
 
 func (item goFileItem) getKind() string {
 	if strings.HasSuffix(item.FileName, ".src.tar.gz") {
-		return "Source"
+		return version.SourceKind
 	}
 	if strings.HasSuffix(item.FileName, ".tar.gz") || strings.HasSuffix(item.FileName, ".zip") {
-		return "Archive"
+		return version.ArchiveKind
 	}
 	if strings.HasSuffix(item.FileName, ".pkg") || strings.HasSuffix(item.FileName, ".msi") {
-		return "Installer"
+		return version.InstallerKind
 	}
 	return "Unknown"
 }

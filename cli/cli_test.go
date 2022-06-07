@@ -10,19 +10,19 @@ import (
 	"time"
 
 	"github.com/Masterminds/semver"
-	. "github.com/smartystreets/goconvey/convey"
+	"github.com/stretchr/testify/assert"
 )
 
 func Test_ghome(t *testing.T) {
-	Convey("查询ghome路径", t, func() {
+	t.Run("查询ghome路径", func(t *testing.T) {
 		home, err := os.UserHomeDir()
-		So(err, ShouldBeNil)
-		So(ghome(), ShouldEqual, filepath.Join(home, ".g"))
+		assert.Nil(t, err)
+		assert.Equal(t, filepath.Join(home, ".g"), ghome())
 	})
 }
 
 func Test_inuse(t *testing.T) {
-	Convey("查询当前使用中的go版本", t, func() {
+	t.Run("查询当前使用中的go版本", func(t *testing.T) {
 		rootDir := filepath.Join(os.TempDir(), fmt.Sprintf(".g_%d", time.Now().Unix()))
 		goroot = filepath.Join(rootDir, "go")
 		versionsDir = filepath.Join(rootDir, "versions")
@@ -32,13 +32,13 @@ func Test_inuse(t *testing.T) {
 		_ = os.MkdirAll(vDir, 0755)
 		defer os.RemoveAll(rootDir)
 
-		So(mkSymlink(vDir, goroot), ShouldBeNil)
-		So(inuse(goroot), ShouldEqual, "1.12.6")
+		assert.Nil(t, mkSymlink(vDir, goroot))
+		assert.Equal(t, "1.12.6", inuse(goroot))
 	})
 }
 
 func Test_render(t *testing.T) {
-	Convey("渲染go版本列表", t, func() {
+	t.Run("渲染go版本列表", func(t *testing.T) {
 		var buf strings.Builder
 		v0, _ := semver.NewVersion("1.13-beta1")
 		v1, _ := semver.NewVersion("1.11.11")
@@ -47,19 +47,19 @@ func Test_render(t *testing.T) {
 		items := []*semver.Version{v0, v1, v2, v3}
 
 		render("1.8.1", items, &buf)
-		So(buf.String(), ShouldEqual, "  1.7\n* 1.8.1\n  1.11.11\n  1.13beta1\n")
+		assert.Equal(t, "  1.7\n* 1.8.1\n  1.11.11\n  1.13beta1\n", buf.String())
 	})
 }
 
 func Test_wrapstring(t *testing.T) {
-	Convey("包装字符串", t, func() {
-		So(wrapstring("hello world"), ShouldEqual, "[g] Hello world")
+	t.Run("包装字符串", func(t *testing.T) {
+		assert.Equal(t, "[g] Hello world", wrapstring("hello world"))
 	})
 }
 
 func Test_errstring(t *testing.T) {
-	Convey("返回错误字符串", t, func() {
-		So(errstring(nil), ShouldBeBlank)
-		So(errstring(errors.New("hello world")), ShouldEqual, "[g] Hello world")
+	t.Run("返回错误字符串", func(t *testing.T) {
+		assert.Equal(t, "", errstring(nil))
+		assert.Equal(t, "[g] Hello world", errstring(errors.New("hello world")))
 	})
 }
