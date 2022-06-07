@@ -125,13 +125,13 @@ Update completed
 ## FAQ
 - 环境变量`G_MIRROR`有什么作用？
 
-    由于中国大陆无法自由访问Golang官网，导致查询及下载go版本都变得困难，因此可以通过该环境变量指定一个镜像站点（如`https://golang.google.cn/dl/`），g将从该站点查询、下载可用的go版本。
+    由于中国大陆无法自由访问 Golang 官网，导致查询及下载 go 版本都变得困难，因此可以通过该环境变量指定一个镜像站点（如`https://golang.google.cn/dl/`），g 将从该站点查询、下载可用的 go 版本。那支持的镜像站点有哪些？除了前面提到的官方镜像站点，阿里云开源镜像站点（`https://mirrors.aliyun.com/golang/`）也已加入支持。
 
 - 是否支持网络代理？
 
     支持。可在`HTTP_PROXY`、`HTTPS_PROXY`、`http_proxy`、`https_proxy`等环境变量中设置网络代理地址。
 
-- 支持哪些Windows版本？
+- 支持哪些 Windows 版本？
 
     因为`g`的实现上依赖于`符号链接`，因此操作系统必须是`Windows Vista`及以上版本。
 
