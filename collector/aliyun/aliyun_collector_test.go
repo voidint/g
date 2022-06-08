@@ -31,6 +31,24 @@ func Test_findGoFileItems(t *testing.T) {
 
 	t.Run("", func(t *testing.T) {
 		items := c.findGoFileItems(c.doc.Find(".table"))
-		assert.NotEmpty(t, items)
+		assert.True(t, len(items) >= 11)
+
+		for i, gfi := range []*goFileItem{
+			{FileName: "go1.10.1.darwin-amd64.pkg", URL: DownloadPageURL + "go1.10.1.darwin-amd64.pkg", Size: "111.5 MB"},
+			{FileName: "go1.10.1.darwin-amd64.pkg.sha256", URL: DownloadPageURL + "go1.10.1.darwin-amd64.pkg.sha256", Size: "64.0 B"},
+			{FileName: "go1.10.1.darwin-amd64.tar.gz", URL: DownloadPageURL + "go1.10.1.darwin-amd64.tar.gz", Size: "112.4 MB"},
+			{FileName: "go1.10.1.darwin-amd64.tar.gz.asc", URL: DownloadPageURL + "go1.10.1.darwin-amd64.tar.gz.asc", Size: "819.0 B"},
+			{FileName: "go1.10.1.darwin-amd64.tar.gz.sha256", URL: DownloadPageURL + "go1.10.1.darwin-amd64.tar.gz.sha256", Size: "64.0 B"},
+			{FileName: "go1.10.1.freebsd-386.tar.gz", URL: DownloadPageURL + "go1.10.1.freebsd-386.tar.gz", Size: "99.0 MB"},
+			{FileName: "go1.10.1.freebsd-386.tar.gz.asc", URL: DownloadPageURL + "go1.10.1.freebsd-386.tar.gz.asc", Size: "819.0 B"},
+			{FileName: "go1.10.1.freebsd-386.tar.gz.sha256", URL: DownloadPageURL + "go1.10.1.freebsd-386.tar.gz.sha256", Size: "64.0 B"},
+			{FileName: "go1.10.1.freebsd-amd64.tar.gz", URL: DownloadPageURL + "go1.10.1.freebsd-amd64.tar.gz", Size: "110.3 MB"},
+			{FileName: "go1.10.1.freebsd-amd64.tar.gz.asc", URL: DownloadPageURL + "go1.10.1.freebsd-amd64.tar.gz.asc", Size: "819.0 B"},
+			{FileName: "go1.10.1.freebsd-amd64.tar.gz.sha256", URL: DownloadPageURL + "go1.10.1.freebsd-amd64.tar.gz.sha256", Size: "64.0 B"},
+		} {
+			assert.Equal(t, gfi.FileName, items[i].FileName)
+			assert.Equal(t, gfi.URL, items[i].URL)
+			assert.Equal(t, gfi.Size, items[i].Size)
+		}
 	})
 }
