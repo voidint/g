@@ -6,6 +6,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"runtime"
+	"strings"
 
 	ct "github.com/daviddengcn/go-colortext"
 	"github.com/dixonwille/wlog/v3"
@@ -13,7 +14,6 @@ import (
 	"github.com/mholt/archiver/v3"
 	"github.com/urfave/cli/v2"
 	"github.com/voidint/g/collector"
-	"github.com/voidint/g/collector/official"
 	"github.com/voidint/g/version"
 )
 
@@ -29,13 +29,8 @@ func install(ctx *cli.Context) (err error) {
 		return cli.Exit(fmt.Sprintf("[g] %q version has been installed.", vname), 1)
 	}
 
-	var url string
-	if url = os.Getenv(mirrorEnv); url == "" {
-		url = official.DefaultDownloadPageURL
-	}
-
 	// 查找版本
-	c, err := collector.NewCollector(url)
+	c, err := collector.NewCollector(strings.Split(os.Getenv(mirrorEnv), ",")...)
 	if err != nil {
 		return cli.Exit(errstring(err), 1)
 	}

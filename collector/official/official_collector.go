@@ -27,6 +27,9 @@ type Collector struct {
 
 // NewCollector 返回采集器实例
 func NewCollector(url string) (*Collector, error) {
+	if url == "" {
+		url = DefaultDownloadPageURL
+	}
 	pURL, err := stdurl.Parse(url)
 	if err != nil {
 		return nil, err

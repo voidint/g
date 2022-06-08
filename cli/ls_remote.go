@@ -8,7 +8,6 @@ import (
 	"github.com/k0kubun/go-ansi"
 	"github.com/urfave/cli/v2"
 	"github.com/voidint/g/collector"
-	"github.com/voidint/g/collector/official"
 	"github.com/voidint/g/version"
 )
 
@@ -24,12 +23,7 @@ func listRemote(ctx *cli.Context) (err error) {
 		return cli.ShowSubcommandHelp(ctx)
 	}
 
-	var url string
-	if url = os.Getenv(mirrorEnv); url == "" {
-		url = official.DefaultDownloadPageURL
-	}
-
-	c, err := collector.NewCollector(url)
+	c, err := collector.NewCollector(strings.Split(os.Getenv(mirrorEnv), ",")...)
 	if err != nil {
 		return cli.Exit(errstring(err), 1)
 	}

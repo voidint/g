@@ -20,10 +20,23 @@ type Collector interface {
 	AllVersions() (items []*version.Version, err error)
 }
 
-// NewCollector 返回采集器实例
-func NewCollector(url string) (Collector, error) {
-	if strings.HasPrefix(aliyun.DownloadPageURL, url) {
-		return aliyun.NewCollector()
+// NewCollector 返回首个可用的采集器实例
+func NewCollector(urls ...string) (c Collector, err error) {
+	if len(urls) == 0 {
+		urls = []string{official.DefaultDownloadPageURL}
 	}
-	return official.NewCollector(url)
+	for i := range urls {
+		urls[i] = strings.TrimSpace(urls[i])
+
+		if urls[i] != "" && (strings.HasPrefix(aliyun.DownloadPageURL, urls[i]) || strings.HasPrefix(urls[i], aliyun.DownloadPageURL)) {
+			if c, err = aliyun.NewCollector(); err == nil {
+				return c, nil
+			}
+		}
+
+		if c, err = official.NewCollector(urls[i]); err == nil {
+			return c, nil
+		}
+	}
+	return c, err
 }
