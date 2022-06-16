@@ -127,7 +127,7 @@ Update completed
 
     由于中国大陆无法自由访问 Golang 官网，导致查询及下载 go 版本都变得困难，因此可以通过该环境变量指定一个或多个镜像站点（多个镜像站点之间使用英文逗号分隔），g 将从该站点查询、下载可用的 go 版本。已知的可用镜像站点如下：
     - Go官方镜像站点：https://golang.google.cn/dl/
-    - Go语言中文网：https://studygolang.com/dl/
+    - Go语言中文网：https://studygolang.com/dl
     - 阿里云开源镜像站点：https://mirrors.aliyun.com/golang/
     
 
