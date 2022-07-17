@@ -130,6 +130,13 @@ Update completed
     - Go语言中文网：https://studygolang.com/dl
     - 阿里云开源镜像站点：https://mirrors.aliyun.com/golang/
     
+- 环境变量`G_EXPERIMENTAL`有什么作用？
+
+    当该环境变量的值为`true`时，将**开启所有的实验特性**。
+
+- 环境变量`G_HOME`有什么作用？
+
+    按照惯例，g 默认会将`~/.g`目录作为其家目录。若想自定义家目录（Windows 用户需求强烈），可使用该环境变量切换到其他家目录。由于**该特性还属于实验特性**，需要先开启实验特性开关`G_EXPERIMENTAL=true`才能生效。特别注意，该方案并不十分完美，因此才将其归类为实验特性，详见[#18](https://github.com/voidint/g/issues/18)。
 
 - 是否支持网络代理？
 
