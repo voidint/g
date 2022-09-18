@@ -32,6 +32,14 @@ func Download(srcURL string, filename string, flag int, perm fs.FileMode, withPr
 	if withProgress {
 		bar := progressbar.NewOptions64(
 			resp.ContentLength,
+			progressbar.OptionEnableColorCodes(true),
+			progressbar.OptionSetTheme(progressbar.Theme{
+				Saucer:        "[green]=[reset]",
+				SaucerHead:    "[green]>[reset]",
+				SaucerPadding: " ",
+				BarStart:      "[",
+				BarEnd:        "]",
+			}),
 			progressbar.OptionSetWidth(15),
 			progressbar.OptionSetDescription("Downloading"),
 			progressbar.OptionSetWriter(ansi.NewAnsiStdout()),
