@@ -138,6 +138,10 @@ Update completed
 
     按照惯例，g 默认会将`~/.g`目录作为其家目录。若想自定义家目录（Windows 用户需求强烈），可使用该环境变量切换到其他家目录。由于**该特性还属于实验特性**，需要先开启实验特性开关`G_EXPERIMENTAL=true`才能生效。特别注意，该方案并不十分完美，因此才将其归类为实验特性，详见[#18](https://github.com/voidint/g/issues/18)。
 
+- macOS 系统下安装 go 版本，g 抛出`[g] Installation package not found`字样的错误提示，是什么原因？
+
+    Go 官方在**1.16**版本中才[加入了对ARM架构的macOS系统的支持](https://go.dev/doc/go1.16#darwin)。因此，ARM 架构的 macOS 系统下均无法安装1.15及以下的版本的 go 安装包。若尝试安装这些版本，g 会抛出`[g] Installation package not found`的错误信息。
+
 - 是否支持网络代理？
 
     支持。可在`HTTP_PROXY`、`HTTPS_PROXY`、`http_proxy`、`https_proxy`等环境变量中设置网络代理地址。
