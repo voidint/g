@@ -34,8 +34,8 @@ func Download(srcURL string, filename string, flag int, perm fs.FileMode, withPr
 			resp.ContentLength,
 			progressbar.OptionEnableColorCodes(true),
 			progressbar.OptionSetTheme(progressbar.Theme{
-				Saucer:        "[green]=[reset]",
-				SaucerHead:    "[green]>[reset]",
+				Saucer:        "=",
+				SaucerHead:    ">",
 				SaucerPadding: " ",
 				BarStart:      "[",
 				BarEnd:        "]",
