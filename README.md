@@ -29,19 +29,31 @@
     # 建议安装前清空`GOROOT`、`GOBIN`等环境变量
     $ curl -sSL https://raw.githubusercontent.com/voidint/g/master/install.sh | bash
     $ echo "unalias g" >> ~/.bashrc # 可选。若其他程序（如'git'）使用了'g'作为别名。
-    $ source ~/.bashrc # 或者 source ~/.zshrc
+    $ source "$HOME/.g/env"
     ```
 
 ### 手动安装
 - 下载[release](https://github.com/voidint/g/releases)的二进制压缩包
-- 将压缩包解压至`PATH`环境变量目录下（如`/usr/local/bin`）
-- 编辑shell环境配置文件（如`~/.bashrc`、`~/.zshrc`...）
+- 将压缩包解压至`PATH`环境变量目录下（推荐`~/.g/bin`目录）
+- 将所需的环境变量写入`~/.g/env`文件
+
+    ``` shell
+    $ cat >~/.g/env <<'EOF'
+    #!/bin/sh
+    # g shell setup
+    export GOROOT="${HOME}/.g/go"
+    export PATH="${HOME}/.g/bin:${HOME}/.g/go/bin:$PATH"
+    export G_MIRROR=https://golang.google.cn/dl/
+    EOF
+    ```
+- 将`~/.g/env`导入到shell环境配置文件（如`~/.bashrc`、`~/.zshrc`...）
 
     ```shell
-    $ cat>>~/.bashrc<<'EOF'
-    export GOROOT="${HOME}/.g/go"
-    export PATH="${HOME}/.g/go/bin:$PATH"
-    export G_MIRROR=https://golang.google.cn/dl/
+    $ cat >>~/.bashrc <<'EOF'
+    # g shell setup
+    if [ -f "${HOME}/.g/env" ]; then
+        . "${HOME}/.g/env"
+    fi
     EOF
     ```
 - 启用环境变量
