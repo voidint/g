@@ -1,9 +1,11 @@
 package github
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"io/ioutil"
+	"net/http"
 	"os"
 	"path/filepath"
 	"strconv"
@@ -11,7 +13,6 @@ import (
 	"time"
 
 	"github.com/Masterminds/semver"
-	"github.com/go-resty/resty/v2"
 	"github.com/mholt/archiver/v3"
 	"github.com/voidint/g/pkg/checksum"
 	myhttp "github.com/voidint/g/pkg/http"
@@ -38,22 +39,31 @@ func (a Asset) IsCompressedFile() bool {
 
 // ReleaseUpdater 版本更新器
 type ReleaseUpdater struct {
-	client *resty.Client
 }
 
 // NewReleaseUpdater 返回版本更新器实例
 func NewReleaseUpdater() *ReleaseUpdater {
-	return &ReleaseUpdater{
-		client: resty.New(),
-	}
+	return new(ReleaseUpdater)
 }
 
 // CheckForUpdates 检查是否有更新
 func (up ReleaseUpdater) CheckForUpdates(current *semver.Version, owner, repo string) (rel *Release, yes bool, err error) {
 	url := fmt.Sprintf("https://api.github.com/repos/%s/%s/releases/latest", owner, repo)
 
+	req, err := http.NewRequest(http.MethodGet, url, nil)
+	if err != nil {
+		return nil, false, err
+	}
+	req.Header.Set("Accept", "application/vnd.github.v3+json")
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return nil, false, err
+	}
+	defer resp.Body.Close()
+
 	var latest Release
-	if _, err = up.client.R().SetHeader("Accept", "application/vnd.github.v3+json").SetResult(&latest).Get(url); err != nil {
+	if err = json.NewDecoder(resp.Body).Decode(&latest); err != nil {
 		return nil, false, err
 	}
 
