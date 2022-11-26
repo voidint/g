@@ -42,7 +42,7 @@
     #!/bin/sh
     # g shell setup
     export GOROOT="${HOME}/.g/go"
-    export PATH="${HOME}/.g/bin:${HOME}/.g/go/bin:$PATH"
+    export PATH="${HOME}/.g/bin:${GOROOT}/bin:$PATH"
     export G_MIRROR=https://golang.google.cn/dl/
     EOF
     ```
