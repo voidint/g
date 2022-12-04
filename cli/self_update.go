@@ -15,7 +15,7 @@ import (
 	"github.com/voidint/g/pkg/sdk/github"
 )
 
-func update(*cli.Context) (err error) {
+func selfUpdate(*cli.Context) (err error) {
 	up := github.NewReleaseUpdater()
 
 	// 检查更新

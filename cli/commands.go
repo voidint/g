@@ -36,15 +36,28 @@ var (
 		},
 		{
 			Name:      "update",
-			Usage:     "Fetch the newest version of g",
+			Usage:     "Download and install updates to g",
 			UsageText: "g update",
-			Action:    update,
+			Action:    selfUpdate,
+			Hidden:    true,
 		},
 		{
 			Name:      "clean",
 			Usage:     "Remove files from the package download directory",
 			UsageText: "g clean",
 			Action:    clean,
+		},
+		{
+			Name:  "self",
+			Usage: "Modify g itself",
+			Subcommands: []*cli.Command{
+				{
+					Name:      "update",
+					Usage:     "Download and install updates to g",
+					UsageText: "g self update",
+					Action:    selfUpdate,
+				},
+			},
 		},
 	}
 )
