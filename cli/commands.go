@@ -57,6 +57,12 @@ var (
 					UsageText: "g self update",
 					Action:    selfUpdate,
 				},
+				{
+					Name:      "uninstall",
+					Usage:     "Uninstall g",
+					UsageText: "g self uninstall",
+					Action:    selfUninstall,
+				},
 			},
 		},
 	}
