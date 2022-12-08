@@ -11,7 +11,7 @@ import (
 
 	"github.com/k0kubun/go-ansi"
 	"github.com/schollz/progressbar/v3"
-	"github.com/voidint/g/pkg/errs"
+	"github.com/voidint/g/internal/pkg/errs"
 )
 
 // Download 下载资源并另存为

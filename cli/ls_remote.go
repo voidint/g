@@ -7,8 +7,8 @@ import (
 	"github.com/Masterminds/semver"
 	"github.com/k0kubun/go-ansi"
 	"github.com/urfave/cli/v2"
-	"github.com/voidint/g/collector"
-	"github.com/voidint/g/version"
+	"github.com/voidint/g/internal/collector"
+	"github.com/voidint/g/internal/version"
 )
 
 const (

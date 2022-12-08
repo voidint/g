@@ -7,8 +7,8 @@ import (
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
-	"github.com/voidint/g/pkg/errs"
-	"github.com/voidint/g/version"
+	"github.com/voidint/g/internal/pkg/errs"
+	"github.com/voidint/g/internal/version"
 )
 
 // var _ collector.Collector = (*Collector)(nil)

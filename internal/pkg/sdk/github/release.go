@@ -14,8 +14,8 @@ import (
 
 	"github.com/Masterminds/semver"
 	"github.com/mholt/archiver/v3"
-	"github.com/voidint/g/pkg/checksum"
-	myhttp "github.com/voidint/g/pkg/http"
+	"github.com/voidint/g/internal/pkg/checksum"
+	myhttp "github.com/voidint/g/internal/pkg/http"
 	"github.com/voidint/go-update"
 )
 

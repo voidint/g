@@ -5,9 +5,9 @@ import (
 	"os"
 	"strings"
 
-	"github.com/voidint/g/pkg/checksum"
-	"github.com/voidint/g/pkg/errs"
-	myhttp "github.com/voidint/g/pkg/http"
+	"github.com/voidint/g/internal/pkg/checksum"
+	"github.com/voidint/g/internal/pkg/errs"
+	myhttp "github.com/voidint/g/internal/pkg/http"
 )
 
 // FindVersion 返回指定名称的版本

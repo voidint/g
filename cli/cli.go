@@ -7,11 +7,12 @@ import (
 	"path/filepath"
 	"sort"
 	"strings"
+	"time"
 
 	"github.com/Masterminds/semver"
 	"github.com/fatih/color"
 	"github.com/urfave/cli/v2"
-	"github.com/voidint/g/build"
+	"github.com/voidint/g/internal/build"
 )
 
 var (
@@ -27,8 +28,10 @@ func Run() {
 	app.Name = "g"
 	app.Usage = "Golang Version Manager"
 	app.Version = build.Version()
-	app.Copyright = "Copyright (c) 2019-2022, voidint. All rights reserved."
-	app.Authors = []*cli.Author{{Name: "voidint", Email: "voidint@126.com"}}
+	app.Copyright = fmt.Sprintf("Copyright (c) 2019-%d, voidint. All rights reserved.", time.Now().Year())
+	app.Authors = []*cli.Author{
+		{Name: "voidint", Email: "voidint@126.com"},
+	}
 
 	app.Before = func(ctx *cli.Context) (err error) {
 		ghomeDir = ghome()
