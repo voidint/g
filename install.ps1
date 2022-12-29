@@ -1,7 +1,7 @@
 $release="1.4.0"
 $os="windows"
 $arch="amd64"
-$base_dir="./g"
+$base_dir="$HOME/.g"
 $dest_file="${base_dir}/downloads/g${release}.${os}-${arch}.zip"
 $url="https://github.com/voidint/g/releases/download/v${release}/g${release}.${os}-${arch}.zip"
 
