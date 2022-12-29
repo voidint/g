@@ -32,7 +32,7 @@
     $ source "$HOME/.g/env"
     ```
 
-### 手动安装
+### 手动安装(linux/mac)
 - 下载[release](https://github.com/voidint/g/releases)的二进制压缩包
 - 将压缩包解压至`PATH`环境变量目录下（推荐`~/.g/bin`目录）
 - 将所需的环境变量写入`~/.g/env`文件
@@ -60,6 +60,20 @@
     ```shell
     $ source ~/.bashrc # 或source ~/.zshrc
     ```
+
+### 手动安装（windows系统 + powershell）
+
+- 创建目录`mkdir ~/.g/bin`
+- 下载[release](https://github.com/voidint/g/releases)的windows版本的二进制压缩包, 解压之后放到`~/.g/bin`目录下
+- 默认二进制文件名是g.exe, 如果你已经用g这个命令已经用作为git的缩写，那么你可以把g.exe改为其他名字，如gvm.exe
+- 执行命令`code $PROFILE`, 这个命令会用vscode打开默认的powershell配置文件
+- 在powershell的默认配置文件中加入如下内容
+
+```ps1
+$env:GOROOT="$HOME\.g\go"
+$env:Path=-join("$HOME\.g\bin;", "$env:GOROOT\bin;", "$env:Path")
+```
+- 再次打开powershell终端，就可以使用g或者gvm命令了
 
 ## 使用
 查询当前可供安装的`stable`状态的go版本
