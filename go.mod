@@ -1,10 +1,10 @@
 module github.com/voidint/g
 
-go 1.18
+go 1.20
 
 require (
 	github.com/Masterminds/semver v1.5.0
-	github.com/PuerkitoBio/goquery v1.8.0
+	github.com/PuerkitoBio/goquery v1.8.1
 	github.com/daviddengcn/go-colortext v1.0.0
 	github.com/dixonwille/wlog/v3 v3.0.1
 	github.com/dixonwille/wmenu/v5 v5.1.0
@@ -12,8 +12,8 @@ require (
 	github.com/k0kubun/go-ansi v0.0.0-20180517002512-3bf9e2903213
 	github.com/mholt/archiver/v3 v3.5.1
 	github.com/schollz/progressbar/v3 v3.12.1
-	github.com/stretchr/testify v1.8.0
-	github.com/urfave/cli/v2 v2.23.5
+	github.com/stretchr/testify v1.8.1
+	github.com/urfave/cli/v2 v2.24.4
 	github.com/voidint/go-update v1.0.0
 )
 
