@@ -48,6 +48,12 @@ var (
 			Action:    clean,
 		},
 		{
+			Name:      "env",
+			Usage:     "Show env variables of g",
+			UsageText: "g env",
+			Action:    showEnv,
+		},
+		{
 			Name:  "self",
 			Usage: "Modify g itself",
 			Subcommands: []*cli.Command{
