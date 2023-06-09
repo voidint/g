@@ -1,6 +1,9 @@
 package build
 
-import "strings"
+import (
+	"runtime"
+	"strings"
+)
 
 const (
 	// ShortVersion 短版本号
@@ -21,6 +24,8 @@ var (
 func Version() string {
 	var buf strings.Builder
 	buf.WriteString(ShortVersion)
+
+	buf.WriteString("\narch: " + runtime.GOARCH)
 
 	if Build != "" {
 		buf.WriteByte('\n')
