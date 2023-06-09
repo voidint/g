@@ -1,6 +1,8 @@
 package build
 
 import (
+	"fmt"
+	"os"
 	"runtime"
 	"strings"
 )
@@ -10,14 +12,14 @@ const (
 	ShortVersion = "1.5.0"
 )
 
-// The value of variables come form `gb build -ldflags '-X "build.Build=xxxxx" -X "build.CommitID=xxxx"' `
+// The value of variables come form `gb build -ldflags '-X "build.Built=xxxxx" -X "build.CommitID=xxxx"' `
 var (
-	// Build build time
-	Build string
-	// Branch current git branch
-	Branch string
-	// Commit git commit id
-	Commit string
+	// Built build time
+	Built string
+	// GitBranch current git branch
+	GitBranch string
+	// GitCommit git commit id
+	GitCommit string
 )
 
 // Version 生成版本信息
@@ -25,22 +27,17 @@ func Version() string {
 	var buf strings.Builder
 	buf.WriteString(ShortVersion)
 
-	buf.WriteString("\narch: " + runtime.GOARCH)
-
-	if Build != "" {
-		buf.WriteByte('\n')
-		buf.WriteString("build: ")
-		buf.WriteString(Build)
+	if Built != "" {
+		buf.WriteString(fmt.Sprintf("\n%-15s%s", "Built:", Built))
 	}
-	if Branch != "" {
-		buf.WriteByte('\n')
-		buf.WriteString("branch: ")
-		buf.WriteString(Branch)
+	if GitBranch != "" {
+		buf.WriteString(fmt.Sprintf("\n%-15s%s", "Git branch:", GitBranch))
 	}
-	if Commit != "" {
-		buf.WriteByte('\n')
-		buf.WriteString("commit: ")
-		buf.WriteString(Commit)
+	if GitCommit != "" {
+		buf.WriteString(fmt.Sprintf("\n%-15s%s", "Git commit:", GitCommit))
 	}
+	buf.WriteString(fmt.Sprintf("\n%-15s%s", "Go version:", runtime.Version()))
+	buf.WriteString(fmt.Sprintf("\n%-15s%s/%s", "Os/Arch:", runtime.GOOS, runtime.GOARCH))
+	buf.WriteString(fmt.Sprintf("\n%-15s%t", "Experimental:", os.Getenv("G_EXPERIMENTAL") == "true"))
 	return buf.String()
 }

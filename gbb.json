@@ -4,15 +4,15 @@
     "importpath": "github.com/voidint/g/internal/build",
     "variables": [
         {
-            "variable": "Build",
+            "variable": "Built",
             "value": "{{.Date}}"
         },
         {
-            "variable": "Commit",
+            "variable": "GitCommit",
             "value": "{{.GitCommit}}"
         },
         {
-            "variable": "Branch",
+            "variable": "GitBranch",
             "value": "$(git symbolic-ref --short -q HEAD)"
         }
     ]
