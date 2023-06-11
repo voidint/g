@@ -104,8 +104,33 @@ func inuse(goroot string) (version string) {
 	return filepath.Base(p)
 }
 
+// installed 返回当前的已经安装的go版本号
+func installed() (versions map[string]bool) {
+	dirs, err := os.ReadDir(versionsDir)
+	if err != nil {
+		return
+	}
+
+	inused := inuse(goroot)
+	versions = make(map[string]bool, 0)
+	for _, d := range dirs {
+		if !d.IsDir() {
+			continue
+		}
+		vname := d.Name()
+		v, err := semversioned(vname)
+		if err != nil || v == nil {
+			continue
+		}
+
+		versions[vname] = (vname == inused)
+	}
+
+	return
+}
+
 // render 渲染go版本列表
-func render(curV string, items []*semver.Version, out io.Writer) {
+func render(installed map[string]bool, items []*semver.Version, out io.Writer) {
 	sort.Sort(semver.Collection(items))
 
 	for i := range items {
@@ -114,12 +139,33 @@ func render(curV string, items []*semver.Version, out io.Writer) {
 		if len(fields) > 1 {
 			v += fields[1]
 		}
-		if v == curV {
-			color.New(color.FgGreen).Fprintf(out, "* %s\n", v)
+		if inused, found := installed[v]; found {
+			if inused {
+				color.New(color.FgGreen).Fprintf(out, "* %s\n", v)
+			} else {
+				color.New(color.FgGreen).Fprintf(out, "  %s\n", v)
+			}
 		} else {
 			fmt.Fprintf(out, "  %s\n", v)
 		}
 	}
+}
+
+func semversioned(vname string) (*semver.Version, error) {
+	var idx int
+	if strings.Contains(vname, "alpha") {
+		idx = strings.Index(vname, "alpha")
+
+	} else if strings.Contains(vname, "beta") {
+		idx = strings.Index(vname, "beta")
+
+	} else if strings.Contains(vname, "rc") {
+		idx = strings.Index(vname, "rc")
+	}
+	if idx > 0 {
+		vname = vname[:idx] + "-" + vname[idx:]
+	}
+	return semver.NewVersion(vname)
 }
 
 // errstring 返回统一格式的错误信息
