@@ -1,12 +1,12 @@
-$release="1.5.0"
-$os="windows"
-$arch="amd64"
-$base_dir="$HOME/.g"
-$dest_file="${base_dir}/downloads/g${release}.${os}-${arch}.zip"
-$url="https://github.com/voidint/g/releases/download/v${release}/g${release}.${os}-${arch}.zip"
+$release = "1.5.0"
+$os = "windows"
+$arch = "amd64"
+$base_dir = "$HOME\.g"
+$dest_file = "${base_dir}\downloads\g${release}.${os}-${arch}.zip"
+$url = "https://github.com/voidint/g/releases/download/v${release}/g${release}.${os}-${arch}.zip"
 
 function NewDirs () {
-    New-Item -Path "$base_dir/downloads","$base_dir/bin" -ItemType "directory"
+    New-Item -Force -Path "$base_dir/downloads", "$base_dir/bin" -ItemType "directory"
 }
 
 function CleanDirs() {
@@ -21,24 +21,45 @@ function InstallG () {
     Expand-Archive "$dest_file" "$base_dir/bin/"
 }
 
-function SetEnv () {
-    $e1='$env:GOROOT="$HOME\.g\go"'
-    $e2='$env:Path=-join("$HOME\.g\bin;", "$env:GOROOT\bin;", "$env:Path")'
 
-    Out-File -InputObject "" -Append -NoClobber -FilePath $PROFILE
-    Out-File -InputObject $e1 -Append -NoClobber -FilePath $PROFILE
-    Out-File -InputObject $e2 -Append -NoClobber -FilePath $PROFILE
+function setHOME() {
+    [System.Environment]::SetEnvironmentVariable("G_HOME", $base_dir, [System.EnvironmentVariableTarget]::User)
+    [System.Environment]::SetEnvironmentVariable("GOROOT", "$base_dir\go", [System.EnvironmentVariableTarget]::User)
 }
 
 
-Write-Output "[1/3] Downloading ${url}"
+function setPath() {
+    $paths = [System.Environment]::GetEnvironmentVariable("PATH", [System.EnvironmentVariableTarget]::User) -split ';'
+    $newPaths = @("%G_HOME%\bin", "%GOROOT%\bin", "%GOPATH%\bin")
+
+    foreach ($p in $newPaths) {
+        if ($p -in $paths) {
+            Write-Output "$p already exists"
+            continue
+        }
+
+        [System.Environment]::SetEnvironmentVariable(
+            "PATH",
+            [System.Environment]::GetEnvironmentVariable("PATH", [System.EnvironmentVariableTarget]::User) + ";$p",
+            [System.EnvironmentVariableTarget]::User
+        )
+        Write-Host -ForegroundColor Green "$p appended"
+    }
+}
+
+function SetEnv () {
+    setHOME
+    setPath
+}
+
+Write-Host -ForegroundColor Blue "[1/3] Downloading ${url}"
 NewDirs
 DownloadRelease
 
-Write-Output "[2/3] Install g to the ${HOME}/.g/bin"
+Write-Host -ForegroundColor Blue "[2/3] Install g to the ${HOME}/.g/bin"
 InstallG
 
-Write-Output "[3/3] Set environment variables"
+Write-Host -ForegroundColor Blue "[3/3] Set environment variables"
 SetEnv
 
-Write-Output "Done!"
+Write-Host -ForegroundColor Green "Done!"
