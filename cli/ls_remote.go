@@ -44,28 +44,14 @@ func listRemote(ctx *cli.Context) (err error) {
 	}
 
 	items := make([]*semver.Version, 0, len(vs))
-	for i := range vs {
-		vname := vs[i].Name
-		var idx int
-		if strings.Contains(vname, "alpha") {
-			idx = strings.Index(vname, "alpha")
-
-		} else if strings.Contains(vname, "beta") {
-			idx = strings.Index(vname, "beta")
-
-		} else if strings.Contains(vname, "rc") {
-			idx = strings.Index(vname, "rc")
-		}
-		if idx > 0 {
-			vname = vname[:idx] + "-" + vname[idx:]
-		}
-		v, err := semver.NewVersion(vname)
-		if err != nil || v == nil {
+	for _, ver := range vs {
+		v, err := semversioned(ver.Name)
+		if err != nil {
 			continue
 		}
 		items = append(items, v)
 	}
 
-	render(inuse(goroot), items, ansi.NewAnsiStdout())
+	render(installed(), items, ansi.NewAnsiStdout())
 	return nil
 }

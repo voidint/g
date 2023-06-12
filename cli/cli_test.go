@@ -46,7 +46,7 @@ func Test_render(t *testing.T) {
 		v3, _ := semver.NewVersion("1.8.1")
 		items := []*semver.Version{v0, v1, v2, v3}
 
-		render("1.8.1", items, &buf)
+		render(map[string]bool{"1.8.1": true}, items, &buf)
 		assert.Equal(t, "  1.7\n* 1.8.1\n  1.11.11\n  1.13beta1\n", buf.String())
 	})
 }
