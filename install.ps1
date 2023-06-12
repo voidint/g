@@ -1,12 +1,15 @@
 $release = "1.5.0"
 $os = "windows"
 $arch = "amd64"
-$base_dir = "$HOME\.g"
+$default_base_dir="$HOME\.g"
 $dest_file = "${base_dir}\downloads\g${release}.${os}-${arch}.zip"
 $url = "https://github.com/voidint/g/releases/download/v${release}/g${release}.${os}-${arch}.zip"
 
+param([string] $base_dir = "$default_base_dir")
+
+
 function NewDirs () {
-    New-Item -Force -Path "$base_dir/downloads", "$base_dir/bin" -ItemType "directory"
+    New-Item -Force -Path "$base_dir\downloads", "$base_dir\bin" -ItemType "directory"
 }
 
 function CleanDirs() {
@@ -18,11 +21,14 @@ function DownloadRelease() {
 }
 
 function InstallG () {
-    Expand-Archive "$dest_file" "$base_dir/bin/"
+    Expand-Archive "$dest_file" "$base_dir\bin\"
 }
 
 
 function setHOME() {
+    if ($base_dir -ne $default_base_dir) {
+        [System.Environment]::SetEnvironmentVariable("G_EXPERIMENTAL", "true", [System.EnvironmentVariableTarget]::User)
+    }
     [System.Environment]::SetEnvironmentVariable("G_HOME", $base_dir, [System.EnvironmentVariableTarget]::User)
     [System.Environment]::SetEnvironmentVariable("GOROOT", "$base_dir\go", [System.EnvironmentVariableTarget]::User)
 }
@@ -40,7 +46,7 @@ function setPath() {
 
         [System.Environment]::SetEnvironmentVariable(
             "PATH",
-            [System.Environment]::GetEnvironmentVariable("PATH", [System.EnvironmentVariableTarget]::User) + ";$p",
+            [System.Environment]::GetEnvironmentVariable("PATH", [System.EnvironmentVariableTarget]::User) + "$p;",
             [System.EnvironmentVariableTarget]::User
         )
         Write-Host -ForegroundColor Green "$p appended"
@@ -56,7 +62,7 @@ Write-Host -ForegroundColor Blue "[1/3] Downloading ${url}"
 NewDirs
 DownloadRelease
 
-Write-Host -ForegroundColor Blue "[2/3] Install g to the ${HOME}/.g/bin"
+Write-Host -ForegroundColor Blue "[2/3] Install g to the ${base_dir}\bin"
 InstallG
 
 Write-Host -ForegroundColor Blue "[3/3] Set environment variables"
