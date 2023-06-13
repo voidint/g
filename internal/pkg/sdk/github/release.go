@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io/ioutil"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -12,8 +11,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/Masterminds/semver"
+	"github.com/Masterminds/semver/v3"
 	"github.com/mholt/archiver/v3"
+
 	"github.com/voidint/g/internal/pkg/checksum"
 	myhttp "github.com/voidint/g/internal/pkg/http"
 	"github.com/voidint/go-update"
@@ -140,7 +140,7 @@ func (up ReleaseUpdater) unarchive(srcFile, dstDir string) (dstFile string, err 
 		return "", err
 	}
 	// 找到解压缩后的目标文件
-	fis, _ := ioutil.ReadDir(dstDir)
+	fis, _ := os.ReadDir(dstDir)
 	for _, fi := range fis {
 		if strings.HasSuffix(srcFile, fi.Name()) {
 			continue

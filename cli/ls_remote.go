@@ -4,9 +4,10 @@ import (
 	"os"
 	"strings"
 
-	"github.com/Masterminds/semver"
+	"github.com/Masterminds/semver/v3"
 	"github.com/k0kubun/go-ansi"
 	"github.com/urfave/cli/v2"
+
 	"github.com/voidint/g/internal/collector"
 	"github.com/voidint/g/internal/version"
 )

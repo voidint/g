@@ -4,13 +4,13 @@ import (
 	"fmt"
 	"io"
 	"io/fs"
-	"io/ioutil"
 	"net/http"
 	"os"
 	"time"
 
 	"github.com/k0kubun/go-ansi"
 	"github.com/schollz/progressbar/v3"
+
 	"github.com/voidint/g/internal/pkg/errs"
 )
 
@@ -68,5 +68,5 @@ func DownloadAsBytes(srcURL string) (data []byte, err error) {
 		return nil, err
 	}
 	defer resp.Body.Close()
-	return ioutil.ReadAll(resp.Body)
+	return io.ReadAll(resp.Body)
 }

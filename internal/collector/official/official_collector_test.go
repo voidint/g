@@ -2,17 +2,18 @@ package official
 
 import (
 	"bytes"
-	"io/ioutil"
+	"os"
 	"testing"
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/stretchr/testify/assert"
+
 	"github.com/voidint/g/internal/pkg/checksum"
 	"github.com/voidint/g/internal/version"
 )
 
 func getCollector() (*Collector, error) {
-	b, err := ioutil.ReadFile("./testdata/golang_dl.html")
+	b, err := os.ReadFile("./testdata/golang_dl.html")
 	if err != nil {
 		return nil, err
 	}
