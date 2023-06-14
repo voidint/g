@@ -2,7 +2,7 @@ package aliyun
 
 import (
 	"bytes"
-	"io/ioutil"
+	"os"
 	"testing"
 
 	"github.com/PuerkitoBio/goquery"
@@ -10,7 +10,7 @@ import (
 )
 
 func getCollector() (*Collector, error) {
-	b, err := ioutil.ReadFile("./testdata/golang_dl.html")
+	b, err := os.ReadFile("./testdata/golang_dl.html")
 	if err != nil {
 		return nil, err
 	}

@@ -3,7 +3,7 @@ module github.com/voidint/g
 go 1.20
 
 require (
-	github.com/Masterminds/semver v1.5.0
+	github.com/Masterminds/semver/v3 v3.2.1
 	github.com/PuerkitoBio/goquery v1.8.1
 	github.com/daviddengcn/go-colortext v1.0.0
 	github.com/dixonwille/wlog/v3 v3.0.1

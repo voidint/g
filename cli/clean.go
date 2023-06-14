@@ -2,15 +2,14 @@ package cli
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 
 	"github.com/urfave/cli/v2"
 )
 
-func clean(ctx *cli.Context) (err error) {
-	entries, err := ioutil.ReadDir(downloadsDir)
+func clean(*cli.Context) (err error) {
+	entries, err := os.ReadDir(downloadsDir)
 	if err != nil {
 		return cli.Exit(errstring(err), 1)
 	}

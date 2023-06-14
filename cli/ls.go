@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/Masterminds/semver"
+	"github.com/Masterminds/semver/v3"
 	"github.com/k0kubun/go-ansi"
 	"github.com/urfave/cli/v2"
 )

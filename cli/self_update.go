@@ -7,8 +7,9 @@ import (
 	"runtime"
 	"strings"
 
-	"github.com/Masterminds/semver"
+	"github.com/Masterminds/semver/v3"
 	"github.com/urfave/cli/v2"
+
 	"github.com/voidint/g/internal/build"
 	"github.com/voidint/g/internal/pkg/checksum"
 	"github.com/voidint/g/internal/pkg/errs"

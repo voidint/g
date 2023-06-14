@@ -9,9 +9,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/Masterminds/semver"
+	"github.com/Masterminds/semver/v3"
 	"github.com/fatih/color"
 	"github.com/urfave/cli/v2"
+
 	"github.com/voidint/g/internal/build"
 )
 
