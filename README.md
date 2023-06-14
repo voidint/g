@@ -41,7 +41,7 @@
   $ iwr -Uri https://raw.githubusercontent.com/voidint/g/master/install.ps1 | pwsh
   ```
 
-### 手动安装（linux/mac）
+### 手动安装（Linux/macOS）
 
 - 下载[release](https://github.com/voidint/g/releases)的二进制压缩包
 - 将压缩包解压至`PATH`环境变量目录下（推荐`~/.g/bin`目录）
@@ -73,7 +73,7 @@
   $ source ~/.bashrc # 或source ~/.zshrc
   ```
 
-### 手动安装（windows 系统 + powershell）
+### 手动安装（Windows + powershell）
 
 - 创建目录`mkdir ~/.g/bin`
 - 下载[release](https://github.com/voidint/g/releases)的 windows 版本的二进制压缩包, 解压之后放到`~/.g/bin`目录下
@@ -194,6 +194,10 @@ Update completed
 
   这有可能是因为没有把下载安装的加入到 `$Path` 的缘故，需要手动将 `$Path` 纳入到用户的环境变量中。为了方便起见，可以使用项目中的 `path.ps1` 的 PowerShell 脚本运行然后重新启动计算机即可。
 
+- 使用 g 安装了某个 go 版本后，执行`go version`命令，但输出的 go 版本号并非是所安装的那个版本，这是不是 bug ？
+
+  由于当前 shell 环境中`PATH`环境变量设置有误导致（建议执行`which go`查看二进制文件所在路径）。在未修改 g 家目录的情况下，二进制文件 go 的路径应该是`~/.g/go/bin/go`，如果不是这个路径，就说明`PATH`环境变量设置有误。
+  
 - 支持源代码编译安装吗？
 
   不支持
