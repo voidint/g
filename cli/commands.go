@@ -6,12 +6,14 @@ var (
 	commands = []*cli.Command{
 		{
 			Name:      "ls",
+			Aliases:   []string{"l"},
 			Usage:     "List installed versions",
 			UsageText: "g ls",
 			Action:    list,
 		},
 		{
 			Name:      "ls-remote",
+			Aliases:   []string{"lr", "lsr"},
 			Usage:     "List remote versions available for install",
 			UsageText: "g ls-remote [stable|archived|unstable]",
 			Action:    listRemote,
@@ -24,6 +26,7 @@ var (
 		},
 		{
 			Name:      "install",
+			Aliases:   []string{"i"},
 			Usage:     "Download and install a version",
 			UsageText: "g install <version>",
 			Action:    install,
