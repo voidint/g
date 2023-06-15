@@ -5,7 +5,9 @@ import (
 	stdurl "net/url"
 	"strings"
 
+	"github.com/Masterminds/semver/v3"
 	"github.com/PuerkitoBio/goquery"
+
 	"github.com/voidint/g/internal/pkg/errs"
 	"github.com/voidint/g/internal/version"
 )
@@ -54,26 +56,60 @@ func (c *Collector) loadDocument() (err error) {
 	return err
 }
 
+type filter func(string) bool
+
+func filterStable(v string) bool {
+	sv, err := semver.NewVersion(v)
+	if err != nil {
+		return false
+	}
+
+	return sv.Prerelease() == ""
+}
+
+func filterUnstable(v string) bool {
+	return !filterStable(v)
+}
+
+func filterversion(vers []*version.Version, f filter) (items []*version.Version) {
+	for _, v := range vers {
+		if f(v.Name) {
+			items = append(items, v)
+		}
+	}
+	return
+}
+
 // StableVersions 返回所有稳定版本
-func (c *Collector) StableVersions() (items []*version.Version, err error) {
-	return make([]*version.Version, 0), nil
+func (c *Collector) StableVersions() ([]*version.Version, error) {
+	vs, err := c.AllVersions()
+	if err != nil {
+		return nil, err
+	}
+
+	return filterversion(vs, filterStable), nil
 }
 
 // UnstableVersions 返回所有非稳定版本
 func (c *Collector) UnstableVersions() (items []*version.Version, err error) {
-	return make([]*version.Version, 0), nil
+	vs, err := c.AllVersions()
+	if err != nil {
+		return nil, err
+	}
+
+	return filterversion(vs, filterUnstable), nil
 }
 
 // ArchivedVersions 返回已归档版本
-func (c *Collector) ArchivedVersions() (items []*version.Version, err error) {
-	return make([]*version.Version, 0), nil
+func (c *Collector) ArchivedVersions() ([]*version.Version, error) {
+	return nil, nil
 }
 
 // AllVersions 返回所有已知版本
 func (c *Collector) AllVersions() (vers []*version.Version, err error) {
 	items := c.findGoFileItems(c.doc.Find(".table"))
 	if len(items) == 0 {
-		return make([]*version.Version, 0, 0), nil
+		return nil, nil
 	}
 	return convert2Versions(items), nil
 }
@@ -82,7 +118,7 @@ func (c *Collector) findGoFileItems(table *goquery.Selection) (items []*goFileIt
 	trs := table.Find("tbody").Find("tr")
 	items = make([]*goFileItem, 0, trs.Length())
 
-	trs.Each(func(j int, tr *goquery.Selection) {
+	trs.Each(func(_ int, tr *goquery.Selection) {
 		td := tr.Find("td")
 		href := td.Eq(0).Find("a").AttrOr("href", "")
 		if !strings.HasPrefix(href, "go") {
