@@ -20,7 +20,9 @@
 - 支持在本地安装多个 go 版本
 - 支持卸载已安装的 go 版本
 - 支持在已安装的 go 版本之间自由切换
-- 支持软件自我更新（>= 1.3.0）
+- 支持清空安装包文件缓存
+- 支持软件自我更新（>= 1.5.0）
+- 支持软件绿色卸载（>= 1.5.0）
 
 ## 安装
 
@@ -42,9 +44,8 @@
   ```
 
 ### 手动安装（Linux/macOS）
-
-- 下载[release](https://github.com/voidint/g/releases)的二进制压缩包
-- 将压缩包解压至`PATH`环境变量目录下（推荐`~/.g/bin`目录）
+- 创建 g 家目录（推荐`~/.g`目录）
+- 下载[release](https://github.com/voidint/g/releases)的二进制压缩包，并解压至 g 家目录下的 bin 子目录中（即`~/.g/bin`目录）。
 - 将所需的环境变量写入`~/.g/env`文件
 
   ```shell
@@ -94,30 +95,26 @@
 
 ```shell
 $ g ls-remote stable
-  1.13.15
-  1.14.7
+  1.19.10
+  1.20.5
 ```
 
-安装目标 go 版本`1.14.7`
+安装目标 go 版本`1.20.5`
 
 ```shell
 $ g install 1.14.7
-Downloading 100% |███████████████| (119/119 MB, 9.939 MB/s) [12s:0s]
+Downloading 100% [===============] (92/92 MB, 12 MB/s)               
 Computing checksum with SHA256
 Checksums matched
-Now using go1.14.7
+Now using go1.20.5
 ```
 
 查询已安装的 go 版本
 
 ```shell
 $ g ls
-  1.7.6
-  1.11.13
-  1.12.17
-  1.13.15
-  1.14.6
-* 1.14.7
+  1.19.10
+* 1.20.5
 ```
 
 查询可供安装的所有 go 版本
@@ -129,35 +126,65 @@ $ g ls-remote
   1.3
   1.3.1
   ...    // 省略若干版本
-  1.14.5
-  1.14.6
-* 1.14.7
-  1.15rc1
+  1.19.10
+  1.20rc1
+  1.20rc2
+  1.20rc3
+  1.20
+  1.20.1
+  1.20.2
+  1.20.3
+  1.20.4
+* 1.20.5
 ```
 
 切换到另一个已安装的 go 版本
 
 ```shell
-$ g use 1.14.6
-go version go1.14.6 darwin/amd64
+$ g use 1.19.10
+go version go1.19.10 darwin/arm64
 ```
 
 卸载一个已安装的 go 版本
 
 ```shell
-$ g uninstall 1.14.7
-Uninstalled go1.14.7
+$ g uninstall 1.19.10
+Uninstalled go1.19.10
+```
+
+清空 go 安装包文件缓存
+
+```shell
+$ g clean 
+Remove go1.18.10.darwin-arm64.tar.gz
+Remove go1.19.10.darwin-arm64.tar.gz
+Remove go1.20.5.darwin-arm64.tar.gz
+```
+
+查看 g 版本信息
+
+``` shell
+g version 1.5.0
+build: 2023-01-01T21:01:52+08:00
+branch: master
+commit: cec84a3f4f927adb05018731a6f60063fd2fa216
 ```
 
 更新 g 软件本身
 
 ```shell
-$ g update
-A new version of g(v1.2.2) is available
-Downloading 100% |███████████████| (3.7/3.7 MB, 2.358 MB/s)
-Computing checksum with SHA256
-Checksums matched
-Update completed
+$ g self update
+You are up to date! g v1.5.0 is the latest version.
+```
+
+卸载 g 软件本身
+
+```shell
+$ g self uninstall
+Are you sure you want to uninstall g? (Y/n)
+y
+Remove /Users/voidint/.g/bin/g
+Remove /Users/voidint/.g
 ```
 
 ## FAQ
