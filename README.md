@@ -40,7 +40,7 @@
 - Windows（适用于 pwsh）
 
   ```pwsh
-  $ iwr -Uri https://raw.githubusercontent.com/voidint/g/master/install.ps1 | pwsh
+  $ iwr https://raw.githubusercontent.com/voidint/g/master/install.ps1 -useb | iex
   ```
 
 ### 手动安装（Linux/macOS）
