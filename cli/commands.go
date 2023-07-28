@@ -30,6 +30,13 @@ var (
 			Usage:     "Download and install a version",
 			UsageText: "g install <version>",
 			Action:    install,
+			Flags: []cli.Flag{
+				&cli.BoolFlag{
+					Name:    "nouse",
+					Aliases: []string{"n"},
+					Usage:   "Only install without using",
+				},
+			},
 		},
 		{
 			Name:      "uninstall",
