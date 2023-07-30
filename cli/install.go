@@ -136,6 +136,11 @@ func install(ctx *cli.Context) (err error) {
 	if err = os.Rename(filepath.Join(versionsDir, "go"), targetV); err != nil {
 		return cli.Exit(errstring(err), 1)
 	}
+
+	if ctx.Bool("nouse") {
+		return nil
+	}
+
 	// 重新建立软链接
 	_ = os.Remove(goroot)
 
