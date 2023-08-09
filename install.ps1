@@ -1,4 +1,4 @@
-$release = "1.5.0"
+$release = "1.5.1"
 $os = "windows"
 $arch = "amd64"
 $default_base_dir="$HOME\.g"
