@@ -104,16 +104,23 @@ func inuse(goroot string) (version string) {
 	return filepath.Base(p)
 }
 
+var go1_21_0 = semver.MustParse("1.21.0") // https://github.com/golang/go/issues/57631
+
 // render 渲染go版本列表
 func render(curV string, items []*semver.Version, out io.Writer) {
 	sort.Sort(semver.Collection(items))
 
 	for i := range items {
 		fields := strings.SplitN(items[i].String(), "-", 2)
-		v := strings.TrimSuffix(strings.TrimSuffix(fields[0], ".0"), ".0")
+
+		v := fields[0]
+		if items[i].LessThan(go1_21_0) {
+			v = strings.TrimSuffix(strings.TrimSuffix(v, ".0"), ".0")
+		}
 		if len(fields) > 1 {
 			v += fields[1]
 		}
+
 		if v == curV {
 			color.New(color.FgGreen).Fprintf(out, "* %s\n", v)
 		} else {
