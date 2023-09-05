@@ -12,6 +12,7 @@ import (
 	"github.com/voidint/g/internal/build"
 	"github.com/voidint/g/internal/pkg/checksum"
 	"github.com/voidint/g/internal/pkg/errs"
+	httppkg "github.com/voidint/g/internal/pkg/http"
 	"github.com/voidint/g/internal/pkg/sdk/github"
 )
 
@@ -74,6 +75,10 @@ func findChecksum(items []github.Asset) (algo checksum.Algorithm, expectedChecks
 		return checksum.SHA256, "", err
 	}
 	defer resp.Body.Close()
+
+	if !httppkg.IsSuccess(resp.StatusCode) {
+		return "", "", errs.NewURLUnreachableError(checksumFileURL, fmt.Errorf("%d", resp.StatusCode))
+	}
 
 	scanner := bufio.NewScanner(resp.Body)
 	for scanner.Scan() {

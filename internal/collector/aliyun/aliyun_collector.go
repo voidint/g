@@ -1,12 +1,14 @@
 package aliyun
 
 import (
+	"fmt"
 	"net/http"
 	stdurl "net/url"
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/voidint/g/internal/pkg/errs"
+	httppkg "github.com/voidint/g/internal/pkg/http"
 	"github.com/voidint/g/internal/version"
 )
 
@@ -47,9 +49,11 @@ func (c *Collector) loadDocument() (err error) {
 		return errs.NewURLUnreachableError(c.url, err)
 	}
 	defer resp.Body.Close()
-	if resp.StatusCode != http.StatusOK {
-		return errs.NewURLUnreachableError(c.url, nil)
+
+	if !httppkg.IsSuccess(resp.StatusCode) {
+		return errs.NewURLUnreachableError(c.url, fmt.Errorf("%d", resp.StatusCode))
 	}
+
 	c.doc, err = goquery.NewDocumentFromReader(resp.Body)
 	return err
 }

@@ -2,7 +2,7 @@ package cli
 
 import (
 	"fmt"
-	"io/ioutil"
+	"os"
 	"strings"
 
 	"github.com/Masterminds/semver"
@@ -11,7 +11,7 @@ import (
 )
 
 func list(*cli.Context) (err error) {
-	infos, err := ioutil.ReadDir(versionsDir)
+	infos, err := os.ReadDir(versionsDir)
 	if err != nil || len(infos) <= 0 {
 		fmt.Printf("No version installed yet\n\n")
 		return nil

@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"io"
 	"io/fs"
-	"io/ioutil"
 	"net/http"
 	"os"
 	"time"
@@ -21,6 +20,10 @@ func Download(srcURL string, filename string, flag int, perm fs.FileMode, withPr
 		return 0, errs.NewDownloadError(srcURL, err)
 	}
 	defer resp.Body.Close()
+
+	if !IsSuccess(resp.StatusCode) {
+		return 0, errs.NewURLUnreachableError(srcURL, fmt.Errorf("%d", resp.StatusCode))
+	}
 
 	f, err := os.OpenFile(filename, flag, perm)
 	if err != nil {
@@ -68,5 +71,10 @@ func DownloadAsBytes(srcURL string) (data []byte, err error) {
 		return nil, err
 	}
 	defer resp.Body.Close()
-	return ioutil.ReadAll(resp.Body)
+	return io.ReadAll(resp.Body)
+}
+
+// IsSuccess 返回 http 请求是否成功
+func IsSuccess(statusCode int) bool {
+	return statusCode >= http.StatusOK && statusCode < http.StatusMultipleChoices
 }

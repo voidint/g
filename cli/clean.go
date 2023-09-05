@@ -2,7 +2,6 @@ package cli
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 
@@ -10,7 +9,7 @@ import (
 )
 
 func clean(ctx *cli.Context) (err error) {
-	entries, err := ioutil.ReadDir(downloadsDir)
+	entries, err := os.ReadDir(downloadsDir)
 	if err != nil {
 		return cli.Exit(errstring(err), 1)
 	}

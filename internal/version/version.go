@@ -7,7 +7,7 @@ import (
 
 	"github.com/voidint/g/internal/pkg/checksum"
 	"github.com/voidint/g/internal/pkg/errs"
-	myhttp "github.com/voidint/g/internal/pkg/http"
+	httppkg "github.com/voidint/g/internal/pkg/http"
 )
 
 // FindVersion 返回指定名称的版本
@@ -78,13 +78,13 @@ const (
 
 // DownloadWithProgress 下载版本另存为指定文件且显示下载进度
 func (pkg *Package) DownloadWithProgress(dst string) (size int64, err error) {
-	return myhttp.Download(pkg.URL, dst, os.O_CREATE|os.O_WRONLY, 0644, true)
+	return httppkg.Download(pkg.URL, dst, os.O_CREATE|os.O_WRONLY, 0644, true)
 }
 
 // VerifyChecksum 验证目标文件的校验和与当前安装包的校验和是否一致
 func (pkg *Package) VerifyChecksum(filename string) (err error) {
 	if pkg.Checksum == "" && pkg.ChecksumURL != "" {
-		data, err := myhttp.DownloadAsBytes(pkg.ChecksumURL)
+		data, err := httppkg.DownloadAsBytes(pkg.ChecksumURL)
 		if err != nil {
 			return err
 		}
