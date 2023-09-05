@@ -15,7 +15,8 @@ import (
 	"github.com/mholt/archiver/v3"
 
 	"github.com/voidint/g/internal/pkg/checksum"
-	myhttp "github.com/voidint/g/internal/pkg/http"
+	"github.com/voidint/g/internal/pkg/errs"
+	httppkg "github.com/voidint/g/internal/pkg/http"
 	"github.com/voidint/go-update"
 )
 
@@ -62,6 +63,10 @@ func (up ReleaseUpdater) CheckForUpdates(current *semver.Version, owner, repo st
 	}
 	defer resp.Body.Close()
 
+	if !httppkg.IsSuccess(resp.StatusCode) {
+		return nil, false, errs.NewURLUnreachableError(url, fmt.Errorf("%d", resp.StatusCode))
+	}
+
 	var latest Release
 	if err = json.NewDecoder(resp.Body).Decode(&latest); err != nil {
 		return nil, false, err
@@ -107,7 +112,7 @@ func (up ReleaseUpdater) Apply(rel *Release,
 	url := rel.Assets[idx].BrowserDownloadURL
 	srcFilename := filepath.Join(tmpDir, filepath.Base(url))
 	dstFilename := srcFilename
-	if _, err = myhttp.Download(url, srcFilename, os.O_WRONLY|os.O_CREATE, 0644, true); err != nil {
+	if _, err = httppkg.Download(url, srcFilename, os.O_WRONLY|os.O_CREATE, 0644, true); err != nil {
 		return err
 	}
 

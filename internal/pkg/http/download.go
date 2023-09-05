@@ -22,6 +22,10 @@ func Download(srcURL string, filename string, flag int, perm fs.FileMode, withPr
 	}
 	defer resp.Body.Close()
 
+	if !IsSuccess(resp.StatusCode) {
+		return 0, errs.NewURLUnreachableError(srcURL, fmt.Errorf("%d", resp.StatusCode))
+	}
+
 	f, err := os.OpenFile(filename, flag, perm)
 	if err != nil {
 		return 0, errs.NewDownloadError(srcURL, err)
@@ -69,4 +73,9 @@ func DownloadAsBytes(srcURL string) (data []byte, err error) {
 	}
 	defer resp.Body.Close()
 	return io.ReadAll(resp.Body)
+}
+
+// IsSuccess 返回 http 请求是否成功
+func IsSuccess(statusCode int) bool {
+	return statusCode >= http.StatusOK && statusCode < http.StatusMultipleChoices
 }
