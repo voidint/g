@@ -9,7 +9,7 @@
         },
         {
             "variable": "GitCommit",
-            "value": "{{.GitCommit}}"
+            "value": "$(git log -1 | awk 'NR==1 {print substr($2,0,8)}')"
         },
         {
             "variable": "GitBranch",
