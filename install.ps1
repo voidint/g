@@ -1,4 +1,4 @@
-$release="1.5.1"
+$release="1.5.2"
 $os="windows"
 $arch="amd64"
 $base_dir="$HOME/.g"
