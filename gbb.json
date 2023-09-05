@@ -5,7 +5,7 @@
     "variables": [
         {
             "variable": "Built",
-            "value": "{{.Date}}"
+            "value": "$(date '+%Y-%m-%d %H:%M:%S')"
         },
         {
             "variable": "GitCommit",
