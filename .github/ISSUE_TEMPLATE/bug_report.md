@@ -26,7 +26,7 @@ If applicable, add screenshots to help explain your problem.
 **Environments (please complete the following information)/运行环境:**
 - OS[e.g. uname -a]
 
-- g --version
+- g -v
 
     ```shell
 
@@ -38,6 +38,23 @@ If applicable, add screenshots to help explain your problem.
 
     ```
 
+- echo $G_EXPERIMENTAL
+
+    ```shell
+
+    ```
+
+- echo $G_HOME
+
+    ```shell
+
+    ```
+
+- echo $G_MIRROR
+
+    ```shell
+
+    ```
 
 **Additional context/额外信息**
 Add any other context about the problem here.
