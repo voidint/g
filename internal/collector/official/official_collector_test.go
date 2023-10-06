@@ -7,7 +7,6 @@ import (
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/stretchr/testify/assert"
-
 	"github.com/voidint/g/internal/pkg/checksum"
 	"github.com/voidint/g/internal/version"
 )
