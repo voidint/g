@@ -13,6 +13,7 @@ import (
 	"github.com/fatih/color"
 	"github.com/urfave/cli/v2"
 	"github.com/voidint/g/internal/build"
+	"github.com/voidint/g/internal/version"
 )
 
 var (
@@ -118,11 +119,10 @@ func installed() (versions map[string]bool) {
 			continue
 		}
 		vname := d.Name()
-		v, err := semversioned(vname)
+		v, err := version.Semantify(vname)
 		if err != nil || v == nil {
 			continue
 		}
-
 		versions[vname] = (vname == inused)
 	}
 
@@ -155,23 +155,6 @@ func render(installed map[string]bool, items []*semver.Version, out io.Writer) {
 			fmt.Fprintf(out, "  %s\n", v)
 		}
 	}
-}
-
-func semversioned(vname string) (*semver.Version, error) {
-	var idx int
-	if strings.Contains(vname, "alpha") {
-		idx = strings.Index(vname, "alpha")
-
-	} else if strings.Contains(vname, "beta") {
-		idx = strings.Index(vname, "beta")
-
-	} else if strings.Contains(vname, "rc") {
-		idx = strings.Index(vname, "rc")
-	}
-	if idx > 0 {
-		vname = vname[:idx] + "-" + vname[idx:]
-	}
-	return semver.NewVersion(vname)
 }
 
 // errstring 返回统一格式的错误信息

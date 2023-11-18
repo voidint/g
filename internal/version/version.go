@@ -5,10 +5,34 @@ import (
 	"os"
 	"strings"
 
+	"github.com/Masterminds/semver/v3"
 	"github.com/voidint/g/internal/pkg/checksum"
 	"github.com/voidint/g/internal/pkg/errs"
 	httppkg "github.com/voidint/g/internal/pkg/http"
 )
+
+// Semantify go 版本号并未完全遵循语义化版本号标准，该函数进行了一定的适配，返回一个语义化版本。
+func Semantify(vname string) (*semver.Version, error) {
+	var idx int
+	if strings.Contains(vname, "alpha") {
+		idx = strings.Index(vname, "alpha")
+
+	} else if strings.Contains(vname, "beta") {
+		idx = strings.Index(vname, "beta")
+
+	} else if strings.Contains(vname, "rc") {
+		idx = strings.Index(vname, "rc")
+	}
+	if idx > 0 {
+		vname = vname[:idx] + "-" + vname[idx:]
+	}
+
+	sv, err := semver.NewVersion(vname)
+	if err != nil {
+		return nil, errs.NewMalformedVersionError(vname, err)
+	}
+	return sv, nil
+}
 
 // FindVersion 返回指定名称的版本
 func FindVersion(all []*Version, name string) (*Version, error) {
@@ -17,13 +41,35 @@ func FindVersion(all []*Version, name string) (*Version, error) {
 			return all[i], nil
 		}
 	}
-	return nil, errs.ErrVersionNotFound
+	return nil, errs.NewVersionNotFoundError(name)
 }
 
 // Version go版本
 type Version struct {
-	Name     string // 版本名，如'1.12.4'
-	Packages []*Package
+	Name            string // 版本名，如'1.12.4'
+	SemanticVersion *semver.Version
+	Packages        []*Package
+}
+
+func New(name string, pkgs []*Package) (*Version, error) {
+	sv, err := Semantify(name)
+	if err != nil {
+		return nil, err
+	}
+
+	return &Version{
+		Name:            name,
+		SemanticVersion: sv,
+		Packages:        pkgs,
+	}, nil
+}
+
+func MustNew(name string, pkgs []*Package) *Version {
+	v, err := New(name, pkgs)
+	if err != nil {
+		panic(err)
+	}
+	return v
 }
 
 // FindPackage 返回指定操作系统和硬件架构的版本包

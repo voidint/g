@@ -79,7 +79,7 @@ func (c *Collector) AllVersions() (vers []*version.Version, err error) {
 	if len(items) == 0 {
 		return make([]*version.Version, 0, 0), nil
 	}
-	return convert2Versions(items), nil
+	return convert2Versions(items)
 }
 
 func (c *Collector) findGoFileItems(table *goquery.Selection) (items []*goFileItem) {

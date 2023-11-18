@@ -7,6 +7,7 @@ import (
 	"github.com/Masterminds/semver/v3"
 	"github.com/k0kubun/go-ansi"
 	"github.com/urfave/cli/v2"
+	"github.com/voidint/g/internal/version"
 )
 
 func list(*cli.Context) (err error) {
@@ -20,7 +21,8 @@ func list(*cli.Context) (err error) {
 		if !d.IsDir() {
 			continue
 		}
-		v, err := semversioned(d.Name())
+
+		v, err := version.Semantify(d.Name())
 		if err != nil || v == nil {
 			continue
 		}

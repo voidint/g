@@ -7,8 +7,6 @@ import (
 )
 
 var (
-	// ErrVersionNotFound 版本不存在
-	ErrVersionNotFound = errors.New("version not found")
 	// ErrPackageNotFound 版本包不存在
 	ErrPackageNotFound = errors.New("installation package not found")
 )
@@ -21,6 +19,58 @@ var (
 	// ErrChecksumFileNotFound 校验和文件不存在
 	ErrChecksumFileNotFound = errors.New("checksum file not found")
 )
+
+// VersionNotFoundError 版本不存在错误
+type VersionNotFoundError struct {
+	version string
+}
+
+func IsVersionNotFound(err error) bool {
+	if err == nil {
+		return false
+	}
+	_, ok := err.(*VersionNotFoundError)
+	return ok
+}
+
+func NewVersionNotFoundError(version string) error {
+	return &VersionNotFoundError{
+		version: version,
+	}
+}
+
+func (e VersionNotFoundError) Error() string {
+	return fmt.Sprintf("Version not found %q", e.version)
+}
+
+func (e VersionNotFoundError) Version() string {
+	return e.version
+}
+
+// MalformedVersionError 版本号格式错误
+type MalformedVersionError struct {
+	err     error
+	version string
+}
+
+func NewMalformedVersionError(version string, err error) error {
+	return &MalformedVersionError{
+		err:     err,
+		version: version,
+	}
+}
+
+func (e MalformedVersionError) Error() string {
+	return fmt.Sprintf("Malformed version string %q", e.version)
+}
+
+func (e MalformedVersionError) Err() error {
+	return e.err
+}
+
+func (e MalformedVersionError) Version() string {
+	return e.version
+}
 
 // URLUnreachableError URL不可达错误
 type URLUnreachableError struct {

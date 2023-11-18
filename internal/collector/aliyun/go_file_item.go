@@ -88,7 +88,7 @@ func (item goFileItem) getArch() string {
 	return ""
 }
 
-func convert2Versions(items []*goFileItem) (vers []*version.Version) {
+func convert2Versions(items []*goFileItem) (vers []*version.Version, err error) {
 	pkgMap := make(map[string][]*version.Package, 20)
 
 	for _, pitem := range items {
@@ -119,12 +119,13 @@ func convert2Versions(items []*goFileItem) (vers []*version.Version) {
 	}
 
 	vers = make([]*version.Version, 0, len(pkgMap))
-	for k, v := range pkgMap {
-		vers = append(vers, &version.Version{
-			Name:     k,
-			Packages: v,
-		})
+	for vname, pkgs := range pkgMap {
+		v, err := version.New(vname, pkgs)
+		if err != nil {
+			return nil, err
+		}
+		vers = append(vers, v)
 	}
 
-	return vers
+	return vers, nil
 }

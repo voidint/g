@@ -9,39 +9,40 @@ import (
 	"testing"
 	"time"
 
+	"github.com/Masterminds/semver/v3"
 	"github.com/stretchr/testify/assert"
 	"github.com/voidint/g/internal/pkg/errs"
 )
 
 func TestFindVersion(t *testing.T) {
 	t.Run("查找指定名称的版本", func(t *testing.T) {
-		v0 := &Version{
-			Name: "1.12.5",
-		}
-		v1 := &Version{
-			Name: "1.11.10",
-		}
-		v2 := &Version{
-			Name: "1.9.7",
-		}
+		v0 := MustNew("1.12.5", nil)
+		v1 := MustNew("1.11.10", nil)
+		v2 := MustNew("1.9.7", nil)
+		v3 := MustNew("1.20", nil)
 
-		items := []*Version{v0, v1, v2}
+		items := []*Version{v0, v1, v2, v3}
 
 		v, err := FindVersion(items, "1.11.10")
 		assert.Nil(t, err)
 		assert.NotNil(t, v)
-		assert.Equal(t, "1.11.10", v.Name)
+		assert.Equal(t, "1.11.10", v.SemanticVersion.Original())
 
 		v, err = FindVersion(items, "1.11.11")
-		assert.Equal(t, errs.ErrVersionNotFound, err)
+		assert.True(t, errs.IsVersionNotFound(err))
 		assert.Nil(t, v)
+
+		v, err = FindVersion(items, "1.20")
+		assert.Nil(t, err)
+		assert.NotNil(t, v)
+		assert.Equal(t, "1.20", v.SemanticVersion.Original())
 	})
 }
 
 func TestFindPackage(t *testing.T) {
 	t.Run("查询版本下的安装包", func(t *testing.T) {
 		v := &Version{
-			Name: "1.12.4",
+			SemanticVersion: semver.MustParse("1.12.4"),
 			Packages: []*Package{
 				{
 					FileName: "go1.12.4.src.tar.gz",

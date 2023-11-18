@@ -98,46 +98,79 @@ func (c *Collector) StableVersions() (items []*version.Version, err error) {
 		divs = c.doc.Find("#stable").NextUntil("#archive")
 	}
 
-	divs.Each(func(i int, div *goquery.Selection) {
+	divs.EachWithBreak(func(i int, div *goquery.Selection) bool {
 		vname, ok := div.Attr("id")
 		if !ok {
-			return
+			return true
 		}
-		items = append(items, &version.Version{
-			Name:     strings.TrimPrefix(vname, "go"),
-			Packages: c.findPackages(div.Find("table").First()),
-		})
+
+		var v *version.Version
+		if v, err = version.New(
+			strings.TrimPrefix(vname, "go"),
+			c.findPackages(div.Find("table").First()),
+		); err != nil {
+			return false
+		}
+
+		items = append(items, v)
+		return true
 	})
+
+	if err != nil {
+		return nil, err
+	}
 	return items, nil
 }
 
 // UnstableVersions 返回所有非稳定版本
 func (c *Collector) UnstableVersions() (items []*version.Version, err error) {
-	c.doc.Find("#unstable").NextUntil("#archive").Each(func(i int, div *goquery.Selection) {
+	c.doc.Find("#unstable").NextUntil("#archive").EachWithBreak(func(i int, div *goquery.Selection) bool {
 		vname, ok := div.Attr("id")
 		if !ok {
-			return
+			return true
 		}
-		items = append(items, &version.Version{
-			Name:     strings.TrimPrefix(vname, "go"),
-			Packages: c.findPackages(div.Find("table").First()),
-		})
+
+		var v *version.Version
+		if v, err = version.New(
+			strings.TrimPrefix(vname, "go"),
+			c.findPackages(div.Find("table").First()),
+		); err != nil {
+			return false
+		}
+
+		items = append(items, v)
+		return true
 	})
+
+	if err != nil {
+		return nil, err
+	}
 	return items, nil
 }
 
 // ArchivedVersions 返回已归档版本
 func (c *Collector) ArchivedVersions() (items []*version.Version, err error) {
-	c.doc.Find("#archive").Find("div.toggle").Each(func(i int, div *goquery.Selection) {
+	c.doc.Find("#archive").Find("div.toggle").EachWithBreak(func(i int, div *goquery.Selection) bool {
 		vname, ok := div.Attr("id")
 		if !ok {
-			return
+			return true
 		}
-		items = append(items, &version.Version{
-			Name:     strings.TrimPrefix(vname, "go"),
-			Packages: c.findPackages(div.Find("table").First()),
-		})
+
+		var v *version.Version
+		if v, err = version.New(
+			strings.TrimPrefix(vname, "go"),
+			c.findPackages(div.Find("table").First()),
+		); err != nil {
+			return false
+		}
+
+		items = append(items, v)
+		return true
 	})
+
+	if err != nil {
+		return nil, err
+	}
 	return items, nil
 }
 

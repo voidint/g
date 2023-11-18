@@ -45,11 +45,7 @@ func listRemote(ctx *cli.Context) (err error) {
 
 	items := make([]*semver.Version, 0, len(vs))
 	for _, ver := range vs {
-		v, err := semversioned(ver.Name)
-		if err != nil {
-			continue
-		}
-		items = append(items, v)
+		items = append(items, ver.SemanticVersion)
 	}
 
 	render(installed(), items, ansi.NewAnsiStdout())
