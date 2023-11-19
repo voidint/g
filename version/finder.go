@@ -8,20 +8,44 @@ import (
 	"github.com/voidint/g/pkg/errs"
 )
 
+// Finder 版本查找器
 type Finder struct {
 	goos   string
 	goarch string
 	items  []*Version
 }
 
-func NewFinder(items []*Version) *Finder {
+// WithFinderGoos 设置查找器所在的目标操作系统，如darwin, freebsd, linux等。
+func WithFinderGoos(goos string) func(fdr *Finder) {
+	return func(fdr *Finder) {
+		fdr.goos = goos
+	}
+}
+
+// WithFinderGoarch 设置查找器所在的目标硬件架构，如386, amd64, arm, s390x等。
+func WithFinderGoarch(goarch string) func(fdr *Finder) {
+	return func(fdr *Finder) {
+		fdr.goarch = goarch
+	}
+}
+
+// NewFinder 返回
+func NewFinder(items []*Version, opts ...func(fdr *Finder)) *Finder {
 	sort.Sort(Collection(items)) // 升序
 
-	return &Finder{
+	fdr := Finder{
 		goos:   runtime.GOOS,
 		goarch: runtime.GOARCH,
 		items:  items,
 	}
+
+	if opts != nil {
+		for _, setter := range opts {
+			setter(&fdr)
+		}
+	}
+
+	return &fdr
 }
 
 // Find 返回满足条件的语义化版本号。版本格式：主版本号.次版本号.修订号。
