@@ -9,11 +9,11 @@ import (
 
 	"github.com/Masterminds/semver/v3"
 	"github.com/urfave/cli/v2"
-	"github.com/voidint/g/internal/build"
-	"github.com/voidint/g/internal/pkg/checksum"
-	"github.com/voidint/g/internal/pkg/errs"
-	httppkg "github.com/voidint/g/internal/pkg/http"
-	"github.com/voidint/g/internal/pkg/sdk/github"
+	"github.com/voidint/g/build"
+	"github.com/voidint/g/pkg/checksum"
+	"github.com/voidint/g/pkg/errs"
+	httppkg "github.com/voidint/g/pkg/http"
+	"github.com/voidint/g/pkg/sdk/github"
 )
 
 func selfUpdate(*cli.Context) (err error) {

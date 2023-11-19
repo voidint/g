@@ -1,7 +1,7 @@
 {
     "version": "0.6.1",
     "tool": "go build -v -trimpath -ldflags '-s -w'",
-    "importpath": "github.com/voidint/g/internal/build",
+    "importpath": "github.com/voidint/g/build",
     "variables": [
         {
             "variable": "Built",

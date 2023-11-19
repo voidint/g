@@ -6,9 +6,9 @@ import (
 	"strings"
 
 	"github.com/Masterminds/semver/v3"
-	"github.com/voidint/g/internal/pkg/checksum"
-	"github.com/voidint/g/internal/pkg/errs"
-	httppkg "github.com/voidint/g/internal/pkg/http"
+	"github.com/voidint/g/pkg/checksum"
+	"github.com/voidint/g/pkg/errs"
+	httppkg "github.com/voidint/g/pkg/http"
 )
 
 // Semantify go 版本号并未完全遵循语义化版本号标准，该函数进行了一定的适配，返回一个语义化版本。

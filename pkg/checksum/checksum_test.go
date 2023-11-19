@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/voidint/g/internal/pkg/errs"
+	"github.com/voidint/g/pkg/errs"
 )
 
 func TestVerifyFile(t *testing.T) {

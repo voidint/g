@@ -10,8 +10,8 @@ import (
 
 	"github.com/fatih/color"
 	"github.com/urfave/cli/v2"
-	"github.com/voidint/g/internal/build"
-	"github.com/voidint/g/internal/version"
+	"github.com/voidint/g/build"
+	"github.com/voidint/g/version"
 )
 
 var (

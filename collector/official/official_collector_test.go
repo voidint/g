@@ -7,8 +7,8 @@ import (
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/stretchr/testify/assert"
-	"github.com/voidint/g/internal/pkg/checksum"
-	"github.com/voidint/g/internal/version"
+	"github.com/voidint/g/pkg/checksum"
+	"github.com/voidint/g/version"
 )
 
 func getCollector() (*Collector, error) {

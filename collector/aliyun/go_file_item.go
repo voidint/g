@@ -5,8 +5,8 @@ import (
 	"strings"
 	"unicode"
 
-	"github.com/voidint/g/internal/pkg/checksum"
-	"github.com/voidint/g/internal/version"
+	"github.com/voidint/g/pkg/checksum"
+	"github.com/voidint/g/version"
 )
 
 type goFileItem struct {

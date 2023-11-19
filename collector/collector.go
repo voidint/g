@@ -3,9 +3,9 @@ package collector
 import (
 	"strings"
 
-	"github.com/voidint/g/internal/collector/aliyun"
-	"github.com/voidint/g/internal/collector/official"
-	"github.com/voidint/g/internal/version"
+	"github.com/voidint/g/collector/aliyun"
+	"github.com/voidint/g/collector/official"
+	"github.com/voidint/g/version"
 )
 
 // Collector 版本信息采集器

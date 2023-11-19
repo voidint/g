@@ -11,7 +11,7 @@ import (
 	"time"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/voidint/g/internal/version"
+	"github.com/voidint/g/version"
 )
 
 func Test_ghome(t *testing.T) {

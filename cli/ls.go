@@ -3,10 +3,11 @@ package cli
 import (
 	"fmt"
 	"os"
+	"sort"
 
 	"github.com/k0kubun/go-ansi"
 	"github.com/urfave/cli/v2"
-	"github.com/voidint/g/internal/version"
+	"github.com/voidint/g/version"
 )
 
 func list(*cli.Context) (err error) {
@@ -26,6 +27,7 @@ func list(*cli.Context) (err error) {
 			continue
 		}
 		items = append(items, v)
+		sort.Sort(version.Collection(items))
 	}
 
 	render(installed(), items, ansi.NewAnsiStdout())

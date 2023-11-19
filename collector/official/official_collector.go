@@ -8,9 +8,9 @@ import (
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
-	"github.com/voidint/g/internal/pkg/errs"
-	httppkg "github.com/voidint/g/internal/pkg/http"
-	"github.com/voidint/g/internal/version"
+	"github.com/voidint/g/pkg/errs"
+	httppkg "github.com/voidint/g/pkg/http"
+	"github.com/voidint/g/version"
 )
 
 // var _ collector.Collector = (*Collector)(nil)

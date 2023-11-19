@@ -13,8 +13,8 @@ import (
 	"github.com/dixonwille/wmenu/v5"
 	"github.com/mholt/archiver/v3"
 	"github.com/urfave/cli/v2"
-	"github.com/voidint/g/internal/collector"
-	"github.com/voidint/g/internal/version"
+	"github.com/voidint/g/collector"
+	"github.com/voidint/g/version"
 )
 
 func install(ctx *cli.Context) (err error) {

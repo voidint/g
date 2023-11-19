@@ -8,7 +8,7 @@ import (
 	"io"
 	"os"
 
-	"github.com/voidint/g/internal/pkg/errs"
+	"github.com/voidint/g/pkg/errs"
 )
 
 // Algorithm 校验和算法
