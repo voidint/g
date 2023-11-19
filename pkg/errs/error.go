@@ -23,6 +23,8 @@ var (
 // VersionNotFoundError 版本不存在错误
 type VersionNotFoundError struct {
 	version string
+	goos    string
+	goarch  string
 }
 
 func IsVersionNotFound(err error) bool {
@@ -33,14 +35,16 @@ func IsVersionNotFound(err error) bool {
 	return ok
 }
 
-func NewVersionNotFoundError(version string) error {
+func NewVersionNotFoundError(version, goos, goarch string) error {
 	return &VersionNotFoundError{
 		version: version,
+		goos:    goos,
+		goarch:  goarch,
 	}
 }
 
 func (e VersionNotFoundError) Error() string {
-	return fmt.Sprintf("Version not found %q", e.version)
+	return fmt.Sprintf("Version not found %q [%s,%s]", e.version, e.goos, e.goarch)
 }
 
 func (e VersionNotFoundError) Version() string {

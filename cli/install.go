@@ -22,12 +22,6 @@ func install(ctx *cli.Context) (err error) {
 	if vname == "" {
 		return cli.ShowSubcommandHelp(ctx)
 	}
-	targetV := filepath.Join(versionsDir, vname)
-
-	// 检查版本是否已经安装
-	if finfo, err := os.Stat(targetV); err == nil && finfo.IsDir() {
-		return cli.Exit(fmt.Sprintf("[g] %q version has been installed.", vname), 1)
-	}
 
 	// 查找版本
 	c, err := collector.NewCollector(strings.Split(os.Getenv(mirrorEnv), ",")...)
@@ -38,10 +32,20 @@ func install(ctx *cli.Context) (err error) {
 	if err != nil {
 		return cli.Exit(errstring(err), 1)
 	}
-	v, err := version.FindVersion(items, vname)
+
+	v, err := version.NewFinder(items).Find(vname)
 	if err != nil {
 		return cli.Exit(errstring(err), 1)
 	}
+
+	vname = v.Name()
+	targetV := filepath.Join(versionsDir, vname)
+
+	// 检查版本是否已经安装
+	if finfo, err := os.Stat(targetV); err == nil && finfo.IsDir() {
+		return cli.Exit(fmt.Sprintf("[g] %q version has been installed.", vname), 1)
+	}
+
 	// 查找版本下当前平台的安装包
 	pkgs, err := v.FindPackages(version.ArchiveKind, runtime.GOOS, runtime.GOARCH)
 	if err != nil {

@@ -34,16 +34,6 @@ func Semantify(vname string) (*semver.Version, error) {
 	return sv, nil
 }
 
-// FindVersion 返回指定名称的版本
-func FindVersion(all []*Version, name string) (*Version, error) {
-	for i := range all {
-		if all[i].name == name {
-			return all[i], nil
-		}
-	}
-	return nil, errs.NewVersionNotFoundError(name)
-}
-
 // Version go版本
 type Version struct {
 	name string // 源版本名，如'1.12.4'，不完全等于sv.Original()
@@ -106,17 +96,13 @@ func (v *Version) SemanticVersion() semver.Version {
 	return *v.sv
 }
 
-// FindPackage 返回指定操作系统和硬件架构的版本包
-func (v *Version) FindPackage(kind, goos, goarch string) (*Package, error) {
-	prefix := fmt.Sprintf("go%s.%s-%s", v.name, goos, goarch)
-	for i := range v.pkgs {
-		if v.pkgs[i] == nil || !strings.EqualFold(v.pkgs[i].Kind, kind) || !strings.HasPrefix(v.pkgs[i].FileName, prefix) {
-			continue
+func (v *Version) match(goos, goarch string) bool {
+	for _, pkg := range v.pkgs {
+		if strings.Contains(pkg.FileName, goos) && strings.Contains(pkg.FileName, goarch) { // TODO 不够严谨
+			return true
 		}
-		return v.pkgs[i], nil
 	}
-
-	return nil, errs.ErrPackageNotFound
+	return false
 }
 
 // FindPackages 返回指定操作系统和硬件架构的版本包
