@@ -5,12 +5,13 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"sort"
 	"strings"
 	"testing"
 	"time"
 
-	"github.com/Masterminds/semver/v3"
 	"github.com/stretchr/testify/assert"
+	"github.com/voidint/g/internal/version"
 )
 
 func Test_ghome(t *testing.T) {
@@ -40,14 +41,18 @@ func Test_inuse(t *testing.T) {
 func Test_render(t *testing.T) {
 	t.Run("渲染go版本列表", func(t *testing.T) {
 		var buf strings.Builder
-		v0, _ := semver.NewVersion("1.13-beta1")
-		v1, _ := semver.NewVersion("1.11.11")
-		v2, _ := semver.NewVersion("1.7.0")
-		v3, _ := semver.NewVersion("1.8.1")
-		items := []*semver.Version{v0, v1, v2, v3}
+		items := []*version.Version{
+			version.MustNew("1.19beta1"),
+			version.MustNew("1.10beta2"),
+			version.MustNew("1.7"),
+			version.MustNew("1.8.1"),
+			version.MustNew("1.21.0"),
+			version.MustNew("1.21rc4"),
+		}
+		sort.Sort(version.Collection(items))
 
 		render(map[string]bool{"1.8.1": true}, items, &buf)
-		assert.Equal(t, "  1.7\n* 1.8.1\n  1.11.11\n  1.13beta1\n", buf.String())
+		assert.Equal(t, "  1.7\n* 1.8.1\n  1.10beta2\n  1.19beta1\n  1.21rc4\n  1.21.0\n", buf.String())
 	})
 }
 

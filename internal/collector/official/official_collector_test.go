@@ -207,8 +207,8 @@ func TestUnstableVersions(t *testing.T) {
 		items, err := c.UnstableVersions()
 		assert.Nil(t, err)
 		assert.Equal(t, 1, len(items))
-		assert.Equal(t, "1.13beta1", items[0].Name)
-		assert.Equal(t, 15, len(items[0].Packages))
+		assert.Equal(t, "1.13beta1", items[0].Name())
+		assert.Equal(t, 15, len(items[0].Packages()))
 	})
 }
 
@@ -221,8 +221,10 @@ func TestArchivedVersions(t *testing.T) {
 		items, err := c.ArchivedVersions()
 		assert.Nil(t, err)
 		assert.Equal(t, 70, len(items))
-		assert.Equal(t, "1.12.6", items[0].Name)
-		assert.Equal(t, 15, len(items[0].Packages))
+		assert.Equal(t, "1", items[0].Name())
+		assert.Equal(t, 2, len(items[0].Packages()))
+		assert.Equal(t, "1.12.6", items[len(items)-1].Name())
+		assert.Equal(t, 15, len(items[len(items)-1].Packages()))
 	})
 }
 
@@ -235,7 +237,7 @@ func TestAllVersions(t *testing.T) {
 		items, err := c.AllVersions()
 		assert.Nil(t, err)
 		assert.Equal(t, 73, len(items))
-		assert.Equal(t, "1.13beta1", items[len(items)-1].Name)
-		assert.Equal(t, 15, len(items[len(items)-1].Packages))
+		assert.Equal(t, "1.13beta1", items[len(items)-1].Name())
+		assert.Equal(t, 15, len(items[len(items)-1].Packages()))
 	})
 }

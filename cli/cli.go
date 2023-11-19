@@ -5,11 +5,9 @@ import (
 	"io"
 	"os"
 	"path/filepath"
-	"sort"
 	"strings"
 	"time"
 
-	"github.com/Masterminds/semver/v3"
 	"github.com/fatih/color"
 	"github.com/urfave/cli/v2"
 	"github.com/voidint/g/internal/build"
@@ -119,40 +117,23 @@ func installed() (versions map[string]bool) {
 			continue
 		}
 		vname := d.Name()
-		v, err := version.Semantify(vname)
-		if err != nil || v == nil {
-			continue
-		}
 		versions[vname] = (vname == inused)
 	}
 
 	return
 }
 
-var go1_21_0 = semver.MustParse("1.21.0") // https://github.com/golang/go/issues/57631
-
 // render 渲染go版本列表
-func render(installed map[string]bool, items []*semver.Version, out io.Writer) {
-	sort.Sort(semver.Collection(items))
-
-	for i := range items {
-		fields := strings.SplitN(items[i].String(), "-", 2)
-
-		v := fields[0]
-		if items[i].LessThan(go1_21_0) {
-			v = strings.TrimSuffix(strings.TrimSuffix(v, ".0"), ".0")
-		}
-		if len(fields) > 1 {
-			v += fields[1]
-		}
-		if inused, found := installed[v]; found {
+func render(installed map[string]bool, items []*version.Version, out io.Writer) {
+	for _, v := range items {
+		if inused, found := installed[v.Name()]; found {
 			if inused {
-				color.New(color.FgGreen).Fprintf(out, "* %s\n", v)
+				color.New(color.FgGreen).Fprintf(out, "* %s\n", v.Name())
 			} else {
-				color.New(color.FgGreen).Fprintf(out, "  %s\n", v)
+				color.New(color.FgGreen).Fprintf(out, "  %s\n", v.Name())
 			}
 		} else {
-			fmt.Fprintf(out, "  %s\n", v)
+			fmt.Fprintf(out, "  %s\n", v.Name())
 		}
 	}
 }

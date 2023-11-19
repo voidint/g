@@ -37,7 +37,7 @@ func Semantify(vname string) (*semver.Version, error) {
 // FindVersion 返回指定名称的版本
 func FindVersion(all []*Version, name string) (*Version, error) {
 	for i := range all {
-		if all[i].Name == name {
+		if all[i].name == name {
 			return all[i], nil
 		}
 	}
@@ -46,40 +46,74 @@ func FindVersion(all []*Version, name string) (*Version, error) {
 
 // Version go版本
 type Version struct {
-	Name            string // 版本名，如'1.12.4'
-	SemanticVersion *semver.Version
-	Packages        []*Package
+	name string // 源版本名，如'1.12.4'，不完全等于sv.Original()
+	sv   *semver.Version
+	pkgs []*Package
 }
 
-func New(name string, pkgs []*Package) (*Version, error) {
+// WithPackages 设置版本下的软件包列表
+func WithPackages(pkgs []*Package) func(v *Version) {
+	return func(v *Version) {
+		v.pkgs = pkgs
+	}
+}
+
+func New(name string, opts ...func(v *Version)) (*Version, error) {
 	sv, err := Semantify(name)
 	if err != nil {
 		return nil, err
 	}
 
-	return &Version{
-		Name:            name,
-		SemanticVersion: sv,
-		Packages:        pkgs,
-	}, nil
+	v := Version{
+		name: name,
+		sv:   sv,
+	}
+
+	for _, setter := range opts {
+		if setter == nil {
+			continue
+		}
+		setter(&v)
+	}
+
+	return &v, nil
 }
 
-func MustNew(name string, pkgs []*Package) *Version {
-	v, err := New(name, pkgs)
+func MustNew(name string, opts ...func(v *Version)) *Version {
+	v, err := New(name, opts...)
 	if err != nil {
 		panic(err)
 	}
 	return v
 }
 
+// Name 返回版本号
+func (v *Version) Name() string {
+	return v.name
+}
+
+// Packages 返回软件包列表
+func (v *Version) Packages() []Package {
+	items := make([]Package, 0, len(v.pkgs))
+	for _, pkg := range v.pkgs {
+		items = append(items, *pkg)
+	}
+	return items
+}
+
+// SemanticVersion 返回语义化版本号
+func (v *Version) SemanticVersion() semver.Version {
+	return *v.sv
+}
+
 // FindPackage 返回指定操作系统和硬件架构的版本包
 func (v *Version) FindPackage(kind, goos, goarch string) (*Package, error) {
-	prefix := fmt.Sprintf("go%s.%s-%s", v.Name, goos, goarch)
-	for i := range v.Packages {
-		if v.Packages[i] == nil || !strings.EqualFold(v.Packages[i].Kind, kind) || !strings.HasPrefix(v.Packages[i].FileName, prefix) {
+	prefix := fmt.Sprintf("go%s.%s-%s", v.name, goos, goarch)
+	for i := range v.pkgs {
+		if v.pkgs[i] == nil || !strings.EqualFold(v.pkgs[i].Kind, kind) || !strings.HasPrefix(v.pkgs[i].FileName, prefix) {
 			continue
 		}
-		return v.Packages[i], nil
+		return v.pkgs[i], nil
 	}
 
 	return nil, errs.ErrPackageNotFound
@@ -87,12 +121,12 @@ func (v *Version) FindPackage(kind, goos, goarch string) (*Package, error) {
 
 // FindPackages 返回指定操作系统和硬件架构的版本包
 func (v *Version) FindPackages(kind, goos, goarch string) (pkgs []*Package, err error) {
-	prefix := fmt.Sprintf("go%s.%s-%s", v.Name, goos, goarch)
-	for i := range v.Packages {
-		if v.Packages[i] == nil || !strings.EqualFold(v.Packages[i].Kind, kind) || !strings.HasPrefix(v.Packages[i].FileName, prefix) {
+	prefix := fmt.Sprintf("go%s.%s-%s", v.name, goos, goarch)
+	for i := range v.pkgs {
+		if v.pkgs[i] == nil || !strings.EqualFold(v.pkgs[i].Kind, kind) || !strings.HasPrefix(v.pkgs[i].FileName, prefix) {
 			continue
 		}
-		pkgs = append(pkgs, v.Packages[i])
+		pkgs = append(pkgs, v.pkgs[i])
 	}
 	if len(pkgs) == 0 {
 		return nil, errs.ErrPackageNotFound

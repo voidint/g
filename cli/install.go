@@ -147,7 +147,7 @@ func install(ctx *cli.Context) (err error) {
 	if err = mkSymlink(targetV, goroot); err != nil {
 		return cli.Exit(errstring(err), 1)
 	}
-	fmt.Printf("Now using go%s\n", v.Name)
+	fmt.Printf("Now using go%s\n", v.Name())
 	return nil
 }
 

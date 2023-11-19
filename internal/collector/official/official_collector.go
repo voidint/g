@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	stdurl "net/url"
+	"sort"
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
@@ -107,7 +108,7 @@ func (c *Collector) StableVersions() (items []*version.Version, err error) {
 		var v *version.Version
 		if v, err = version.New(
 			strings.TrimPrefix(vname, "go"),
-			c.findPackages(div.Find("table").First()),
+			version.WithPackages(c.findPackages(div.Find("table").First())),
 		); err != nil {
 			return false
 		}
@@ -119,6 +120,7 @@ func (c *Collector) StableVersions() (items []*version.Version, err error) {
 	if err != nil {
 		return nil, err
 	}
+	sort.Sort(version.Collection(items))
 	return items, nil
 }
 
@@ -133,7 +135,7 @@ func (c *Collector) UnstableVersions() (items []*version.Version, err error) {
 		var v *version.Version
 		if v, err = version.New(
 			strings.TrimPrefix(vname, "go"),
-			c.findPackages(div.Find("table").First()),
+			version.WithPackages(c.findPackages(div.Find("table").First())),
 		); err != nil {
 			return false
 		}
@@ -145,6 +147,7 @@ func (c *Collector) UnstableVersions() (items []*version.Version, err error) {
 	if err != nil {
 		return nil, err
 	}
+	sort.Sort(version.Collection(items))
 	return items, nil
 }
 
@@ -159,7 +162,7 @@ func (c *Collector) ArchivedVersions() (items []*version.Version, err error) {
 		var v *version.Version
 		if v, err = version.New(
 			strings.TrimPrefix(vname, "go"),
-			c.findPackages(div.Find("table").First()),
+			version.WithPackages(c.findPackages(div.Find("table").First())),
 		); err != nil {
 			return false
 		}
@@ -171,6 +174,7 @@ func (c *Collector) ArchivedVersions() (items []*version.Version, err error) {
 	if err != nil {
 		return nil, err
 	}
+	sort.Sort(version.Collection(items))
 	return items, nil
 }
 
@@ -191,5 +195,6 @@ func (c *Collector) AllVersions() (items []*version.Version, err error) {
 		return nil, err
 	}
 	items = append(items, unstables...)
+	sort.Sort(version.Collection(items))
 	return items, nil
 }

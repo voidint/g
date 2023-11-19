@@ -4,7 +4,6 @@ import (
 	"os"
 	"strings"
 
-	"github.com/Masterminds/semver/v3"
 	"github.com/k0kubun/go-ansi"
 	"github.com/urfave/cli/v2"
 	"github.com/voidint/g/internal/collector"
@@ -43,11 +42,6 @@ func listRemote(ctx *cli.Context) (err error) {
 		return cli.Exit(errstring(err), 1)
 	}
 
-	items := make([]*semver.Version, 0, len(vs))
-	for _, ver := range vs {
-		items = append(items, ver.SemanticVersion)
-	}
-
-	render(installed(), items, ansi.NewAnsiStdout())
+	render(installed(), vs, ansi.NewAnsiStdout())
 	return nil
 }

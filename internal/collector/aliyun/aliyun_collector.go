@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	stdurl "net/url"
+	"sort"
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
@@ -79,7 +80,11 @@ func (c *Collector) AllVersions() (vers []*version.Version, err error) {
 	if len(items) == 0 {
 		return make([]*version.Version, 0, 0), nil
 	}
-	return convert2Versions(items)
+	if vers, err = convert2Versions(items); err != nil {
+		return nil, err
+	}
+	sort.Sort(version.Collection(vers))
+	return vers, nil
 }
 
 func (c *Collector) findGoFileItems(table *goquery.Selection) (items []*goFileItem) {

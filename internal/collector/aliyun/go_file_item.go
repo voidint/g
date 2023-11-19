@@ -120,12 +120,11 @@ func convert2Versions(items []*goFileItem) (vers []*version.Version, err error) 
 
 	vers = make([]*version.Version, 0, len(pkgMap))
 	for vname, pkgs := range pkgMap {
-		v, err := version.New(vname, pkgs)
+		v, err := version.New(vname, version.WithPackages(pkgs))
 		if err != nil {
 			return nil, err
 		}
 		vers = append(vers, v)
 	}
-
 	return vers, nil
 }
