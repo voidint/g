@@ -6,12 +6,74 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"reflect"
 	"testing"
 	"time"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/voidint/g/pkg/errs"
 )
+
+func TestSemantify(t *testing.T) {
+	type args struct {
+		vname string
+	}
+	tests := []struct {
+		name       string
+		args       args
+		wantString string
+		wantErr    bool
+	}{
+		{
+			name:       "普通三位版本号",
+			args:       args{vname: "1.21.4"},
+			wantString: "1.21.4",
+			wantErr:    false,
+		},
+		{
+			name:       "普通两位版本号",
+			args:       args{vname: "1.18"},
+			wantString: "1.18.0",
+			wantErr:    false,
+		},
+		{
+			name:       "1.21.0版本号",
+			args:       args{vname: "1.21.0"},
+			wantString: "1.21.0",
+			wantErr:    false,
+		},
+		{
+			name:       "alpha",
+			args:       args{vname: "1.19alpha1"},
+			wantString: "1.19.0-alpha1",
+			wantErr:    false,
+		},
+		{
+			name:       "beta",
+			args:       args{vname: "1.19beta1"},
+			wantString: "1.19.0-beta1",
+			wantErr:    false,
+		},
+		{
+			name:       "rc",
+			args:       args{vname: "1.21rc4"},
+			wantString: "1.21.0-rc4",
+			wantErr:    false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := Semantify(tt.args.vname)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("Semantify() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(got.String(), tt.wantString) {
+				t.Errorf("Semantify().String() = %v, want %v", got.String(), tt.wantString)
+			}
+		})
+	}
+}
 
 func TestVerifyChecksum(t *testing.T) {
 	t.Run("检查安装包校验和", func(t *testing.T) {
