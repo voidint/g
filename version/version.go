@@ -91,11 +91,6 @@ func (v *Version) Packages() []Package {
 	return items
 }
 
-// SemanticVersion 返回语义化版本号
-func (v *Version) SemanticVersion() semver.Version {
-	return *v.sv
-}
-
 func (v *Version) match(goos, goarch string) bool {
 	for _, pkg := range v.pkgs {
 		if strings.Contains(pkg.FileName, goos) && strings.Contains(pkg.FileName, goarch) { // TODO 不够严谨
@@ -115,7 +110,7 @@ func (v *Version) FindPackages(kind, goos, goarch string) (pkgs []*Package, err 
 		pkgs = append(pkgs, v.pkgs[i])
 	}
 	if len(pkgs) == 0 {
-		return nil, errs.ErrPackageNotFound
+		return nil, errs.NewPackageNotFoundError(kind, goos, goarch)
 	}
 	return pkgs, nil
 }

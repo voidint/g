@@ -7,11 +7,6 @@ import (
 )
 
 var (
-	// ErrPackageNotFound 版本包不存在
-	ErrPackageNotFound = errors.New("installation package not found")
-)
-
-var (
 	// ErrUnsupportedChecksumAlgorithm 不支持的校验和算法
 	ErrUnsupportedChecksumAlgorithm = errors.New("unsupported checksum algorithm")
 	// ErrChecksumNotMatched 校验和不匹配
@@ -19,6 +14,25 @@ var (
 	// ErrChecksumFileNotFound 校验和文件不存在
 	ErrChecksumFileNotFound = errors.New("checksum file not found")
 )
+
+// PackageNotFoundError 软件包不存在错误
+type PackageNotFoundError struct {
+	kind   string
+	goos   string
+	goarch string
+}
+
+func NewPackageNotFoundError(kind, goos, goarch string) error {
+	return &PackageNotFoundError{
+		kind:   kind,
+		goos:   goos,
+		goarch: goarch,
+	}
+}
+
+func (e PackageNotFoundError) Error() string {
+	return fmt.Sprintf("Package not found [%s,%s,%s]", e.goos, e.goarch, e.kind)
+}
 
 // VersionNotFoundError 版本不存在错误
 type VersionNotFoundError struct {
