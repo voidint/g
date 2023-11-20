@@ -10,7 +10,7 @@ import (
 	"github.com/voidint/g/version"
 )
 
-func list(*cli.Context) (err error) {
+func list(ctx *cli.Context) (err error) {
 	dirs, err := os.ReadDir(versionsDir)
 	if err != nil || len(dirs) <= 0 {
 		fmt.Printf("No version installed yet\n\n")
@@ -30,6 +30,14 @@ func list(*cli.Context) (err error) {
 		sort.Sort(version.Collection(items))
 	}
 
-	render(installed(), items, ansi.NewAnsiStdout())
+	var renderMode uint8
+	switch ctx.String("output") {
+	case "json":
+		renderMode = jsonMode
+	default:
+		renderMode = rawMode
+	}
+
+	render(renderMode, installed(), items, ansi.NewAnsiStdout())
 	return nil
 }

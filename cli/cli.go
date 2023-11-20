@@ -1,6 +1,7 @@
 package cli
 
 import (
+	"encoding/json"
 	"fmt"
 	"io"
 	"os"
@@ -123,17 +124,49 @@ func installed() (versions map[string]bool) {
 	return
 }
 
+type versionResp struct {
+	Version   string            `json:"version"`
+	Default   bool              `json:"default"`
+	Installed bool              `json:"installed"`
+	Packages  []version.Package `json:"packages"`
+}
+
+const (
+	rawMode  = 0
+	jsonMode = 1
+)
+
 // render 渲染go版本列表
-func render(installed map[string]bool, items []*version.Version, out io.Writer) {
-	for _, v := range items {
-		if inused, found := installed[v.Name()]; found {
-			if inused {
-				color.New(color.FgGreen).Fprintf(out, "* %s\n", v.Name())
-			} else {
-				color.New(color.FgGreen).Fprintf(out, "  %s\n", v.Name())
+func render(mode uint8, installed map[string]bool, items []*version.Version, out io.Writer) {
+	switch mode {
+	case jsonMode:
+		vs := make([]versionResp, 0, len(items))
+
+		for _, item := range items {
+			v := versionResp{
+				Version:  item.Name(),
+				Packages: item.Packages(),
 			}
-		} else {
-			fmt.Fprintf(out, "  %s\n", v.Name())
+			if inused, found := installed[item.Name()]; found {
+				v.Default = inused
+				v.Installed = found
+			}
+			vs = append(vs, v)
+		}
+
+		_ = json.NewEncoder(out).Encode(&vs)
+
+	default:
+		for _, item := range items {
+			if inused, found := installed[item.Name()]; found {
+				if inused {
+					color.New(color.FgGreen).Fprintf(out, "* %s\n", item.Name())
+				} else {
+					color.New(color.FgGreen).Fprintf(out, "  %s\n", item.Name())
+				}
+			} else {
+				fmt.Fprintf(out, "  %s\n", item.Name())
+			}
 		}
 	}
 }

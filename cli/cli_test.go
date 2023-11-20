@@ -51,7 +51,7 @@ func Test_render(t *testing.T) {
 		}
 		sort.Sort(version.Collection(items))
 
-		render(map[string]bool{"1.8.1": true}, items, &buf)
+		render(rawMode, map[string]bool{"1.8.1": true}, items, &buf)
 		assert.Equal(t, "  1.7\n* 1.8.1\n  1.10beta2\n  1.19beta1\n  1.21rc4\n  1.21.0\n", buf.String())
 	})
 }

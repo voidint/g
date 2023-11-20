@@ -9,14 +9,28 @@ var (
 			Aliases:   []string{"l"},
 			Usage:     "List installed versions",
 			UsageText: "g ls",
-			Action:    list,
+			Flags: []cli.Flag{
+				&cli.StringFlag{
+					Name:    "output",
+					Aliases: []string{"o"},
+					Usage:   "Output format. One of: (raw, json).",
+				},
+			},
+			Action: list,
 		},
 		{
 			Name:      "ls-remote",
 			Aliases:   []string{"lr", "lsr"},
 			Usage:     "List remote versions available for install",
 			UsageText: "g ls-remote [stable|archived|unstable]",
-			Action:    listRemote,
+			Flags: []cli.Flag{
+				&cli.StringFlag{
+					Name:    "output",
+					Aliases: []string{"o"},
+					Usage:   "Output format. One of: (raw, json).",
+				},
+			},
+			Action: listRemote,
 		},
 		{
 			Name:      "use",

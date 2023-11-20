@@ -42,6 +42,14 @@ func listRemote(ctx *cli.Context) (err error) {
 		return cli.Exit(errstring(err), 1)
 	}
 
-	render(installed(), vs, ansi.NewAnsiStdout())
+	var renderMode uint8
+	switch ctx.String("output") {
+	case "json":
+		renderMode = jsonMode
+	default:
+		renderMode = rawMode
+	}
+
+	render(renderMode, installed(), vs, ansi.NewAnsiStdout())
 	return nil
 }

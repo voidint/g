@@ -117,15 +117,15 @@ func (v *Version) FindPackages(kind, goos, goarch string) (pkgs []*Package, err 
 
 // Package go版本安装包
 type Package struct {
-	FileName    string
-	URL         string
-	Kind        string
-	OS          string
-	Arch        string
-	Size        string
-	Checksum    string
-	ChecksumURL string
-	Algorithm   string // checksum algorithm
+	FileName    string `json:"filename"`
+	URL         string `json:"url"`
+	Kind        string `json:"kind"`
+	OS          string `json:"os"`
+	Arch        string `json:"arch"`
+	Size        string `json:"size"`
+	Checksum    string `json:"checksum"`
+	ChecksumURL string `json:"-"`
+	Algorithm   string `json:"algorithm"` // checksum algorithm
 }
 
 const (
