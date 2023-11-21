@@ -53,13 +53,13 @@ func NewFinder(items []*Version, opts ...func(fdr *Finder)) *Finder {
 // 1、具体版本号：如'1.21.4'
 // 2、最新版本：latest
 // 3、通配符：如'1.21.x'、'1.x'、'1.18.*'等
-// 4、兼容某个主版本号：如'^1'、'^1.18'、'^1.18.10'等，在主版本号保持一致的前提下，次版本号和修订号均保持最新。
-// 5、匹配某个主次版本号：如'~1.18'，在主次版本号保持一致的前提下，修订号保持最新。
-// 6、大于某个版本：如'>1.18'，大于该版本的前提下，匹配最大的版本号。
-// 7、小于某个版本：如'<1.16'，小于该版本的前提下，匹配最大的版本号。
-// 8、版本区间：如'1.18 - 1.20'，匹配该区间范围内的最大版本。
+// 4、匹配最新的次版本号（主版本号兼容）：如'^1'、'^1.18'、'^1.18.10'等，在主版本号保持一致的前提下，次版本号和修订号均保持最新。
+// 5、匹配某个次版本号的最新修订号：如'~1.18'，在主次版本号保持一致的前提下，修订号保持最新。
+// 6、匹配大于目标版本的最新版本：如'>1.18'，大于该版本的前提下，匹配最大的版本号。
+// 7、匹配小于目标版本的最新版本：如'<1.16'，小于该版本的前提下，匹配最大的版本号。
+// 8、匹配目标版本区间内的最新版本：如'1.18 - 1.20'，匹配该区间范围内的最大版本。
 func (fdr *Finder) Find(vname string) (*Version, error) {
-	if vname == latest {
+	if vname == Latest {
 		return fdr.findLatest()
 	}
 
@@ -82,7 +82,17 @@ func (fdr *Finder) Find(vname string) (*Version, error) {
 	return nil, errs.NewVersionNotFoundError(vname, fdr.goos, fdr.goarch)
 }
 
-const latest = "latest"
+// MustFind 返回满足条件的语义化版本号。若发生错误，则抛出panic。
+func (fdr *Finder) MustFind(vname string) *Version {
+	v, err := fdr.Find(vname)
+	if err != nil {
+		panic(err)
+	}
+	return v
+}
+
+// Latest 指代当前最新版本
+const Latest = "latest"
 
 func (fdr *Finder) findLatest() (*Version, error) {
 	for i := len(fdr.items) - 1; i > 0; i-- {
@@ -90,5 +100,5 @@ func (fdr *Finder) findLatest() (*Version, error) {
 			return fdr.items[i], nil
 		}
 	}
-	return nil, errs.NewVersionNotFoundError(latest, fdr.goos, fdr.goarch)
+	return nil, errs.NewVersionNotFoundError(Latest, fdr.goos, fdr.goarch)
 }

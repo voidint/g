@@ -22,6 +22,14 @@ type PackageNotFoundError struct {
 	goarch string
 }
 
+func IsPackageNotFound(err error) bool {
+	if err == nil {
+		return false
+	}
+	_, ok := err.(*PackageNotFoundError)
+	return ok
+}
+
 func NewPackageNotFoundError(kind, goos, goarch string) error {
 	return &PackageNotFoundError{
 		kind:   kind,
