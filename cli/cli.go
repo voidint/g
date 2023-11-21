@@ -154,7 +154,9 @@ func render(mode uint8, installed map[string]bool, items []*version.Version, out
 			vs = append(vs, vo)
 		}
 
-		_ = json.NewEncoder(out).Encode(&vs)
+		enc := json.NewEncoder(out)
+		enc.SetIndent("", "    ")
+		enc.Encode(&vs)
 
 	default:
 		for _, item := range items {
