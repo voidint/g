@@ -124,11 +124,11 @@ func installed() (versions map[string]bool) {
 	return
 }
 
-type versionResp struct {
+type versionOut struct {
 	Version   string            `json:"version"`
-	Default   bool              `json:"default"`
+	InUse     bool              `json:"inUse"`
 	Installed bool              `json:"installed"`
-	Packages  []version.Package `json:"packages"`
+	Packages  []version.Package `json:"packages,omitempty"`
 }
 
 const (
@@ -140,18 +140,18 @@ const (
 func render(mode uint8, installed map[string]bool, items []*version.Version, out io.Writer) {
 	switch mode {
 	case jsonMode:
-		vs := make([]versionResp, 0, len(items))
+		vs := make([]versionOut, 0, len(items))
 
 		for _, item := range items {
-			v := versionResp{
+			vo := versionOut{
 				Version:  item.Name(),
 				Packages: item.Packages(),
 			}
-			if inused, found := installed[item.Name()]; found {
-				v.Default = inused
-				v.Installed = found
+			if inuse, found := installed[item.Name()]; found {
+				vo.InUse = inuse
+				vo.Installed = found
 			}
-			vs = append(vs, v)
+			vs = append(vs, vo)
 		}
 
 		_ = json.NewEncoder(out).Encode(&vs)
