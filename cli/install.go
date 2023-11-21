@@ -33,7 +33,10 @@ func install(ctx *cli.Context) (err error) {
 		return cli.Exit(errstring(err), 1)
 	}
 
-	v, err := version.NewFinder(items).Find(vname)
+	v, err := version.NewFinder(items,
+		version.WithFinderGoos(runtime.GOOS),
+		version.WithFinderGoarch(runtime.GOARCH),
+	).Find(vname)
 	if err != nil {
 		return cli.Exit(errstring(err), 1)
 	}
@@ -51,7 +54,7 @@ func install(ctx *cli.Context) (err error) {
 	if err != nil {
 		return cli.Exit(errstring(err), 1)
 	}
-	var pkg *version.Package
+	var pkg version.Package
 	if len(pkgs) > 1 {
 		menu := wmenu.NewMenu("Please select the package you want to install.")
 		menu.AddColor(
@@ -61,7 +64,7 @@ func install(ctx *cli.Context) (err error) {
 			wlog.Color{Code: ct.Yellow},
 		)
 		menu.Action(func(opts []wmenu.Opt) error {
-			pkg = opts[0].Value.(*version.Package)
+			pkg = opts[0].Value.(version.Package)
 			return nil
 		})
 		for i := range pkgs {

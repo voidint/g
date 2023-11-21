@@ -91,6 +91,11 @@ func (v *Version) Packages() []Package {
 	return items
 }
 
+// MatchConstraint 检查当前版本是否满足约束条件
+func (v *Version) MatchConstraint(c *semver.Constraints) bool {
+	return c.Check(v.sv)
+}
+
 func (v *Version) match(goos, goarch string) bool {
 	for _, pkg := range v.pkgs {
 		if strings.Contains(pkg.FileName, goos) && strings.Contains(pkg.FileName, goarch) { // TODO 不够严谨
@@ -101,13 +106,13 @@ func (v *Version) match(goos, goarch string) bool {
 }
 
 // FindPackages 返回指定操作系统和硬件架构的版本包
-func (v *Version) FindPackages(kind, goos, goarch string) (pkgs []*Package, err error) {
+func (v *Version) FindPackages(kind, goos, goarch string) (pkgs []Package, err error) {
 	prefix := fmt.Sprintf("go%s.%s-%s", v.name, goos, goarch)
 	for i := range v.pkgs {
 		if v.pkgs[i] == nil || !strings.EqualFold(v.pkgs[i].Kind, kind) || !strings.HasPrefix(v.pkgs[i].FileName, prefix) {
 			continue
 		}
-		pkgs = append(pkgs, v.pkgs[i])
+		pkgs = append(pkgs, *v.pkgs[i])
 	}
 	if len(pkgs) == 0 {
 		return nil, errs.NewPackageNotFoundError(kind, goos, goarch)
