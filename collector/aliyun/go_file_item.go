@@ -55,10 +55,17 @@ func (item goFileItem) getKind() string {
 }
 
 var osMapping = map[string]string{
-	"darwin":  "macOS",
-	"linux":   "Linux",
-	"windows": "Windows",
-	"freebsd": "FreeBSD",
+	"linux":     "Linux",
+	"darwin":    "macOS",
+	"windows":   "Windows",
+	"freebsd":   "FreeBSD",
+	"netbsd":    "netbsd",
+	"openbsd":   "openbsd",
+	"solaris":   "solaris",
+	"plan9":     "plan9",
+	"aix":       "aix",
+	"dragonfly": "dragonfly",
+	"illumos":   "illumos",
 }
 
 func (item goFileItem) getOS() string {
@@ -71,12 +78,20 @@ func (item goFileItem) getOS() string {
 }
 
 var archMapping = map[string]string{
-	"amd64":   "x86-64",
-	"386":     "x86",
-	"arm64":   "ARM64",
-	"armv6l":  "ARMv6",
-	"ppc64le": "ppc64le",
-	"s390x":   "s390x",
+	"-386.":      "x86",
+	"-amd64.":    "x86-64",
+	"-arm.":      "ARMv6",
+	"-arm64.":    "ARM64",
+	"-armv6l.":   "ARMv6",
+	"-ppc64.":    "ppc64",
+	"-ppc64le.":  "ppc64le",
+	"-mips.":     "mips",
+	"-mipsle.":   "mipsle",
+	"-mips64.":   "mips64",
+	"-mips64le.": "mips64le",
+	"-s390x.":    "s390x",
+	"-riscv64.":  "riscv64",
+	"-loong64.":  "loong64",
 }
 
 func (item goFileItem) getArch() string {

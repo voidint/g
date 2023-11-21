@@ -327,27 +327,6 @@ func Test_getArch(t *testing.T) {
 	}{
 		{
 			In: &goFileItem{
-				FileName: "go1.10.1.darwin-amd64.pkg",
-				URL:      "https://mirrors.aliyun.com/golang/go1.10.1.darwin-amd64.pkg",
-			},
-			Expected: "x86-64",
-		},
-		{
-			In: &goFileItem{
-				FileName: "go1.10.1.linux-arm64.tar.gz",
-				URL:      "https://mirrors.aliyun.com/golang/go1.10.1.linux-arm64.tar.gz",
-			},
-			Expected: "ARM64",
-		},
-		{
-			In: &goFileItem{
-				FileName: "go1.10.1.windows-386.msi",
-				URL:      "https://mirrors.aliyun.com/golang/go1.10.1.windows-386.msi",
-			},
-			Expected: "x86",
-		},
-		{
-			In: &goFileItem{
 				FileName: "go1.10.2.src.tar.gz",
 				URL:      "https://mirrors.aliyun.com/golang/go1.10.2.src.tar.gz",
 			},
@@ -355,24 +334,101 @@ func Test_getArch(t *testing.T) {
 		},
 		{
 			In: &goFileItem{
-				FileName: "go1.6.1.linux-armv6l.tar.gz",
-				URL:      "https://mirrors.aliyun.com/golang/go1.6.1.linux-armv6l.tar.gz",
+				FileName: "go1.10.1.freebsd-386.tar.gz",
+				URL:      "https://mirrors.aliyun.com/golang/go1.10.1.freebsd-386.tar.gz?spm=a2c6h.25603864.0.0.a6b07c45KMj71H",
+			},
+			Expected: "x86",
+		},
+		{
+			In: &goFileItem{
+				FileName: "go1.10.1.freebsd-amd64.tar.gz",
+				URL:      "https://mirrors.aliyun.com/golang/go1.10.1.freebsd-amd64.tar.gz?spm=a2c6h.25603864.0.0.a6b07c45KMj71H",
+			},
+			Expected: "x86-64",
+		},
+		{
+			In: &goFileItem{
+				FileName: "go1.21.0.freebsd-arm.tar.gz",
+				URL:      "https://mirrors.aliyun.com/golang/go1.21.0.freebsd-arm.tar.gz?spm=a2c6h.25603864.0.0.a6b07c45KMj71H",
 			},
 			Expected: "ARMv6",
 		},
 		{
 			In: &goFileItem{
-				FileName: "go1.6.4.linux-ppc64le.tar.gz",
-				URL:      "https://mirrors.aliyun.com/golang/go1.6.4.linux-ppc64le.tar.gz",
+				FileName: "go1.20rc3.windows-arm64.msi",
+				URL:      "https://mirrors.aliyun.com/golang/go1.20rc3.windows-arm64.msi?spm=a2c6h.25603864.0.0.a6b07c45KMj71H",
+			},
+			Expected: "ARM64",
+		},
+		{
+			In: &goFileItem{
+				FileName: "go1.21.0.linux-armv6l.tar.gz",
+				URL:      "https://mirrors.aliyun.com/golang/go1.21.0.linux-armv6l.tar.gz?spm=a2c6h.25603864.0.0.a6b07c45KMj71H",
+			},
+			Expected: "ARMv6",
+		},
+		{
+			In: &goFileItem{
+				FileName: "go1.21.0.aix-ppc64.tar.gz",
+				URL:      "https://mirrors.aliyun.com/golang/go1.21.0.aix-ppc64.tar.gz?spm=a2c6h.25603864.0.0.a6b07c45KMj71H",
+			},
+			Expected: "ppc64",
+		},
+		{
+			In: &goFileItem{
+				FileName: "go1.21.0.linux-ppc64le.tar.gz",
+				URL:      "https://mirrors.aliyun.com/golang/go1.21.0.linux-ppc64le.tar.gz?spm=a2c6h.25603864.0.0.a6b07c45KMj71H",
 			},
 			Expected: "ppc64le",
 		},
 		{
 			In: &goFileItem{
-				FileName: "go1.7.1.linux-s390x.tar.gz",
-				URL:      "https://mirrors.aliyun.com/golang/go1.7.1.linux-s390x.tar.gz",
+				FileName: "go1.21.1.linux-mips.tar.gz",
+				URL:      "https://mirrors.aliyun.com/golang/go1.21.1.linux-mips.tar.gz?spm=a2c6h.25603864.0.0.a6b07c45KMj71H",
+			},
+			Expected: "mips",
+		},
+		{
+			In: &goFileItem{
+				FileName: "go1.21.2.linux-mipsle.tar.gz",
+				URL:      "https://mirrors.aliyun.com/golang/go1.21.2.linux-mipsle.tar.gz?spm=a2c6h.25603864.0.0.a6b07c45KMj71H",
+			},
+			Expected: "mipsle",
+		},
+		{
+			In: &goFileItem{
+				FileName: "go1.21.3.linux-mips64.tar.gz",
+				URL:      "https://mirrors.aliyun.com/golang/go1.21.3.linux-mips64.tar.gz?spm=a2c6h.25603864.0.0.a6b07c45KMj71H",
+			},
+			Expected: "mips64",
+		},
+		{
+			In: &goFileItem{
+				FileName: "go1.21.3.linux-mips64le.tar.gz",
+				URL:      "https://mirrors.aliyun.com/golang/go1.21.3.linux-mips64le.tar.gz?spm=a2c6h.25603864.0.0.a6b07c45KMj71H",
+			},
+			Expected: "mips64le",
+		},
+		{
+			In: &goFileItem{
+				FileName: "go1.21.3.linux-s390x.tar.gz",
+				URL:      "https://mirrors.aliyun.com/golang/go1.21.3.linux-s390x.tar.gz?spm=a2c6h.25603864.0.0.a6b07c45KMj71H",
 			},
 			Expected: "s390x",
+		},
+		{
+			In: &goFileItem{
+				FileName: "go1.21.4.freebsd-riscv64.tar.gz",
+				URL:      "https://mirrors.aliyun.com/golang/go1.21.4.freebsd-riscv64.tar.gz?spm=a2c6h.25603864.0.0.a6b07c45KMj71H",
+			},
+			Expected: "riscv64",
+		},
+		{
+			In: &goFileItem{
+				FileName: "go1.21.4.linux-loong64.tar.gz",
+				URL:      "https://mirrors.aliyun.com/golang/go1.21.4.linux-loong64.tar.gz?spm=a2c6h.25603864.0.0.a6b07c45KMj71H",
+			},
+			Expected: "loong64",
 		},
 	}
 	t.Run("从文件名中获取架构", func(t *testing.T) {
