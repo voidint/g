@@ -39,7 +39,7 @@ func NewPackageNotFoundError(kind, goos, goarch string) error {
 }
 
 func (e PackageNotFoundError) Error() string {
-	return fmt.Sprintf("Package not found [%s,%s,%s]", e.goos, e.goarch, e.kind)
+	return fmt.Sprintf("package not found [%s,%s,%s]", e.goos, e.goarch, e.kind)
 }
 
 // VersionNotFoundError 版本不存在错误
@@ -66,7 +66,7 @@ func NewVersionNotFoundError(version, goos, goarch string) error {
 }
 
 func (e VersionNotFoundError) Error() string {
-	return fmt.Sprintf("Version not found %q [%s,%s]", e.version, e.goos, e.goarch)
+	return fmt.Sprintf("version not found %q [%s,%s]", e.version, e.goos, e.goarch)
 }
 
 func (e VersionNotFoundError) Version() string {
@@ -87,7 +87,7 @@ func NewMalformedVersionError(version string, err error) error {
 }
 
 func (e MalformedVersionError) Error() string {
-	return fmt.Sprintf("Malformed version string %q", e.version)
+	return fmt.Sprintf("malformed version string %q", e.version)
 }
 
 func (e MalformedVersionError) Err() error {
@@ -146,7 +146,7 @@ func NewDownloadError(url string, err error) error {
 // Error 返回错误字符串
 func (e DownloadError) Error() string {
 	var buf strings.Builder
-	buf.WriteString(fmt.Sprintf("Resource(%s) download failed", e.url))
+	buf.WriteString(fmt.Sprintf("resource(%s) download failed", e.url))
 	if e.err != nil {
 		buf.WriteString(" ==> " + e.err.Error())
 	}

@@ -68,7 +68,7 @@ func listRemote(ctx *cli.Context) (err error) {
 	case "json":
 		renderMode = jsonMode
 	default:
-		renderMode = rawMode
+		renderMode = textMode
 	}
 
 	render(renderMode, installed(), vs, ansi.NewAnsiStdout())

@@ -35,7 +35,7 @@ func list(ctx *cli.Context) (err error) {
 	case "json":
 		renderMode = jsonMode
 	default:
-		renderMode = rawMode
+		renderMode = textMode
 	}
 
 	render(renderMode, installed(), items, ansi.NewAnsiStdout())

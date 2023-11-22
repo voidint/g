@@ -145,7 +145,7 @@ func TestVerifyChecksum(t *testing.T) {
 		})
 
 		t.Run("校验和不匹配", func(t *testing.T) {
-			f.Seek(0, 0)
+			_, _ = f.Seek(0, 0)
 			h := sha1.New()
 			_, err = io.Copy(h, f)
 			assert.Nil(t, err)
@@ -158,7 +158,7 @@ func TestVerifyChecksum(t *testing.T) {
 		})
 
 		t.Run("SHA1", func(t *testing.T) {
-			f.Seek(0, 0)
+			_, _ = f.Seek(0, 0)
 			h := sha1.New()
 			_, err = io.Copy(h, f)
 			assert.Nil(t, err)

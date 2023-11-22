@@ -37,6 +37,6 @@ func TestDownloadError(t *testing.T) {
 		assert.NotNil(t, e)
 		assert.Equal(t, url, e.URL())
 		assert.Equal(t, core, e.Err())
-		assert.Equal(t, fmt.Sprintf("Resource(%s) download failed ==> %s", url, core.Error()), e.Error())
+		assert.Equal(t, fmt.Sprintf("resource(%s) download failed ==> %s", url, core.Error()), e.Error())
 	})
 }

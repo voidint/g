@@ -13,7 +13,7 @@ var (
 				&cli.StringFlag{
 					Name:    "output",
 					Aliases: []string{"o"},
-					Usage:   "Output format. One of: (raw, json).",
+					Usage:   "Output format. One of: (text, json).",
 				},
 			},
 			Action: list,
@@ -27,7 +27,7 @@ var (
 				&cli.StringFlag{
 					Name:    "output",
 					Aliases: []string{"o"},
-					Usage:   "Output format. One of: (raw, json).",
+					Usage:   "Output format. One of: (text, json).",
 				},
 			},
 			Action: listRemote,

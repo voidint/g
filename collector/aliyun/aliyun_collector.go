@@ -78,7 +78,7 @@ func (c *Collector) ArchivedVersions() (items []*version.Version, err error) {
 func (c *Collector) AllVersions() (vers []*version.Version, err error) {
 	items := c.findGoFileItems(c.doc.Find(".table"))
 	if len(items) == 0 {
-		return make([]*version.Version, 0, 0), nil
+		return make([]*version.Version, 0), nil
 	}
 	if vers, err = convert2Versions(items); err != nil {
 		return nil, err

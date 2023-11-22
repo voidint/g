@@ -13,6 +13,8 @@ import (
 	"github.com/urfave/cli/v2"
 	"github.com/voidint/g/build"
 	"github.com/voidint/g/version"
+	"golang.org/x/text/cases"
+	"golang.org/x/text/language"
 )
 
 var (
@@ -37,11 +39,11 @@ func Run() {
 		ghomeDir = ghome()
 		goroot = filepath.Join(ghomeDir, "go")
 		downloadsDir = filepath.Join(ghomeDir, "downloads")
-		if err = os.MkdirAll(downloadsDir, 0755); err != nil {
+		if err = os.MkdirAll(downloadsDir, 0750); err != nil {
 			return err
 		}
 		versionsDir = filepath.Join(ghomeDir, "versions")
-		return os.MkdirAll(versionsDir, 0755)
+		return os.MkdirAll(versionsDir, 0750)
 	}
 	app.Commands = commands
 
@@ -132,7 +134,7 @@ type versionOut struct {
 }
 
 const (
-	rawMode  = 0
+	textMode = 0
 	jsonMode = 1
 )
 
@@ -156,18 +158,18 @@ func render(mode uint8, installed map[string]bool, items []*version.Version, out
 
 		enc := json.NewEncoder(out)
 		enc.SetIndent("", "    ")
-		enc.Encode(&vs)
+		_ = enc.Encode(&vs)
 
 	default:
 		for _, item := range items {
 			if inused, found := installed[item.Name()]; found {
 				if inused {
-					color.New(color.FgGreen).Fprintf(out, "* %s\n", item.Name())
+					_, _ = color.New(color.FgGreen).Fprintf(out, "* %s\n", item.Name())
 				} else {
-					color.New(color.FgGreen).Fprintf(out, "  %s\n", item.Name())
+					_, _ = color.New(color.FgGreen).Fprintf(out, "  %s\n", item.Name())
 				}
 			} else {
-				fmt.Fprintf(out, "  %s\n", item.Name())
+				_, _ = fmt.Fprintf(out, "  %s\n", item.Name())
 			}
 		}
 	}
@@ -187,7 +189,7 @@ func wrapstring(str string) string {
 	}
 	words := strings.Fields(str)
 	if len(words) > 0 {
-		words[0] = strings.Title(words[0])
+		words[0] = cases.Title(language.English).String(words[0])
 	}
 	return fmt.Sprintf("[g] %s", strings.Join(words, " "))
 }

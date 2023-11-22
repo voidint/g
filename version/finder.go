@@ -39,8 +39,8 @@ func NewFinder(items []*Version, opts ...func(fdr *Finder)) *Finder {
 		items:  items,
 	}
 
-	if opts != nil {
-		for _, setter := range opts {
+	for _, setter := range opts {
+		if opts != nil {
 			setter(&fdr)
 		}
 	}
