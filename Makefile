@@ -5,7 +5,7 @@ GIT_COMMIT_HASH := $(shell git rev-parse HEAD|cut -c 1-8)
 GO_FLAGS := -v -ldflags="-X 'github.com/voidint/g/build.Built=$(BUILD_DATE)' -X 'github.com/voidint/g/build.GitCommit=$(GIT_COMMIT_HASH)' -X 'github.com/voidint/g/build.GitBranch=$(GIT_BRANCH)'"
 
 
-all: install test clean
+all: install lint test clean
 
 build:
 	$(GO) build $(GO_FLAGS)
@@ -48,12 +48,21 @@ build-windows-arm64:
 package:
 	sh ./package.sh
 
+lint:
+	golangci-lint run ./...
+	staticcheck ./...
+	gosec -exclude=G107,G204,G304,G401,G505 -quiet ./...
+
 test:
-	$(GO) test -v ./...
+	go test -v ./...
+
+test-coverage:
+	go test -race -coverprofile=coverage.txt -covermode=atomic ./...
 
 clean:
 	$(GO) clean -x
 	rm -f sha256sum.txt
 	rm -rf bin
+	rm -f coverage.txt
 
-.PHONY: all build install test package clean build-linux build-darwin build-windows build-linux-386 build-linux-amd64 build-linux-arm build-linux-arm64 build-linux-s390x build-darwin-amd64 build-darwin-arm64 build-windows-386 build-windows-amd64 build-windows-arm build-windows-arm64
+.PHONY: all build install lint test test-coverage package clean build-linux build-darwin build-windows build-linux-386 build-linux-amd64 build-linux-arm build-linux-arm64 build-linux-s390x build-darwin-amd64 build-darwin-arm64 build-windows-386 build-windows-amd64 build-windows-arm build-windows-arm64
