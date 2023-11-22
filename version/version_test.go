@@ -96,7 +96,7 @@ func TestVersion_FindPackages(t *testing.T) {
 		assert.Equal(t, 1, len(pkgs))
 		assert.Equal(t, pkgs[0].FileName, "go1.21.4.darwin-arm64.tar.gz")
 		assert.Equal(t, pkgs[0].URL, "https://golang.google.cn/dl/go1.21.4.darwin-arm64.tar.gz")
-		assert.Equal(t, pkgs[0].Kind, "Archive")
+		assert.Equal(t, pkgs[0].Kind, ArchiveKind)
 		assert.Equal(t, pkgs[0].OS, "macOS")
 		assert.Equal(t, pkgs[0].Arch, "ARM64")
 		assert.Equal(t, pkgs[0].Size, "62MB")

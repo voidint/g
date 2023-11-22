@@ -178,7 +178,7 @@ func Test_isPackageFile(t *testing.T) {
 func Test_getKind(t *testing.T) {
 	items := []*struct {
 		In       *goFileItem
-		Expected string
+		Expected version.PackageKind
 	}{
 		{
 			In: &goFileItem{

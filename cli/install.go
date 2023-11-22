@@ -34,6 +34,7 @@ func install(ctx *cli.Context) (err error) {
 	}
 
 	v, err := version.NewFinder(items,
+		version.WithFinderPackageKind(version.ArchiveKind),
 		version.WithFinderGoos(runtime.GOOS),
 		version.WithFinderGoarch(runtime.GOARCH),
 	).Find(vname)

@@ -41,7 +41,7 @@ func (item goFileItem) isPackageFile() bool {
 		strings.HasSuffix(item.FileName, ".msi")
 }
 
-func (item goFileItem) getKind() string {
+func (item goFileItem) getKind() version.PackageKind {
 	if strings.HasSuffix(item.FileName, ".src.tar.gz") {
 		return version.SourceKind
 	}

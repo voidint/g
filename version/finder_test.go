@@ -207,3 +207,28 @@ func TestFinder_Find(t *testing.T) {
 		})
 	}
 }
+
+func TestFinder_MustFind(t *testing.T) {
+	vs, err := genVersions()
+	if err != nil {
+		assert.Nil(t, err)
+	}
+
+	fdr := NewFinder(vs,
+		WithFinderPackageKind(ArchiveKind),
+		WithFinderGoos("darwin"),
+		WithFinderGoarch("arm64"),
+	)
+
+	t.Run("查找到版本", func(t *testing.T) {
+		v := fdr.MustFind("1.21.4")
+		assert.NotNil(t, v)
+		assert.Equal(t, v.Name(), "1.21.4")
+	})
+
+	t.Run("查找不到版本", func(t *testing.T) {
+		assert.Panics(t, func() {
+			fdr.MustFind("~1.15")
+		})
+	})
+}

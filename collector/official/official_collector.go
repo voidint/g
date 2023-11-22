@@ -74,7 +74,7 @@ func (c *Collector) findPackages(table *goquery.Selection) (pkgs []*version.Pack
 		pkgs = append(pkgs, &version.Package{
 			FileName:  td.Eq(0).Find("a").Text(),
 			URL:       href,
-			Kind:      td.Eq(1).Text(),
+			Kind:      version.PackageKind(td.Eq(1).Text()),
 			OS:        td.Eq(2).Text(),
 			Arch:      td.Eq(3).Text(),
 			Size:      td.Eq(4).Text(),

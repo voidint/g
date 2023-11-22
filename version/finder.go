@@ -10,9 +10,17 @@ import (
 
 // Finder 版本查找器
 type Finder struct {
+	kind   PackageKind
 	goos   string
 	goarch string
 	items  []*Version
+}
+
+// WithFinderPackageKind 设置查找器查找的文件种类。
+func WithFinderPackageKind(kind PackageKind) func(fdr *Finder) {
+	return func(fdr *Finder) {
+		fdr.kind = kind
+	}
 }
 
 // WithFinderGoos 设置查找器所在的目标操作系统，如darwin, freebsd, linux等。
@@ -34,6 +42,7 @@ func NewFinder(items []*Version, opts ...func(fdr *Finder)) *Finder {
 	sort.Sort(Collection(items)) // 升序
 
 	fdr := Finder{
+		kind:   ArchiveKind,
 		goos:   runtime.GOOS,
 		goarch: runtime.GOARCH,
 		items:  items,
@@ -74,10 +83,18 @@ func (fdr *Finder) Find(vname string) (*Version, error) {
 		return nil, errs.NewVersionNotFoundError(vname, fdr.goos, fdr.goarch)
 	}
 
+	versionFound := false
 	for i := len(fdr.items) - 1; i > 0; i-- { // 优先匹配高版本
-		if fdr.items[i].match(fdr.goos, fdr.goarch) && cs.Check(fdr.items[i].sv) {
-			return fdr.items[i], nil
+		if cs.Check(fdr.items[i].sv) {
+			versionFound = true
+
+			if fdr.items[i].match(fdr.goos, fdr.goarch) {
+				return fdr.items[i], nil
+			}
 		}
+	}
+	if versionFound {
+		return nil, errs.NewPackageNotFoundError(string(fdr.kind), fdr.goos, fdr.goarch)
 	}
 	return nil, errs.NewVersionNotFoundError(vname, fdr.goos, fdr.goarch)
 }
@@ -95,10 +112,14 @@ func (fdr *Finder) MustFind(vname string) *Version {
 const Latest = "latest"
 
 func (fdr *Finder) findLatest() (*Version, error) {
+	if len(fdr.items) == 0 {
+		return nil, errs.NewVersionNotFoundError(Latest, fdr.goos, fdr.goarch)
+	}
+
 	for i := len(fdr.items) - 1; i > 0; i-- {
 		if fdr.items[i].match(fdr.goos, fdr.goarch) {
 			return fdr.items[i], nil
 		}
 	}
-	return nil, errs.NewVersionNotFoundError(Latest, fdr.goos, fdr.goarch)
+	return nil, errs.NewPackageNotFoundError(string(fdr.kind), fdr.goos, fdr.goarch)
 }

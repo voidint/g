@@ -106,40 +106,43 @@ func (v *Version) match(goos, goarch string) bool {
 }
 
 // FindPackages 返回指定操作系统和硬件架构的版本包
-func (v *Version) FindPackages(kind, goos, goarch string) (pkgs []Package, err error) {
+func (v *Version) FindPackages(kind PackageKind, goos, goarch string) (pkgs []Package, err error) {
 	prefix := fmt.Sprintf("go%s.%s-%s", v.name, goos, goarch)
 	for i := range v.pkgs {
-		if v.pkgs[i] == nil || !strings.EqualFold(v.pkgs[i].Kind, kind) || !strings.HasPrefix(v.pkgs[i].FileName, prefix) {
+		if v.pkgs[i] == nil || !strings.EqualFold(string(v.pkgs[i].Kind), string(kind)) || !strings.HasPrefix(v.pkgs[i].FileName, prefix) {
 			continue
 		}
 		pkgs = append(pkgs, *v.pkgs[i])
 	}
 	if len(pkgs) == 0 {
-		return nil, errs.NewPackageNotFoundError(kind, goos, goarch)
+		return nil, errs.NewPackageNotFoundError(string(kind), goos, goarch)
 	}
 	return pkgs, nil
 }
 
 // Package go版本安装包
 type Package struct {
-	FileName    string `json:"filename"`
-	URL         string `json:"url"`
-	Kind        string `json:"kind"`
-	OS          string `json:"os"`
-	Arch        string `json:"arch"`
-	Size        string `json:"size"`
-	Checksum    string `json:"checksum"`
-	ChecksumURL string `json:"-"`
-	Algorithm   string `json:"algorithm"` // checksum algorithm
+	FileName    string      `json:"filename"`
+	URL         string      `json:"url"`
+	Kind        PackageKind `json:"kind"`
+	OS          string      `json:"os"`
+	Arch        string      `json:"arch"`
+	Size        string      `json:"size"`
+	Checksum    string      `json:"checksum"`
+	ChecksumURL string      `json:"-"`
+	Algorithm   string      `json:"algorithm"` // checksum algorithm
 }
+
+// PackageKind 软件包种类
+type PackageKind string
 
 const (
 	// SourceKind go安装包种类-源码
-	SourceKind = "Source"
+	SourceKind PackageKind = "Source"
 	// ArchiveKind go安装包种类-压缩文件
-	ArchiveKind = "Archive"
+	ArchiveKind PackageKind = "Archive"
 	// InstallerKind go安装包种类-可安装程序
-	InstallerKind = "Installer"
+	InstallerKind PackageKind = "Installer"
 )
 
 // DownloadWithProgress 下载版本另存为指定文件且显示下载进度
