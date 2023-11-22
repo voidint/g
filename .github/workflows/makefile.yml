@@ -1,0 +1,52 @@
+name: Makefile CI
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: 1.20.11
+          cache: false
+        
+      - name: Checkout Source
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Build
+        run: |
+          make build
+          make clean
+
+      - name: Run gosec
+        uses: securego/gosec@master
+        with:
+          args: -exclude=G107,G204,G304,G401,G505 -quiet ./...
+          
+      - name: Run staticcheck
+        uses: dominikh/staticcheck-action@v1.3.0
+
+      - name: Run golangci-lint
+        uses: golangci/golangci-lint-action@v3
+        with:
+          version: v1.54
+
+      - name: Run coverage
+        run: go test -race -coverprofile=coverage.txt -covermode=atomic ./...
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          files: ./coverage.txt
+          flags: unittests 
+          fail_ci_if_error: true 
+          verbose: true 
+             
