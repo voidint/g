@@ -48,7 +48,13 @@ build-windows-arm64:
 package:
 	sh ./package.sh
 
-lint:
+install-tools:
+	go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
+	go install honnef.co/go/tools/cmd/staticcheck@2023.1
+	go install github.com/securego/gosec/v2/cmd/gosec@latest
+
+lint: install-tools
+	go vet ./...
 	golangci-lint run ./...
 	staticcheck ./...
 	gosec -exclude=G107,G204,G304,G401,G505 -quiet ./...
@@ -59,10 +65,14 @@ test:
 test-coverage:
 	go test -race -coverprofile=coverage.txt -covermode=atomic ./...
 
+view-coverage: test-coverage
+	go tool cover -html=coverage.txt
+	rm -f coverage.txt
+
 clean:
 	$(GO) clean -x
 	rm -f sha256sum.txt
 	rm -rf bin
 	rm -f coverage.txt
 
-.PHONY: all build install lint test test-coverage package clean build-linux build-darwin build-windows build-linux-386 build-linux-amd64 build-linux-arm build-linux-arm64 build-linux-s390x build-darwin-amd64 build-darwin-arm64 build-windows-386 build-windows-amd64 build-windows-arm build-windows-arm64
+.PHONY: all build install install-tools lint test test-coverage view-coverage package clean build-linux build-darwin build-windows build-linux-386 build-linux-amd64 build-linux-arm build-linux-arm64 build-linux-s390x build-darwin-amd64 build-darwin-arm64 build-windows-386 build-windows-amd64 build-windows-arm build-windows-arm64
