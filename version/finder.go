@@ -72,7 +72,7 @@ func (fdr *Finder) Find(vname string) (*Version, error) {
 		return fdr.findLatest()
 	}
 
-	for i := len(fdr.items) - 1; i > 0; i-- {
+	for i := len(fdr.items) - 1; i >= 0; i-- {
 		if fdr.items[i].name == vname && fdr.items[i].match(fdr.goos, fdr.goarch) {
 			return fdr.items[i], nil
 		}
@@ -84,7 +84,7 @@ func (fdr *Finder) Find(vname string) (*Version, error) {
 	}
 
 	versionFound := false
-	for i := len(fdr.items) - 1; i > 0; i-- { // 优先匹配高版本
+	for i := len(fdr.items) - 1; i >= 0; i-- { // 优先匹配高版本
 		if cs.Check(fdr.items[i].sv) {
 			versionFound = true
 
@@ -116,7 +116,7 @@ func (fdr *Finder) findLatest() (*Version, error) {
 		return nil, errs.NewVersionNotFoundError(Latest, fdr.goos, fdr.goarch)
 	}
 
-	for i := len(fdr.items) - 1; i > 0; i-- {
+	for i := len(fdr.items) - 1; i >= 0; i-- {
 		if fdr.items[i].match(fdr.goos, fdr.goarch) {
 			return fdr.items[i], nil
 		}
