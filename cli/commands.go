@@ -1,6 +1,10 @@
 package cli
 
-import "github.com/urfave/cli/v2"
+import (
+	"fmt"
+
+	"github.com/urfave/cli/v2"
+)
 
 var (
 	commands = []*cli.Command{
@@ -13,8 +17,11 @@ var (
 				&cli.StringFlag{
 					Name:    "output",
 					Aliases: []string{"o"},
-					Usage:   "Output format. One of: (text, json).",
+					Usage:   "Output format. One of: [text|json]",
 				},
+			},
+			Before: func(ctx *cli.Context) error {
+				return validateLsFlag(ctx)
 			},
 			Action: list,
 		},
@@ -27,8 +34,11 @@ var (
 				&cli.StringFlag{
 					Name:    "output",
 					Aliases: []string{"o"},
-					Usage:   "Output format. One of: (text, json).",
+					Usage:   "Output format. One of: [text|json]",
 				},
+			},
+			Before: func(ctx *cli.Context) error {
+				return validateLsFlag(ctx)
 			},
 			Action: listRemote,
 		},
@@ -97,3 +107,10 @@ var (
 		},
 	}
 )
+
+func validateLsFlag(ctx *cli.Context) error {
+	if out := ctx.String("output"); out != "" && out != "json" && out != "text" {
+		return cli.Exit(errstring(fmt.Errorf("unable to match a printer suitable for the output format %q, allowed formats are: [text|json]", out)), 1)
+	}
+	return nil
+}
