@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/voidint/g/pkg/errs"
 )
 
 func genVersions() ([]*Version, error) {
@@ -231,4 +232,67 @@ func TestFinder_MustFind(t *testing.T) {
 			fdr.MustFind("~1.15")
 		})
 	})
+}
+
+func TestFinder_findLatest(t *testing.T) {
+	vs := []*Version{
+		MustNew("1.16.1", WithPackages([]*Package{
+			{
+				FileName:  "go1.16.1.darwin-amd64.tar.gz",
+				URL:       "https://golang.google.cn/dl/go1.16.1.darwin-amd64.tar.gz",
+				Kind:      ArchiveKind,
+				OS:        "macOS",
+				Arch:      "x86-64",
+				Size:      "124MB",
+				Checksum:  "a760929667253cdaa5b10117f536a912be2b0be1006215ff86e957f98f76fd58",
+				Algorithm: "SHA256",
+			},
+			{
+				FileName:  "go1.16.1.darwin-arm64.tar.gz",
+				URL:       "https://golang.google.cn/dl/go1.16.1.darwin-arm64.tar.gz",
+				Kind:      ArchiveKind,
+				OS:        "macOS",
+				Arch:      "ARM64",
+				Size:      "120MB",
+				Checksum:  "de2847f49faac2d0608b4afc324cbb3029a496c946db616c294d26082e45f32d",
+				Algorithm: "SHA256",
+			},
+		})),
+	}
+
+	tests := []struct {
+		name    string
+		fdr     *Finder
+		wantV   *Version
+		wantErr error
+	}{
+		{
+			name:    "查找器中版本列表为空",
+			fdr:     NewFinder(nil, WithFinderPackageKind(ArchiveKind), WithFinderGoos("darwin"), WithFinderGoarch("arm64")),
+			wantV:   nil,
+			wantErr: errs.NewVersionNotFoundError(Latest, "darwin", "arm64"),
+		},
+		{
+			name:    "查找器中版本列表非空且软件包亦匹配",
+			fdr:     NewFinder(vs, WithFinderPackageKind(ArchiveKind), WithFinderGoos("darwin"), WithFinderGoarch("arm64")),
+			wantV:   vs[0],
+			wantErr: nil,
+		},
+		{
+			name:    "查找器中版本列表非空但未找到匹配的软件包",
+			fdr:     NewFinder(vs, WithFinderPackageKind(InstallerKind), WithFinderGoos("windows"), WithFinderGoarch("arm64")),
+			wantV:   nil,
+			wantErr: errs.NewPackageNotFoundError(string(InstallerKind), "windows", "arm64"),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			v, err := tt.fdr.findLatest()
+			if err != nil {
+				assert.Equal(t, tt.wantErr.Error(), err.Error())
+			} else {
+				assert.Equal(t, tt.wantV.Name(), v.Name())
+			}
+		})
+	}
 }

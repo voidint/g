@@ -7,6 +7,7 @@ import (
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/stretchr/testify/assert"
+	"github.com/voidint/g/version"
 )
 
 func getCollector() (*Collector, error) {
@@ -50,5 +51,32 @@ func Test_findGoFileItems(t *testing.T) {
 			assert.Equal(t, gfi.URL, items[i].URL)
 			assert.Equal(t, gfi.Size, items[i].Size)
 		}
+	})
+}
+
+func TestCollector_StableVersions(t *testing.T) {
+	t.Run("稳定版本列表", func(t *testing.T) {
+		c := &Collector{}
+		vs, err := c.StableVersions()
+		assert.Nil(t, err)
+		assert.Equal(t, []*version.Version{}, vs)
+	})
+}
+
+func TestCollector_UnstableVersions(t *testing.T) {
+	t.Run("非稳定版本列表", func(t *testing.T) {
+		c := &Collector{}
+		vs, err := c.UnstableVersions()
+		assert.Nil(t, err)
+		assert.Equal(t, []*version.Version{}, vs)
+	})
+}
+
+func TestCollector_ArchivedVersions(t *testing.T) {
+	t.Run("已归档版本列表", func(t *testing.T) {
+		c := &Collector{}
+		vs, err := c.ArchivedVersions()
+		assert.Nil(t, err)
+		assert.Equal(t, []*version.Version{}, vs)
 	})
 }

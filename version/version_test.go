@@ -10,6 +10,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/Masterminds/semver/v3"
 	"github.com/stretchr/testify/assert"
 	"github.com/voidint/g/pkg/errs"
 )
@@ -82,6 +83,39 @@ func TestSemantify(t *testing.T) {
 	}
 }
 
+func TestNew(t *testing.T) {
+	t.Run("合法的版本号", func(t *testing.T) {
+		vname := "1.21.4"
+		opts := []func(v *Version){nil, nil, nil}
+		v, err := New(vname, opts...)
+		assert.Nil(t, err)
+		assert.True(t, reflect.DeepEqual(v, &Version{name: "1.21.4", sv: semver.MustParse("1.21.4")}))
+	})
+
+	t.Run("非法的版本号", func(t *testing.T) {
+		vname := "1.2.3.4"
+		v, err := New(vname)
+		assert.NotNil(t, err)
+		assert.True(t, errs.IsMalformedVersion(err))
+		assert.Nil(t, v)
+	})
+}
+
+func TestMustNew(t *testing.T) {
+	t.Run("合法的版本号", func(t *testing.T) {
+		vname := "1.21.4"
+		v := MustNew(vname)
+		assert.True(t, reflect.DeepEqual(v, &Version{name: "1.21.4", sv: semver.MustParse("1.21.4")}))
+	})
+
+	t.Run("非法的版本号", func(t *testing.T) {
+		vname := "1.2.3.4"
+		assert.Panics(t, func() {
+			MustNew(vname)
+		})
+	})
+}
+
 func TestVersion_FindPackages(t *testing.T) {
 	vs, err := genVersions()
 	if err != nil {
@@ -119,6 +153,96 @@ func TestVersion_FindPackages(t *testing.T) {
 		assert.True(t, errs.IsPackageNotFound(err))
 		assert.Equal(t, 0, len(pkgs))
 	})
+}
+
+func TestVersion_Packages(t *testing.T) {
+	filename := "go1.21.4.darwin-arm64.tar.gz"
+	url := "https://golang.google.cn/dl/go1.21.4.darwin-arm64.tar.gz"
+	kind := ArchiveKind
+	os := "macOS"
+	arch := "ARM64"
+	size := "62MB"
+	checksum := "8b7caf2ac60bdff457dba7d4ff2a01def889592b834453431ae3caecf884f6a5"
+	algorithm := "SHA256"
+
+	tests := []struct {
+		name string
+		v    *Version
+		want []Package
+	}{
+		{
+			name: "软件包列表为空",
+			v:    MustNew("1"),
+			want: make([]Package, 0),
+		},
+		{
+			name: "软件包列表非空",
+			v: MustNew("1.21.4", WithPackages([]*Package{
+				{
+					FileName:  filename,
+					URL:       url,
+					Kind:      kind,
+					OS:        os,
+					Arch:      arch,
+					Size:      size,
+					Checksum:  checksum,
+					Algorithm: algorithm,
+				},
+			})),
+			want: []Package{
+				{
+					FileName:  filename,
+					URL:       url,
+					Kind:      kind,
+					OS:        os,
+					Arch:      arch,
+					Size:      size,
+					Checksum:  checksum,
+					Algorithm: algorithm,
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := tt.v.Packages(); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("Version.Packages() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestVersion_MatchConstraint(t *testing.T) {
+	cs, err := semver.NewConstraint("~1.18")
+	assert.Nil(t, err)
+	assert.NotNil(t, cs)
+
+	tests := []struct {
+		name string
+		v    *Version
+		cs   *semver.Constraints
+		want bool
+	}{
+		{
+			name: "不匹配约束",
+			v:    MustNew("1.21.4"),
+			cs:   cs,
+			want: false,
+		},
+		{
+			name: "匹配约束",
+			v:    MustNew("1.18.4"),
+			cs:   cs,
+			want: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := tt.v.MatchConstraint(tt.cs); got != tt.want {
+				t.Errorf("Version.MatchConstraint() = %v, want %v", got, tt.want)
+			}
+		})
+	}
 }
 
 func TestVerifyChecksum(t *testing.T) {
