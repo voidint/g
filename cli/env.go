@@ -2,6 +2,7 @@ package cli
 
 import (
 	"fmt"
+	"io"
 	"os"
 
 	"github.com/urfave/cli/v2"
@@ -14,8 +15,12 @@ var envNames = []string{
 }
 
 func showEnv(ctx *cli.Context) (err error) {
-	for _, e := range envNames {
-		fmt.Printf("%s=%q\n", e, os.Getenv(e))
-	}
+	printEnv(os.Stdout, envNames)
 	return nil
+}
+
+func printEnv(w io.Writer, envNames []string) {
+	for _, eName := range envNames {
+		_, _ = fmt.Fprintf(w, "%s=%q\n", eName, os.Getenv(eName))
+	}
 }

@@ -2,7 +2,6 @@ package github
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"net/http"
 	"os"
@@ -13,7 +12,6 @@ import (
 
 	"github.com/Masterminds/semver/v3"
 	"github.com/mholt/archiver/v3"
-
 	"github.com/voidint/g/pkg/checksum"
 	"github.com/voidint/g/pkg/errs"
 	httppkg "github.com/voidint/g/pkg/http"
@@ -82,9 +80,6 @@ func (up ReleaseUpdater) CheckForUpdates(current *semver.Version, owner, repo st
 	return nil, false, nil
 }
 
-// ErrAssetNotFound 资源不存在
-var ErrAssetNotFound = errors.New("asset not found")
-
 // Apply 更新指定版本
 func (up ReleaseUpdater) Apply(rel *Release,
 	findAsset func([]Asset) (idx int),
@@ -93,7 +88,7 @@ func (up ReleaseUpdater) Apply(rel *Release,
 	// 查找下载链接
 	idx := findAsset(rel.Assets)
 	if idx < 0 {
-		return ErrAssetNotFound
+		return errs.ErrAssetNotFound
 	}
 
 	// 查找校验和

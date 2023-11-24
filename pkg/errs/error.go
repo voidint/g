@@ -13,6 +13,8 @@ var (
 	ErrChecksumNotMatched = errors.New("file checksum does not match the computed checksum")
 	// ErrChecksumFileNotFound 校验和文件不存在
 	ErrChecksumFileNotFound = errors.New("checksum file not found")
+	// ErrAssetNotFound 资源不存在错误
+	ErrAssetNotFound = errors.New("asset not found")
 )
 
 // PackageNotFoundError 软件包不存在错误
