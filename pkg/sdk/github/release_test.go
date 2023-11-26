@@ -54,19 +54,19 @@ func TestReleaseUpdater_CheckForUpdates(t *testing.T) {
 
 	rr3 := httptest.NewRecorder()
 	rr3.WriteHeader(http.StatusOK)
-	rr3.WriteString(`{"tag_name": 7}`)
+	_, _ = rr3.WriteString(`{"tag_name": 7}`)
 
 	rr4 := httptest.NewRecorder()
 	rr4.WriteHeader(http.StatusOK)
-	rr4.WriteString(`{"tag_name": "HelloWorld"}`)
+	_, _ = rr4.WriteString(`{"tag_name": "HelloWorld"}`)
 
 	rr5 := httptest.NewRecorder()
 	rr5.WriteHeader(http.StatusOK)
-	rr5.WriteString(`{"tag_name": "1.5.2"}`)
+	_, _ = rr5.WriteString(`{"tag_name": "1.5.2"}`)
 
 	rr6 := httptest.NewRecorder()
 	rr6.WriteHeader(http.StatusOK)
-	rr6.WriteString(`{"tag_name": "1.6.0"}`)
+	_, _ = rr6.WriteString(`{"tag_name": "1.6.0"}`)
 
 	patches := gomonkey.ApplyMethodSeq(&http.Client{}, "Do", []gomonkey.OutputCell{
 		{Values: gomonkey.Params{nil, errors.New("unknown error")}},
