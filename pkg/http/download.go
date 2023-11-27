@@ -10,7 +10,6 @@ import (
 
 	"github.com/k0kubun/go-ansi"
 	"github.com/schollz/progressbar/v3"
-
 	"github.com/voidint/g/pkg/errs"
 )
 
@@ -69,7 +68,7 @@ func Download(srcURL string, filename string, flag int, perm fs.FileMode, withPr
 func DownloadAsBytes(srcURL string) (data []byte, err error) {
 	resp, err := http.Get(srcURL)
 	if err != nil {
-		return nil, err
+		return nil, errs.NewDownloadError(srcURL, err)
 	}
 	defer resp.Body.Close()
 	return io.ReadAll(resp.Body)

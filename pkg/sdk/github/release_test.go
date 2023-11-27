@@ -69,21 +69,14 @@ func TestReleaseUpdater_CheckForUpdates(t *testing.T) {
 	_, _ = rr6.WriteString(`{"tag_name": "1.6.0"}`)
 
 	patches := gomonkey.ApplyMethodSeq(&http.Client{}, "Do", []gomonkey.OutputCell{
-		{Values: gomonkey.Params{nil, errors.New("unknown error")}},
-		{Values: gomonkey.Params{rr2.Result(), nil}},
-		{Values: gomonkey.Params{rr3.Result(), nil}},
-		{Values: gomonkey.Params{rr4.Result(), nil}},
-		{Values: gomonkey.Params{rr5.Result(), nil}},
-		{Values: gomonkey.Params{rr6.Result(), nil}},
+		{Values: gomonkey.Params{nil, errors.New("unknown error")}}, // 1、发送查询请求失败
+		{Values: gomonkey.Params{rr2.Result(), nil}},                // 2、得到非成功响应
+		{Values: gomonkey.Params{rr3.Result(), nil}},                // 3、响应内容反序列化错误
+		{Values: gomonkey.Params{rr4.Result(), nil}},                // 4、响应内容中版本号为非语义化版本号
+		{Values: gomonkey.Params{rr5.Result(), nil}},                // 5、响应内容中版本号不大于当前版本号
+		{Values: gomonkey.Params{rr6.Result(), nil}},                // 6、存在新版本号
 	})
 	defer patches.Reset()
-
-	// 1、发送查询请求失败
-	// 2、得到非成功响应
-	// 3、响应内容反序列化错误
-	// 4、响应内容中版本号为非语义化版本号
-	// 5、响应内容中版本号不大于当前版本号
-	// 6、存在新版本号
 
 	owner := "voidint"
 	repo := "g"
