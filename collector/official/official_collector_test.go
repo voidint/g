@@ -273,7 +273,7 @@ func TestNewCollector(t *testing.T) {
 	rr2.WriteHeader(http.StatusOK)
 	htmlData, err := os.ReadFile("./testdata/golang_dl_with_rc.html")
 	assert.Nil(t, err)
-	rr2.Write(htmlData)
+	_, _ = rr2.Write(htmlData)
 
 	patches := gomonkey.ApplyMethodSeq(&http.Client{}, "Get", []gomonkey.OutputCell{
 		{Values: gomonkey.Params{nil, errors.New("unknown error")}},
