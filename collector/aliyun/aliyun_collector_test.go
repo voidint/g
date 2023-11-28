@@ -2,11 +2,17 @@ package aliyun
 
 import (
 	"bytes"
+	"errors"
+	"fmt"
+	"net/http"
+	"net/http/httptest"
 	"os"
 	"testing"
 
 	"github.com/PuerkitoBio/goquery"
+	"github.com/agiledragon/gomonkey/v2"
 	"github.com/stretchr/testify/assert"
+	"github.com/voidint/g/pkg/errs"
 	"github.com/voidint/g/version"
 )
 
@@ -79,4 +85,50 @@ func TestCollector_ArchivedVersions(t *testing.T) {
 		assert.Nil(t, err)
 		assert.Equal(t, []*version.Version{}, vs)
 	})
+}
+
+func TestNewCollector(t *testing.T) {
+	rr1 := httptest.NewRecorder()
+	rr1.WriteHeader(http.StatusNotFound)
+
+	rr2 := httptest.NewRecorder()
+	rr2.WriteHeader(http.StatusOK)
+	htmlData, err := os.ReadFile("./testdata/golang_dl.html")
+	assert.Nil(t, err)
+	rr2.Write(htmlData)
+
+	patches := gomonkey.ApplyMethodSeq(&http.Client{}, "Get", []gomonkey.OutputCell{
+		{Values: gomonkey.Params{nil, errors.New("unknown error")}},
+		{Values: gomonkey.Params{rr1.Result(), nil}},
+		{Values: gomonkey.Params{rr2.Result(), nil}},
+	})
+	defer patches.Reset()
+
+	tests := []struct {
+		name    string
+		wantErr error
+	}{
+		{
+			name:    "默认站点URL访问异常",
+			wantErr: errs.NewURLUnreachableError(DownloadPageURL, errors.New("unknown error")),
+		},
+		{
+			name:    "默认站点URL资源不存在",
+			wantErr: errs.NewURLUnreachableError(DownloadPageURL, fmt.Errorf("%d", http.StatusNotFound)),
+		},
+		{
+			name:    "默认站点URL访问采集正常",
+			wantErr: nil,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := NewCollector()
+			assert.Equal(t, tt.wantErr, err)
+			if err == nil {
+				assert.NotNil(t, got.pURL)
+				assert.NotNil(t, got.doc)
+			}
+		})
+	}
 }
