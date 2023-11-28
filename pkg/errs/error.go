@@ -110,8 +110,8 @@ func (e MalformedVersionError) Error() string {
 	return fmt.Sprintf("malformed version string %q", e.version)
 }
 
-// Err 返回源错误
-func (e MalformedVersionError) Err() error {
+// Unwrap 返回源错误
+func (e MalformedVersionError) Unwrap() error {
 	return e.err
 }
 
@@ -153,8 +153,8 @@ func (e URLUnreachableError) Error() string {
 	return buf.String()
 }
 
-// Err 返回源错误
-func (e URLUnreachableError) Err() error {
+// Unwrap 返回源错误
+func (e URLUnreachableError) Unwrap() error {
 	return e.err
 }
 
@@ -196,8 +196,8 @@ func (e DownloadError) Error() string {
 	return buf.String()
 }
 
-// Err 返回错误对象
-func (e DownloadError) Err() error {
+// Unwrap 返回错误对象
+func (e DownloadError) Unwrap() error {
 	return e.err
 }
 

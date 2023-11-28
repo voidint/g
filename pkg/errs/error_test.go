@@ -59,7 +59,7 @@ func TestMalformedVersionError(t *testing.T) {
 		assert.True(t, ok)
 		assert.NotNil(t, e)
 		assert.Equal(t, v, e.Version())
-		assert.Equal(t, core, e.Err())
+		assert.Equal(t, core, e.Unwrap())
 	})
 }
 
@@ -77,7 +77,7 @@ func TestURLUnreachableError(t *testing.T) {
 		assert.True(t, ok)
 		assert.NotNil(t, e)
 		assert.Equal(t, url, e.URL())
-		assert.Equal(t, core, e.Err())
+		assert.Equal(t, core, e.Unwrap())
 		assert.Equal(t, fmt.Sprintf("URL %q is unreachable ==> %s", url, core.Error()), e.Error())
 	})
 }
@@ -95,7 +95,7 @@ func TestDownloadError(t *testing.T) {
 		assert.True(t, ok)
 		assert.NotNil(t, e)
 		assert.Equal(t, url, e.URL())
-		assert.Equal(t, core, e.Err())
+		assert.Equal(t, core, e.Unwrap())
 		assert.Equal(t, fmt.Sprintf("resource(%s) download failed ==> %s", url, core.Error()), e.Error())
 	})
 }
