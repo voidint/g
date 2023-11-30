@@ -1,12 +1,14 @@
-$release = "1.5.2"
+param (
+    [string] $release = "1.5.2",
+    [string] $base_dir
+)
+
 $os = "windows"
 $arch = "amd64"
-$default_base_dir="$HOME\.g"
+
+$base_dir = $base_dir -eq "" ? ($env:G_HOME ? $env:G_HOME : "$HOME\.g") : $base_dir
 $dest_file = "${base_dir}\downloads\g${release}.${os}-${arch}.zip"
 $url = "https://github.com/voidint/g/releases/download/v${release}/g${release}.${os}-${arch}.zip"
-
-param([string] $base_dir = "$default_base_dir")
-
 
 function NewDirs () {
     New-Item -Force -Path "$base_dir\downloads", "$base_dir\bin" -ItemType "directory"
@@ -21,7 +23,7 @@ function DownloadRelease() {
 }
 
 function InstallG () {
-    Expand-Archive "$dest_file" "$base_dir\bin\"
+    Expand-Archive -Path "$dest_file" -DestinationPath "$base_dir\bin\" -Force
 }
 
 
@@ -68,4 +70,4 @@ InstallG
 Write-Host -ForegroundColor Blue "[3/3] Set environment variables"
 SetEnv
 
-Write-Host -ForegroundColor Green "Done!"
+Write-Host -ForegroundColor Green "g$release installed, happy hacking!"
