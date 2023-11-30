@@ -91,7 +91,7 @@ const (
 
 // ghome 返回g根目录
 func ghome() (dir string) {
-	if experimental := os.Getenv(experimentalEnv); experimental == "true" {
+	if experimental := os.Getenv(experimentalEnv); strings.EqualFold(experimental, "true") {
 		if dir = os.Getenv(homeEnv); dir != "" {
 			return dir
 		}
