@@ -37,7 +37,7 @@ func Version() string {
 		buf.WriteString(fmt.Sprintf("\n%-15s%s", "Git commit:", GitCommit))
 	}
 	buf.WriteString(fmt.Sprintf("\n%-15s%s", "Go version:", runtime.Version()))
-	buf.WriteString(fmt.Sprintf("\n%-15s%s/%s", "Os/Arch:", runtime.GOOS, runtime.GOARCH))
+	buf.WriteString(fmt.Sprintf("\n%-15s%s/%s", "OS/Arch:", runtime.GOOS, runtime.GOARCH))
 	buf.WriteString(fmt.Sprintf("\n%-15s%t", "Experimental:", strings.EqualFold(os.Getenv("G_EXPERIMENTAL"), "true")))
 	return buf.String()
 }
