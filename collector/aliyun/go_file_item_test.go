@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/voidint/g/pkg/errs"
 	"github.com/voidint/g/version"
 )
 
@@ -435,5 +436,104 @@ func Test_getArch(t *testing.T) {
 		for _, item := range items {
 			assert.Equal(t, item.Expected, item.In.getArch())
 		}
+	})
+}
+
+func Test_convert2Versions(t *testing.T) {
+	items := []*goFileItem{
+		{
+			FileName: "go1.18.windows-arm64.zip",
+			URL:      "https://mirrors.aliyun.com/golang/go1.18.windows-arm64.zip",
+			Size:     "118.0 MB",
+		},
+		{
+			FileName: "go1.18.1.linux-386.tar.gz",
+			URL:      "https://mirrors.aliyun.com/golang/go1.18.1.linux-386.tar.gz",
+			Size:     "107.6 MB",
+		},
+		{
+			FileName: "go1.18.1.src.tar.gz",
+			URL:      "https://mirrors.aliyun.com/golang/go1.18.1.src.tar.gz",
+			Size:     "21.8 MB",
+		},
+		{
+			FileName: "go1.17.1.linux-amd64.tar.gz",
+			URL:      "https://mirrors.aliyun.com/golang/go1.17.1.linux-amd64.tar.gz",
+			Size:     "128.5 MB",
+		},
+		{
+			FileName: "go1.17.1.linux-amd64.tar.gz.sha256",
+			URL:      "https://mirrors.aliyun.com/golang/go1.17.1.linux-amd64.tar.gz.sha256",
+			Size:     "64.0 B",
+		},
+	}
+
+	t.Run("不存在无效版本号", func(t *testing.T) {
+		vs, err := convert2Versions(items)
+		assert.Nil(t, err)
+		assert.Equal(t, 3, len(vs))
+		assert.Equal(t, "1.17.1", vs[0].Name())
+		assert.Equal(t, "1.18", vs[1].Name())
+		assert.Equal(t, "1.18.1", vs[2].Name())
+
+		assert.Equal(t, []version.Package{
+			{
+				FileName:    "go1.17.1.linux-amd64.tar.gz",
+				URL:         "https://mirrors.aliyun.com/golang/go1.17.1.linux-amd64.tar.gz",
+				Kind:        version.ArchiveKind,
+				OS:          "Linux",
+				Arch:        "x86-64",
+				Size:        "128.5 MB",
+				ChecksumURL: "https://mirrors.aliyun.com/golang/go1.17.1.linux-amd64.tar.gz.sha256",
+				Algorithm:   "SHA256",
+			},
+		}, vs[0].Packages())
+
+		assert.Equal(t, []version.Package{
+			{
+				FileName:    "go1.18.windows-arm64.zip",
+				URL:         "https://mirrors.aliyun.com/golang/go1.18.windows-arm64.zip",
+				Kind:        version.ArchiveKind,
+				OS:          "Windows",
+				Arch:        "ARM64",
+				Size:        "118.0 MB",
+				ChecksumURL: "",
+				Algorithm:   "",
+			},
+		}, vs[1].Packages())
+
+		assert.Equal(t, []version.Package{
+			{
+				FileName:    "go1.18.1.linux-386.tar.gz",
+				URL:         "https://mirrors.aliyun.com/golang/go1.18.1.linux-386.tar.gz",
+				Kind:        version.ArchiveKind,
+				OS:          "Linux",
+				Arch:        "x86",
+				Size:        "107.6 MB",
+				ChecksumURL: "",
+				Algorithm:   "",
+			},
+			{
+				FileName:    "go1.18.1.src.tar.gz",
+				URL:         "https://mirrors.aliyun.com/golang/go1.18.1.src.tar.gz",
+				Kind:        version.SourceKind,
+				OS:          "",
+				Arch:        "",
+				Size:        "21.8 MB",
+				ChecksumURL: "",
+				Algorithm:   "",
+			},
+		}, vs[2].Packages())
+	})
+
+	t.Run("存在无效版本号", func(t *testing.T) {
+		items = append(items, &goFileItem{
+			FileName: "goa.b.c.linux-amd64.tar.gz",
+			URL:      "https://mirrors.aliyun.com/golang/goa.b.c.linux-amd64.tar.gz",
+			Size:     "64.0 B",
+		})
+		vs, err := convert2Versions(items)
+		assert.Nil(t, vs)
+		assert.True(t, errs.IsMalformedVersion(err))
 	})
 }

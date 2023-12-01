@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"net/http"
 	stdurl "net/url"
-	"sort"
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
@@ -83,7 +82,6 @@ func (c *Collector) AllVersions() (vers []*version.Version, err error) {
 	if vers, err = convert2Versions(items); err != nil {
 		return nil, err
 	}
-	sort.Sort(version.Collection(vers))
 	return vers, nil
 }
 

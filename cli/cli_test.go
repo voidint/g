@@ -1,6 +1,7 @@
 package cli
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"os"
@@ -39,8 +40,8 @@ func Test_inuse(t *testing.T) {
 }
 
 func Test_render(t *testing.T) {
-	t.Run("渲染go版本列表", func(t *testing.T) {
-		var buf strings.Builder
+	t.Run("渲染go版本列表(text)", func(t *testing.T) {
+		var got strings.Builder
 		items := []*version.Version{
 			version.MustNew("1.19beta1"),
 			version.MustNew("1.10beta2"),
@@ -51,8 +52,43 @@ func Test_render(t *testing.T) {
 		}
 		sort.Sort(version.Collection(items))
 
-		render(textMode, map[string]bool{"1.8.1": true}, items, &buf)
-		assert.Equal(t, "  1.7\n* 1.8.1\n  1.10beta2\n  1.19beta1\n  1.21rc4\n  1.21.0\n", buf.String())
+		render(textMode, map[string]bool{"1.8.1": true}, items, &got)
+		assert.Equal(t, "  1.7\n* 1.8.1\n  1.10beta2\n  1.19beta1\n  1.21rc4\n  1.21.0\n", got.String())
+	})
+
+	t.Run("渲染go版本列表(json)", func(t *testing.T) {
+		var actual strings.Builder
+		items := []*version.Version{
+			version.MustNew("1.19beta1"),
+			version.MustNew("1.10beta2"),
+			version.MustNew("1.7"),
+			version.MustNew("1.8.1"),
+			version.MustNew("1.21.0"),
+			version.MustNew("1.21rc4"),
+		}
+		sort.Sort(version.Collection(items))
+
+		installed := map[string]bool{"1.8.1": true}
+		render(jsonMode, installed, items, &actual)
+
+		vs := make([]versionOut, 0, len(items))
+		for _, item := range items {
+			vo := versionOut{
+				Version:  item.Name(),
+				Packages: item.Packages(),
+			}
+			if inuse, found := installed[item.Name()]; found {
+				vo.InUse = inuse
+				vo.Installed = found
+			}
+			vs = append(vs, vo)
+		}
+
+		var expected strings.Builder
+		enc := json.NewEncoder(&expected)
+		enc.SetIndent("", "    ")
+		_ = enc.Encode(&vs)
+		assert.Equal(t, expected.String(), actual.String())
 	})
 }
 

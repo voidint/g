@@ -2,6 +2,7 @@ package aliyun
 
 import (
 	"fmt"
+	"sort"
 	"strings"
 	"unicode"
 
@@ -141,5 +142,6 @@ func convert2Versions(items []*goFileItem) (vers []*version.Version, err error) 
 		}
 		vers = append(vers, v)
 	}
+	sort.Sort(version.Collection(vers))
 	return vers, nil
 }
