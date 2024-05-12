@@ -29,7 +29,7 @@ function get_os() {
     echo $(uname -s | awk '{print tolower($0)}')
 }
 
-main() {
+function main() {
     local release="1.6.0"
     local os=$(get_os)
     local arch=$(get_arch)
@@ -61,19 +61,17 @@ export G_MIRROR=https://golang.google.cn/dl/
 
     if [ -x "$(command -v bash)" ]; then
         cat >>${HOME}/.bashrc <<-'EOF'
-# g shell setup
-if [ -f "${HOME}/.g/env" ]; then
-    . "${HOME}/.g/env"
-fi
+
+[ -s "${HOME}/.g/env" ] && \. "${HOME}/.g/env"  # g shell setup
+
 		EOF
     fi
 
     if [ -x "$(command -v zsh)" ]; then
         cat >>${HOME}/.zshrc <<-'EOF'
-# g shell setup
-if [ -f "${HOME}/.g/env" ]; then
-    . "${HOME}/.g/env"
-fi
+
+[ -s "${HOME}/.g/env" ] && \. "${HOME}/.g/env"  # g shell setup
+
 		EOF
     fi
 
