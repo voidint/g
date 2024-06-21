@@ -1,4 +1,4 @@
-package aliyun
+package ustc
 
 import (
 	"fmt"
@@ -16,14 +16,14 @@ import (
 // var _ collector.Collector = (*Collector)(nil)
 
 const (
-	// DownloadPageURL 阿里云镜像站点网址
-	DownloadPageDomain = "mirrors.aliyun.com"
+	// DownloadPageURL USTC镜像站点网址
+	DownloadPageDomain = "mirrors.ustc.edu.cn"
 	DownloadPageURL    = "https://" + DownloadPageDomain + "/golang/"
 )
 
 func init() { collector.Register(DownloadPageDomain, NewCollector) }
 
-// Collector 阿里云镜像站点版本采集器
+// Collector USTC镜像站点版本采集器
 type Collector struct {
 	url  string
 	pURL *stdurl.URL
@@ -79,7 +79,7 @@ func (c *Collector) ArchivedVersions() (items []*version.Version, err error) {
 
 // AllVersions 返回所有已知版本
 func (c *Collector) AllVersions() (vers []*version.Version, err error) {
-	items := c.findGoFileItems(c.doc.Find(".table"))
+	items := c.findGoFileItems()
 	if len(items) == 0 {
 		return make([]*version.Version, 0), nil
 	}
@@ -89,22 +89,27 @@ func (c *Collector) AllVersions() (vers []*version.Version, err error) {
 	return vers, nil
 }
 
-func (c *Collector) findGoFileItems(table *goquery.Selection) (items []*goFileItem) {
-	trs := table.Find("tbody").Find("tr")
-	items = make([]*goFileItem, 0, trs.Length())
+func (c *Collector) findGoFileItems() (items []*goFileItem) {
+	anchors := c.doc.Find("a")
 
-	trs.Each(func(j int, tr *goquery.Selection) {
-		td := tr.Find("td")
-		href := td.Eq(0).Find("a").AttrOr("href", "")
-		if !strings.HasPrefix(href, "go") {
+	items = make([]*goFileItem, 0, anchors.Length())
+
+	anchors.Each(func(j int, anchor *goquery.Selection) {
+		href := anchor.AttrOr("href", "")
+		if !strings.HasPrefix(href, "go") || strings.HasSuffix(href, "/") {
 			return
 		}
 
+		datas := strings.Split(anchor.Nodes[0].NextSibling.Data, " ")
+		size := datas[len(datas)-1]
+		size = size[:len(size)-1]
+
 		items = append(items, &goFileItem{
-			FileName: td.Eq(0).Find("a").Text(),
+			FileName: anchor.Text(),
 			URL:      c.url + href,
-			Size:     td.Eq(1).Text(),
+			Size:     size,
 		})
 	})
+
 	return items
 }
