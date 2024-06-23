@@ -10,12 +10,18 @@ import (
 
 	"github.com/k0kubun/go-ansi"
 	"github.com/schollz/progressbar/v3"
+	"github.com/voidint/g/build"
 	"github.com/voidint/g/pkg/errs"
 )
 
 // Download 下载资源并另存为
 func Download(srcURL string, filename string, flag int, perm fs.FileMode, withProgress bool) (size int64, err error) {
-	resp, err := http.Get(srcURL)
+	req, err := http.NewRequest(http.MethodGet, srcURL, nil)
+	if err != nil {
+		return 0, errs.NewDownloadError(srcURL, err)
+	}
+	req.Header.Set("User-Agent", "g/"+build.ShortVersion) // 使用默认的ua（"Go-http-client/1.1" / "Go-http-client/2.0"）下载ustc的存档文件会重定向到阿里云镜像
+	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return 0, errs.NewDownloadError(srcURL, err)
 	}

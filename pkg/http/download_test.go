@@ -80,7 +80,7 @@ func TestDownload(t *testing.T) {
 	rr2.WriteHeader(http.StatusOK)
 	_, _ = rr2.WriteString("hello world")
 
-	patches := gomonkey.ApplyMethodSeq(&http.Client{}, "Get", []gomonkey.OutputCell{
+	patches := gomonkey.ApplyMethodSeq(&http.Client{}, "Do", []gomonkey.OutputCell{
 		{Values: gomonkey.Params{nil, e}},
 		{Values: gomonkey.Params{rr1.Result(), nil}},
 		{Values: gomonkey.Params{rr2.Result(), nil}},

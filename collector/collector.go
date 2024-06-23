@@ -1,12 +1,20 @@
 package collector
 
 import (
+	stdurl "net/url"
 	"strings"
 
-	"github.com/voidint/g/collector/aliyun"
 	"github.com/voidint/g/collector/official"
 	"github.com/voidint/g/version"
 )
+
+var collectors = make(map[string]Builder)
+
+func Register(domain string, b Builder) {
+	collectors[domain] = b
+}
+
+type Builder func() (Collector, error)
 
 // Collector 版本信息采集器
 type Collector interface {
@@ -25,16 +33,20 @@ func NewCollector(urls ...string) (c Collector, err error) {
 	if len(urls) == 0 {
 		urls = []string{official.DefaultDownloadPageURL}
 	}
-	for i := range urls {
-		urls[i] = strings.TrimSpace(urls[i])
+	for _, rawUrl := range urls {
+		var url *stdurl.URL
+		url, err = stdurl.Parse(strings.TrimSpace(rawUrl))
+		if err != nil {
+			continue
+		}
 
-		if urls[i] != "" && (strings.HasPrefix(aliyun.DownloadPageURL, urls[i]) || strings.HasPrefix(urls[i], aliyun.DownloadPageURL)) {
-			if c, err = aliyun.NewCollector(); err == nil {
-				return c, nil
+		for domain, c := range collectors {
+			if url.Host == strings.ToLower(domain) {
+				return c()
 			}
 		}
 
-		if c, err = official.NewCollector(urls[i]); err == nil {
+		if c, err = official.NewCollector(rawUrl); err == nil {
 			return c, nil
 		}
 	}
