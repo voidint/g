@@ -1,20 +1,35 @@
 package collector
 
 import (
-	stdurl "net/url"
+	"net/url"
 	"strings"
+	"sync"
 
 	"github.com/voidint/g/collector/official"
 	"github.com/voidint/g/version"
 )
 
-var collectors = make(map[string]Builder)
-
-func Register(domain string, b Builder) {
-	collectors[domain] = b
-}
-
 type Builder func() (Collector, error)
+
+var (
+	mu         sync.RWMutex
+	collectors = make(map[string]Builder)
+)
+
+func Register(domain string, builder Builder) {
+	mu.Lock()
+	defer mu.Unlock()
+
+	if builder == nil {
+		panic("register builder is nil")
+	}
+
+	if _, dup := collectors[domain]; dup {
+		panic("register called twice for builder")
+	}
+
+	collectors[domain] = builder
+}
 
 // Collector 版本信息采集器
 type Collector interface {
@@ -30,23 +45,25 @@ type Collector interface {
 
 // NewCollector 返回首个可用的采集器实例
 func NewCollector(urls ...string) (c Collector, err error) {
+	mu.RLock()
+	defer mu.RUnlock()
+
 	if len(urls) == 0 {
 		urls = []string{official.DefaultDownloadPageURL}
 	}
-	for _, rawUrl := range urls {
-		var url *stdurl.URL
-		url, err = stdurl.Parse(strings.TrimSpace(rawUrl))
+	for i := range urls {
+		pURL, err := url.Parse(strings.TrimSpace(urls[i]))
 		if err != nil {
 			continue
 		}
 
 		for domain, c := range collectors {
-			if url.Host == strings.ToLower(domain) {
+			if pURL.Host == strings.ToLower(domain) {
 				return c()
 			}
 		}
 
-		if c, err = official.NewCollector(rawUrl); err == nil {
+		if c, err = official.NewCollector(urls[i]); err == nil {
 			return c, nil
 		}
 	}

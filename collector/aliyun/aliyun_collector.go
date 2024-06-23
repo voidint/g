@@ -3,7 +3,7 @@ package aliyun
 import (
 	"fmt"
 	"net/http"
-	stdurl "net/url"
+	"net/url"
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
@@ -21,18 +21,20 @@ const (
 	DownloadPageURL    = "https://" + DownloadPageDomain + "/golang/"
 )
 
-func init() { collector.Register(DownloadPageDomain, NewCollector) }
+func init() {
+	collector.Register(DownloadPageDomain, NewCollector) // TODO 一个采集器对应多个域名
+}
 
 // Collector 阿里云镜像站点版本采集器
 type Collector struct {
 	url  string
-	pURL *stdurl.URL
+	pURL *url.URL
 	doc  *goquery.Document
 }
 
 // NewCollector 返回采集器实例
 func NewCollector() (collector.Collector, error) {
-	pURL, err := stdurl.Parse(DownloadPageURL)
+	pURL, err := url.Parse(DownloadPageURL)
 	if err != nil {
 		return nil, err
 	}
