@@ -1,4 +1,4 @@
-package ustc
+package autoindex
 
 import (
 	"testing"

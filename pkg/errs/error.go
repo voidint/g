@@ -7,14 +7,16 @@ import (
 )
 
 var (
-	// ErrUnsupportedChecksumAlgorithm 不支持的校验和算法
+	// ErrUnsupportedChecksumAlgorithm Unsupported checksum algorithm
 	ErrUnsupportedChecksumAlgorithm = errors.New("unsupported checksum algorithm")
-	// ErrChecksumNotMatched 校验和不匹配
+	// ErrChecksumNotMatched File checksum does not match the computed checksum
 	ErrChecksumNotMatched = errors.New("file checksum does not match the computed checksum")
-	// ErrChecksumFileNotFound 校验和文件不存在
+	// ErrChecksumFileNotFound Checksum file not found
 	ErrChecksumFileNotFound = errors.New("checksum file not found")
-	// ErrAssetNotFound 资源不存在错误
+	// ErrAssetNotFound Asset not found
 	ErrAssetNotFound = errors.New("asset not found")
+	// ErrCollectorNotFound Collector not found
+	ErrCollectorNotFound = errors.New("collector not found")
 )
 
 // PackageNotFoundError 软件包不存在错误

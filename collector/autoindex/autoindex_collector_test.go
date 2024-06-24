@@ -1,4 +1,4 @@
-package ustc
+package autoindex
 
 import (
 	"bytes"
@@ -16,6 +16,8 @@ import (
 	"github.com/voidint/g/version"
 )
 
+const USTCDownloadPageURL = "https://mirrors.ustc.edu.cn/golang/"
+
 func getCollector() (*Collector, error) {
 	b, err := os.ReadFile("./testdata/golang_dl.html")
 	if err != nil {
@@ -26,7 +28,7 @@ func getCollector() (*Collector, error) {
 		return nil, err
 	}
 	return &Collector{
-		url: DownloadPageURL,
+		url: USTCDownloadPageURL,
 		doc: doc,
 	}, nil
 }
@@ -41,17 +43,17 @@ func Test_findGoFileItems(t *testing.T) {
 		assert.True(t, len(items) >= 11)
 
 		for i, gfi := range []*goFileItem{
-			{FileName: "go1.10.1.darwin-amd64.pkg", URL: DownloadPageURL + "go1.10.1.darwin-amd64.pkg", Size: "116934312"},
-			{FileName: "go1.10.1.darwin-amd64.pkg.sha256", URL: DownloadPageURL + "go1.10.1.darwin-amd64.pkg.sha256", Size: "64"},
-			{FileName: "go1.10.1.darwin-amd64.tar.gz", URL: DownloadPageURL + "go1.10.1.darwin-amd64.tar.gz", Size: "117834652"},
-			{FileName: "go1.10.1.darwin-amd64.tar.gz.asc", URL: DownloadPageURL + "go1.10.1.darwin-amd64.tar.gz.asc", Size: "819"},
-			{FileName: "go1.10.1.darwin-amd64.tar.gz.sha256", URL: DownloadPageURL + "go1.10.1.darwin-amd64.tar.gz.sha256", Size: "64"},
-			{FileName: "go1.10.1.freebsd-386.tar.gz", URL: DownloadPageURL + "go1.10.1.freebsd-386.tar.gz", Size: "103806416"},
-			{FileName: "go1.10.1.freebsd-386.tar.gz.asc", URL: DownloadPageURL + "go1.10.1.freebsd-386.tar.gz.asc", Size: "819"},
-			{FileName: "go1.10.1.freebsd-386.tar.gz.sha256", URL: DownloadPageURL + "go1.10.1.freebsd-386.tar.gz.sha256", Size: "64"},
-			{FileName: "go1.10.1.freebsd-amd64.tar.gz", URL: DownloadPageURL + "go1.10.1.freebsd-amd64.tar.gz", Size: "115623498"},
-			{FileName: "go1.10.1.freebsd-amd64.tar.gz.asc", URL: DownloadPageURL + "go1.10.1.freebsd-amd64.tar.gz.asc", Size: "819"},
-			{FileName: "go1.10.1.freebsd-amd64.tar.gz.sha256", URL: DownloadPageURL + "go1.10.1.freebsd-amd64.tar.gz.sha256", Size: "64"},
+			{FileName: "go1.10.1.darwin-amd64.pkg", URL: USTCDownloadPageURL + "go1.10.1.darwin-amd64.pkg", Size: "116934312"},
+			{FileName: "go1.10.1.darwin-amd64.pkg.sha256", URL: USTCDownloadPageURL + "go1.10.1.darwin-amd64.pkg.sha256", Size: "64"},
+			{FileName: "go1.10.1.darwin-amd64.tar.gz", URL: USTCDownloadPageURL + "go1.10.1.darwin-amd64.tar.gz", Size: "117834652"},
+			{FileName: "go1.10.1.darwin-amd64.tar.gz.asc", URL: USTCDownloadPageURL + "go1.10.1.darwin-amd64.tar.gz.asc", Size: "819"},
+			{FileName: "go1.10.1.darwin-amd64.tar.gz.sha256", URL: USTCDownloadPageURL + "go1.10.1.darwin-amd64.tar.gz.sha256", Size: "64"},
+			{FileName: "go1.10.1.freebsd-386.tar.gz", URL: USTCDownloadPageURL + "go1.10.1.freebsd-386.tar.gz", Size: "103806416"},
+			{FileName: "go1.10.1.freebsd-386.tar.gz.asc", URL: USTCDownloadPageURL + "go1.10.1.freebsd-386.tar.gz.asc", Size: "819"},
+			{FileName: "go1.10.1.freebsd-386.tar.gz.sha256", URL: USTCDownloadPageURL + "go1.10.1.freebsd-386.tar.gz.sha256", Size: "64"},
+			{FileName: "go1.10.1.freebsd-amd64.tar.gz", URL: USTCDownloadPageURL + "go1.10.1.freebsd-amd64.tar.gz", Size: "115623498"},
+			{FileName: "go1.10.1.freebsd-amd64.tar.gz.asc", URL: USTCDownloadPageURL + "go1.10.1.freebsd-amd64.tar.gz.asc", Size: "819"},
+			{FileName: "go1.10.1.freebsd-amd64.tar.gz.sha256", URL: USTCDownloadPageURL + "go1.10.1.freebsd-amd64.tar.gz.sha256", Size: "64"},
 		} {
 			assert.Equal(t, gfi.FileName, items[i].FileName)
 			assert.Equal(t, gfi.URL, items[i].URL)
@@ -110,11 +112,11 @@ func TestNewCollector(t *testing.T) {
 	}{
 		{
 			name:    "默认站点URL访问异常",
-			wantErr: errs.NewURLUnreachableError(DownloadPageURL, errors.New("unknown error")),
+			wantErr: errs.NewURLUnreachableError(USTCDownloadPageURL, errors.New("unknown error")),
 		},
 		{
 			name:    "默认站点URL资源不存在",
-			wantErr: errs.NewURLUnreachableError(DownloadPageURL, fmt.Errorf("%d", http.StatusNotFound)),
+			wantErr: errs.NewURLUnreachableError(USTCDownloadPageURL, fmt.Errorf("%d", http.StatusNotFound)),
 		},
 		{
 			name:    "默认站点URL访问采集正常",
@@ -123,11 +125,13 @@ func TestNewCollector(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := NewCollector()
+			got, err := NewCollector(USTCDownloadPageURL)
 			assert.Equal(t, tt.wantErr, err)
 			if err == nil {
-				assert.NotNil(t, got.(*Collector).pURL)
-				assert.NotNil(t, got.(*Collector).doc)
+				assert.NotNil(t, got.pURL)
+				assert.NotNil(t, got.doc)
+				// assert.NotNil(t, got.(*Collector).pURL)
+				// assert.NotNil(t, got.(*Collector).doc)
 			}
 		})
 	}

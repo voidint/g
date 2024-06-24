@@ -24,7 +24,7 @@ func install(ctx *cli.Context) (err error) {
 	}
 
 	// 查找版本
-	c, err := collector.NewCollector(strings.Split(os.Getenv(mirrorEnv), ",")...)
+	c, err := collector.NewCollector(strings.Split(os.Getenv(mirrorEnv), mirrorSep)...)
 	if err != nil {
 		return cli.Exit(errstring(err), 1)
 	}

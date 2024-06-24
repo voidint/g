@@ -27,7 +27,7 @@ func listRemote(ctx *cli.Context) (err error) {
 		}
 	}
 
-	c, err := collector.NewCollector(strings.Split(os.Getenv(mirrorEnv), ",")...)
+	c, err := collector.NewCollector(strings.Split(os.Getenv(mirrorEnv), mirrorSep)...)
 	if err != nil {
 		return cli.Exit(errstring(err), 1)
 	}
