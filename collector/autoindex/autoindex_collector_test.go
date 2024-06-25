@@ -12,6 +12,7 @@ import (
 	"github.com/PuerkitoBio/goquery"
 	"github.com/agiledragon/gomonkey/v2"
 	"github.com/stretchr/testify/assert"
+	"github.com/voidint/g/collector/internal"
 	"github.com/voidint/g/pkg/errs"
 	"github.com/voidint/g/version"
 )
@@ -19,7 +20,7 @@ import (
 const USTCDownloadPageURL = "https://mirrors.ustc.edu.cn/golang/"
 
 func getCollector() (*Collector, error) {
-	b, err := os.ReadFile("./testdata/golang_dl.html")
+	b, err := os.ReadFile("./testdata/ustc.html")
 	if err != nil {
 		return nil, err
 	}
@@ -42,7 +43,7 @@ func Test_findGoFileItems(t *testing.T) {
 		items := c.findGoFileItems()
 		assert.True(t, len(items) >= 11)
 
-		for i, gfi := range []*goFileItem{
+		for i, gfi := range []*internal.GoFileItem{
 			{FileName: "go1.10.1.darwin-amd64.pkg", URL: USTCDownloadPageURL + "go1.10.1.darwin-amd64.pkg", Size: "116934312"},
 			{FileName: "go1.10.1.darwin-amd64.pkg.sha256", URL: USTCDownloadPageURL + "go1.10.1.darwin-amd64.pkg.sha256", Size: "64"},
 			{FileName: "go1.10.1.darwin-amd64.tar.gz", URL: USTCDownloadPageURL + "go1.10.1.darwin-amd64.tar.gz", Size: "117834652"},
@@ -90,12 +91,18 @@ func TestCollector_ArchivedVersions(t *testing.T) {
 }
 
 func TestNewCollector(t *testing.T) {
+	t.Run("空URL", func(t *testing.T) {
+		c, err := NewCollector("")
+		assert.Equal(t, errs.ErrEmptyURL, err)
+		assert.Nil(t, c)
+	})
+
 	rr1 := httptest.NewRecorder()
 	rr1.WriteHeader(http.StatusNotFound)
 
 	rr2 := httptest.NewRecorder()
 	rr2.WriteHeader(http.StatusOK)
-	htmlData, err := os.ReadFile("./testdata/golang_dl.html")
+	htmlData, err := os.ReadFile("./testdata/ustc.html")
 	assert.Nil(t, err)
 	_, _ = rr2.Write(htmlData)
 
@@ -111,15 +118,15 @@ func TestNewCollector(t *testing.T) {
 		wantErr error
 	}{
 		{
-			name:    "默认站点URL访问异常",
+			name:    "站点URL访问异常",
 			wantErr: errs.NewURLUnreachableError(USTCDownloadPageURL, errors.New("unknown error")),
 		},
 		{
-			name:    "默认站点URL资源不存在",
+			name:    "站点URL资源不存在",
 			wantErr: errs.NewURLUnreachableError(USTCDownloadPageURL, fmt.Errorf("%d", http.StatusNotFound)),
 		},
 		{
-			name:    "默认站点URL访问采集正常",
+			name:    "站点URL访问采集正常",
 			wantErr: nil,
 		},
 	}

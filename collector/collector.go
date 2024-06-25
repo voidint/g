@@ -1,71 +1,98 @@
 package collector
 
 import (
-	"net/url"
 	"strings"
-	"sync"
 
+	"github.com/voidint/g/collector/autoindex"
+	"github.com/voidint/g/collector/fancyindex"
 	"github.com/voidint/g/collector/official"
+	"github.com/voidint/g/pkg/errs"
 	"github.com/voidint/g/version"
 )
 
-type Builder func() (Collector, error)
-
-var (
-	mu         sync.RWMutex
-	collectors = make(map[string]Builder)
+// official collector
+const (
+	// OfficialDownloadPageURL Golang official site URL
+	OfficialDownloadPageURL = "https://go.dev/dl/"
+	// CNDownloadPageURL China mirror site URL
+	CNDownloadPageURL = "https://golang.google.cn/dl/"
 )
 
-func Register(domain string, builder Builder) {
-	mu.Lock()
-	defer mu.Unlock()
+// Nginx fancyindex collector
+const (
+	// AliYunDownloadPageURL Alibaba cloud mirror site URL
+	AliYunDownloadPageURL = "https://mirrors.aliyun.com/golang/"
+	// HUSTDownloadPageURL Huazhong University of Science and Technology mirror site URL
+	HUSTDownloadPageURL = "https://mirrors.hust.edu.cn/golang/"
+	// NJUDownloadPageURL Nanjing University mirror site URL
+	NJUDownloadPageURL = "https://mirrors.nju.edu.cn/golang/"
+)
 
-	if builder == nil {
-		panic("register builder is nil")
-	}
+// Nginx autoindex collector
+const (
+	// USTCDownloadPageURL University of Science and Technology of China mirror site URL
+	USTCDownloadPageURL = "https://mirrors.ustc.edu.cn/golang/"
+)
 
-	if _, dup := collectors[domain]; dup {
-		panic("register called twice for builder")
-	}
-
-	collectors[domain] = builder
-}
-
-// Collector 版本信息采集器
+// Collector Version information collector
 type Collector interface {
-	// 返回稳定版本列表
+	// StableVersions Return all stable versions
 	StableVersions() (items []*version.Version, err error)
-	// 返回非稳定版本列表
+	// UnstableVersions Return all stable versions
 	UnstableVersions() (items []*version.Version, err error)
-	// 返回已归档版本列表
+	// ArchivedVersions Return all archived versions
 	ArchivedVersions() (items []*version.Version, err error)
-	// 返回所有版本列表
+	// AllVersions Return all versions
 	AllVersions() (items []*version.Version, err error)
 }
 
-// NewCollector 返回首个可用的采集器实例
+// NewCollector Returns the first available collector instance
+// official|https://go.dev/dl/,fancyindex|https://mirrors.aliyun.com/golang/,autoindex|https://mirrors.ustc.edu.cn/golang/
 func NewCollector(urls ...string) (c Collector, err error) {
-	mu.RLock()
-	defer mu.RUnlock()
-
-	if len(urls) == 0 {
-		urls = []string{official.DefaultDownloadPageURL}
+	if size := len(urls); size == 0 || (size == 1 && urls[0] == "") {
+		urls = []string{OfficialDownloadPageURL}
 	}
+
 	for i := range urls {
-		pURL, err := url.Parse(strings.TrimSpace(urls[i]))
-		if err != nil {
-			continue
+		urls[i] = strings.TrimSpace(urls[i])
+
+		if !strings.HasSuffix(urls[i], "/") {
+			urls[i] = urls[i] + "/"
 		}
 
-		for domain, c := range collectors {
-			if pURL.Host == strings.ToLower(domain) {
-				return c()
+		idx := strings.Index(urls[i], "|")
+
+		if idx > 0 && idx < len(urls[i])-1 {
+			downloadPageURL := strings.TrimSpace(urls[i][idx+1:])
+
+			switch collectorName := strings.TrimSpace(urls[i][:idx]); collectorName {
+			case official.Name:
+				return official.NewCollector(downloadPageURL)
+
+			case fancyindex.Name:
+				return fancyindex.NewCollector(downloadPageURL)
+
+			case autoindex.Name:
+				return autoindex.NewCollector(downloadPageURL)
+
+			default:
+				continue
 			}
 		}
 
-		if c, err = official.NewCollector(urls[i]); err == nil {
-			return c, nil
+		switch urls[i] {
+		case OfficialDownloadPageURL, CNDownloadPageURL:
+			return official.NewCollector(urls[i])
+
+		case AliYunDownloadPageURL, HUSTDownloadPageURL, NJUDownloadPageURL:
+			return fancyindex.NewCollector(urls[i])
+
+		case USTCDownloadPageURL:
+			return autoindex.NewCollector(urls[i])
+
+		default:
+			continue
 		}
 	}
-	return c, err
+	return nil, errs.ErrCollectorNotFound
 }

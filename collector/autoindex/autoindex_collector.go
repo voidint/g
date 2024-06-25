@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
+	"github.com/voidint/g/collector/internal"
 	"github.com/voidint/g/pkg/errs"
 	httppkg "github.com/voidint/g/pkg/http"
 	"github.com/voidint/g/version"
@@ -17,14 +18,7 @@ const (
 	Name = "autoindex"
 )
 
-// var _ collector.Collector = (*Collector)(nil)
-
-// func init() {
-// 	collector.Register(collector.USTCDownloadPageURL, NewCollector)
-// }
-
-// Collector Nginx ngx_http_autoindex_module mirror site version collector.
-// https://nginx.org/en/docs/http/ngx_http_autoindex_module.html
+// Collector Nginx autoindex collector.
 type Collector struct {
 	url  string
 	pURL *url.URL
@@ -33,6 +27,10 @@ type Collector struct {
 
 // NewCollector Get the collector instance
 func NewCollector(downloadPageURL string) (*Collector, error) {
+	if downloadPageURL == "" {
+		return nil, errs.ErrEmptyURL
+	}
+
 	pURL, err := url.Parse(downloadPageURL)
 	if err != nil {
 		return nil, err
@@ -84,16 +82,15 @@ func (c *Collector) AllVersions() (vers []*version.Version, err error) {
 	if len(items) == 0 {
 		return make([]*version.Version, 0), nil
 	}
-	if vers, err = convert2Versions(items); err != nil {
+	if vers, err = internal.Convert2Versions(items); err != nil {
 		return nil, err
 	}
 	return vers, nil
 }
 
-func (c *Collector) findGoFileItems() (items []*goFileItem) {
+func (c *Collector) findGoFileItems() (items []*internal.GoFileItem) {
 	anchors := c.doc.Find("pre").Find("a")
-
-	items = make([]*goFileItem, 0, anchors.Length())
+	items = make([]*internal.GoFileItem, 0, anchors.Length())
 
 	anchors.Each(func(j int, anchor *goquery.Selection) {
 		href := anchor.AttrOr("href", "")
@@ -106,7 +103,7 @@ func (c *Collector) findGoFileItems() (items []*goFileItem) {
 			size = fields[len(fields)-1]
 		}
 
-		items = append(items, &goFileItem{
+		items = append(items, &internal.GoFileItem{
 			FileName: anchor.Text(),
 			URL:      c.url + href,
 			Size:     size,

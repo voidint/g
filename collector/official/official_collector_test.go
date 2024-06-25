@@ -19,6 +19,8 @@ import (
 	"github.com/voidint/g/version"
 )
 
+const OfficialDownloadPageURL = "https://go.dev/dl/"
+
 func getCollector() (*Collector, error) {
 	b, err := os.ReadFile("./testdata/golang_dl.html")
 	if err != nil {
@@ -29,7 +31,7 @@ func getCollector() (*Collector, error) {
 		return nil, err
 	}
 	return &Collector{
-		url: DefaultDownloadPageURL,
+		url: OfficialDownloadPageURL,
 		doc: doc,
 	}, nil
 }
@@ -251,6 +253,12 @@ func TestAllVersions(t *testing.T) {
 }
 
 func TestNewCollector(t *testing.T) {
+	t.Run("空URL", func(t *testing.T) {
+		c, err := NewCollector("")
+		assert.Equal(t, errs.ErrEmptyURL, err)
+		assert.Nil(t, c)
+	})
+
 	t.Run("无效URL", func(t *testing.T) {
 		var invalidURL strings.Builder
 		invalidURL.WriteByte(0x7f)
@@ -289,17 +297,17 @@ func TestNewCollector(t *testing.T) {
 	}{
 		{
 			name:    "默认站点URL访问异常",
-			url:     "",
-			wantErr: errs.NewURLUnreachableError(DefaultDownloadPageURL, errors.New("unknown error")),
+			url:     OfficialDownloadPageURL,
+			wantErr: errs.NewURLUnreachableError(OfficialDownloadPageURL, errors.New("unknown error")),
 		},
 		{
 			name:    "默认站点URL资源不存在",
-			url:     "",
-			wantErr: errs.NewURLUnreachableError(DefaultDownloadPageURL, fmt.Errorf("%d", http.StatusNotFound)),
+			url:     OfficialDownloadPageURL,
+			wantErr: errs.NewURLUnreachableError(OfficialDownloadPageURL, fmt.Errorf("%d", http.StatusNotFound)),
 		},
 		{
 			name:    "默认站点URL访问采集正常",
-			url:     "",
+			url:     OfficialDownloadPageURL,
 			wantErr: nil,
 		},
 	}
@@ -310,6 +318,8 @@ func TestNewCollector(t *testing.T) {
 			if err == nil {
 				assert.NotNil(t, got.pURL)
 				assert.NotNil(t, got.doc)
+				// assert.NotNil(t, got.(*Collector).pURL)
+				// assert.NotNil(t, got.(*Collector).doc)
 			}
 		})
 	}

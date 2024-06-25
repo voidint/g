@@ -13,11 +13,9 @@ import (
 	"github.com/voidint/g/version"
 )
 
-// var _ collector.Collector = (*Collector)(nil)
-
 const (
-	// DefaultDownloadPageURL 官方下载站点网址
-	DefaultDownloadPageURL = "https://go.dev/dl/"
+	// Name Collector name
+	Name = "official"
 )
 
 // Collector 官方站点版本采集器
@@ -28,17 +26,18 @@ type Collector struct {
 }
 
 // NewCollector 返回采集器实例
-func NewCollector(url string) (*Collector, error) {
-	if url == "" {
-		url = DefaultDownloadPageURL
+func NewCollector(downloadPageURL string) (*Collector, error) {
+	if downloadPageURL == "" {
+		return nil, errs.ErrEmptyURL
 	}
-	pURL, err := stdurl.Parse(url)
+
+	pURL, err := stdurl.Parse(downloadPageURL)
 	if err != nil {
 		return nil, err
 	}
 
 	c := Collector{
-		url:  url,
+		url:  downloadPageURL,
 		pURL: pURL,
 	}
 	if err = c.loadDocument(); err != nil {
@@ -90,7 +89,7 @@ func (c *Collector) hasUnstableVersions() bool {
 	return c.doc.Find("#unstable").Length() > 0
 }
 
-// StableVersions 返回所有稳定版本
+// StableVersions Return all stable versions
 func (c *Collector) StableVersions() (items []*version.Version, err error) {
 	var divs *goquery.Selection
 	if c.hasUnstableVersions() {
@@ -124,7 +123,7 @@ func (c *Collector) StableVersions() (items []*version.Version, err error) {
 	return items, nil
 }
 
-// UnstableVersions 返回所有非稳定版本
+// UnstableVersions Return all stable versions
 func (c *Collector) UnstableVersions() (items []*version.Version, err error) {
 	c.doc.Find("#unstable").NextUntil("#archive").EachWithBreak(func(i int, div *goquery.Selection) bool {
 		vname, ok := div.Attr("id")
@@ -151,7 +150,7 @@ func (c *Collector) UnstableVersions() (items []*version.Version, err error) {
 	return items, nil
 }
 
-// ArchivedVersions 返回已归档版本
+// ArchivedVersions Return all archived versions
 func (c *Collector) ArchivedVersions() (items []*version.Version, err error) {
 	c.doc.Find("#archive").Find("div.toggle").EachWithBreak(func(i int, div *goquery.Selection) bool {
 		vname, ok := div.Attr("id")
