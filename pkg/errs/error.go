@@ -17,6 +17,8 @@ var (
 	ErrAssetNotFound = errors.New("asset not found")
 	// ErrCollectorNotFound Collector not found
 	ErrCollectorNotFound = errors.New("collector not found")
+	// ErrEmptyURL URL is empty
+	ErrEmptyURL = errors.New("empty url")
 )
 
 // PackageNotFoundError 软件包不存在错误
