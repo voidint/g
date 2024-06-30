@@ -12,9 +12,11 @@ import (
 
 // official collector
 const (
-	// OfficialDownloadPageURL Golang official site URL
+	// OriginalOfficialDownloadPageURL Golang official site download page URL
+	OriginalOfficialDownloadPageURL = "https://golang.org/dl/"
+	// OfficialDownloadPageURL Golang official site download page URL
 	OfficialDownloadPageURL = "https://go.dev/dl/"
-	// CNDownloadPageURL China mirror site URL
+	// CNDownloadPageURL China mirror site download page URL
 	CNDownloadPageURL = "https://golang.google.cn/dl/"
 )
 
@@ -36,6 +38,8 @@ const (
 
 // Collector Version information collector
 type Collector interface {
+	// Name Collector name
+	Name() string
 	// StableVersions Return all stable versions
 	StableVersions() (items []*version.Version, err error)
 	// UnstableVersions Return all stable versions
@@ -81,7 +85,7 @@ func NewCollector(urls ...string) (c Collector, err error) {
 		}
 
 		switch urls[i] {
-		case OfficialDownloadPageURL, CNDownloadPageURL:
+		case OfficialDownloadPageURL, OriginalOfficialDownloadPageURL, CNDownloadPageURL:
 			return official.NewCollector(urls[i])
 
 		case AliYunDownloadPageURL, HUSTDownloadPageURL, NJUDownloadPageURL:

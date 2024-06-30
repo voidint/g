@@ -46,6 +46,11 @@ func NewCollector(downloadPageURL string) (*Collector, error) {
 	return &c, nil
 }
 
+// Name Collector name
+func (c *Collector) Name() string {
+	return Name
+}
+
 func (c *Collector) loadDocument() (err error) {
 	resp, err := http.Get(c.url)
 	if err != nil {
