@@ -75,4 +75,17 @@ clean:
 	rm -rf bin
 	rm -f coverage.txt
 
-.PHONY: all build install install-tools lint test test-coverage view-coverage package clean build-linux build-darwin build-windows build-linux-386 build-linux-amd64 build-linux-arm build-linux-arm64 build-linux-s390x build-darwin-amd64 build-darwin-arm64 build-windows-386 build-windows-amd64 build-windows-arm build-windows-arm64
+upgrade-deps:
+	go get -u -v github.com/urfave/cli/v2@latest 
+	go get -u -v github.com/Masterminds/semver/v3@latest 
+	go get -u -v github.com/PuerkitoBio/goquery@latest 
+	go get -u -v github.com/mholt/archiver/v3@latest 
+	go get -u -v github.com/schollz/progressbar/v3@latest 
+	go get -u -v github.com/daviddengcn/go-colortext@latest 
+	go get -u -v github.com/fatih/color@latest 
+	go get -u -v github.com/k0kubun/go-ansi@latest 
+	go get -u -v github.com/agiledragon/gomonkey/v2@latest 
+	go get -u -v github.com/stretchr/testify@latest 
+	go get -u -v golang.org/x/text@latest 
+
+.PHONY: all build install install-tools lint test test-coverage view-coverage package clean upgrade-deps build-linux build-darwin build-windows build-linux-386 build-linux-amd64 build-linux-arm build-linux-arm64 build-linux-s390x build-darwin-amd64 build-darwin-arm64 build-windows-386 build-windows-amd64 build-windows-arm build-windows-arm64
