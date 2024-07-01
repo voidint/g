@@ -1,9 +1,13 @@
 package collector
 
 import (
-	"reflect"
+	"io"
+	"net/http"
+	"strings"
 	"testing"
 
+	"github.com/agiledragon/gomonkey/v2"
+	"github.com/stretchr/testify/assert"
 	"github.com/voidint/g/collector/autoindex"
 	"github.com/voidint/g/collector/fancyindex"
 	"github.com/voidint/g/collector/official"
@@ -11,6 +15,14 @@ import (
 )
 
 func TestNewCollector(t *testing.T) {
+	resp := &http.Response{
+		StatusCode: http.StatusOK,
+		Body:       io.NopCloser(strings.NewReader("hello world")),
+	}
+
+	patches := gomonkey.ApplyFuncReturn(http.Get, resp, nil)
+	defer patches.Reset()
+
 	type args struct {
 		urls []string
 	}
@@ -95,15 +107,11 @@ func TestNewCollector(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			gotC, err := NewCollector(tt.args.urls...)
-			if err != tt.wantErr {
-				t.Errorf("NewCollector() error = %v, wantErr %v", err, tt.wantErr)
-				return
-			}
 
-			if gotC != nil {
-				if !reflect.DeepEqual(gotC.Name(), tt.wantCollectorName) {
-					t.Errorf("NewCollector() = %v, want %v", gotC.Name(), tt.wantCollectorName)
-				}
+			assert.Equal(t, tt.wantErr, err)
+
+			if err == nil {
+				assert.Equal(t, tt.wantCollectorName, gotC.Name())
 			}
 		})
 	}

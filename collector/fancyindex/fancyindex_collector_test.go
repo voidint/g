@@ -143,3 +143,10 @@ func TestNewCollector(t *testing.T) {
 		})
 	}
 }
+
+func TestCollector_Name(t *testing.T) {
+	t.Run("Collector name", func(t *testing.T) {
+		c := &Collector{}
+		assert.Equal(t, Name, c.Name())
+	})
+}
