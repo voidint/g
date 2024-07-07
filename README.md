@@ -195,8 +195,10 @@ Remove /Users/voidint/.g
   Due to the restricted access to the Golang official website in mainland China, it has become difficult to query and download go versions. Therefore, the environment variable `G_MIRROR` can be used to specify one or multiple mirror sites (separated by commas) from which g will query and download available go versions. The known available mirror sites are as follows:
 
   - Go official mirror site: https://golang.google.cn/dl/
-  - Go 语言中文网: https://studygolang.com/dl
-  - Aliyun open source mirror site: https://mirrors.aliyun.com/golang/
+  - Alibaba Cloud: https://mirrors.aliyun.com/golang/
+  - Nanjing University: https://mirrors.nju.edu.cn/golang/
+  - Huazhong University of Science and Technology: https://mirrors.hust.edu.cn/golang/
+  - University of Science and Technology of China: https://mirrors.ustc.edu.cn/golang/
 
 - What is the purpose of the environment variable `G_EXPERIMENTAL`?
 
