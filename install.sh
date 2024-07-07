@@ -30,7 +30,7 @@ function get_os() {
 }
 
 function main() {
-    local release="1.6.0"
+    local release="1.7.0"
     local os=$(get_os)
     local arch=$(get_arch)
     local dest_file="${HOME}/.g/downloads/g${release}.${os}-${arch}.tar.gz"

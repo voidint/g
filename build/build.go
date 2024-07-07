@@ -9,7 +9,7 @@ import (
 
 const (
 	// ShortVersion 短版本号
-	ShortVersion = "1.6.0"
+	ShortVersion = "1.7.0"
 )
 
 // The value of variables come form `gb build -ldflags '-X "build.Built=xxxxx" -X "build.CommitID=xxxx"' `
