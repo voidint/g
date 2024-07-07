@@ -48,8 +48,9 @@ jobs:
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v4
         with:
-          files: ./coverage.txt
-          flags: unittests 
-          fail_ci_if_error: true
-          verbose: true 
+          fail_ci_if_error: true # optional (default = false)
+          files: ./coverage.txt # optional
+          flags: unittests # optional
+          token: ${{ secrets.CODECOV_TOKEN }} # required
+          verbose: true # optional (default = false)
              
