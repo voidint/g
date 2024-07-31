@@ -1,0 +1,147 @@
+# github.com/Masterminds/semver/v3 v3.2.1
+## explicit; go 1.18
+github.com/Masterminds/semver/v3
+# github.com/PuerkitoBio/goquery v1.9.2
+## explicit; go 1.18
+github.com/PuerkitoBio/goquery
+# github.com/agiledragon/gomonkey/v2 v2.12.0
+## explicit; go 1.14
+github.com/agiledragon/gomonkey/v2
+github.com/agiledragon/gomonkey/v2/creflect
+# github.com/andybalholm/brotli v1.1.0
+## explicit; go 1.13
+github.com/andybalholm/brotli
+github.com/andybalholm/brotli/matchfinder
+# github.com/andybalholm/cascadia v1.3.2
+## explicit; go 1.16
+github.com/andybalholm/cascadia
+# github.com/cpuguy83/go-md2man/v2 v2.0.4
+## explicit; go 1.11
+github.com/cpuguy83/go-md2man/v2/md2man
+# github.com/davecgh/go-spew v1.1.1
+## explicit
+github.com/davecgh/go-spew/spew
+# github.com/daviddengcn/go-colortext v1.0.0
+## explicit; go 1.14
+github.com/daviddengcn/go-colortext
+# github.com/dixonwille/wlog/v3 v3.0.4
+## explicit; go 1.11
+github.com/dixonwille/wlog/v3
+# github.com/dixonwille/wmenu/v5 v5.1.0
+## explicit; go 1.11
+github.com/dixonwille/wmenu/v5
+# github.com/dsnet/compress v0.0.2-0.20210315054119-f66993602bf5
+## explicit; go 1.9
+github.com/dsnet/compress
+github.com/dsnet/compress/bzip2
+github.com/dsnet/compress/bzip2/internal/sais
+github.com/dsnet/compress/internal
+github.com/dsnet/compress/internal/errors
+github.com/dsnet/compress/internal/prefix
+# github.com/fatih/color v1.17.0
+## explicit; go 1.17
+github.com/fatih/color
+# github.com/golang/snappy v0.0.4
+## explicit
+github.com/golang/snappy
+# github.com/k0kubun/go-ansi v0.0.0-20180517002512-3bf9e2903213
+## explicit
+github.com/k0kubun/go-ansi
+# github.com/klauspost/compress v1.17.9
+## explicit; go 1.20
+github.com/klauspost/compress
+github.com/klauspost/compress/flate
+github.com/klauspost/compress/fse
+github.com/klauspost/compress/gzip
+github.com/klauspost/compress/huff0
+github.com/klauspost/compress/internal/cpuinfo
+github.com/klauspost/compress/internal/godebug
+github.com/klauspost/compress/internal/snapref
+github.com/klauspost/compress/zip
+github.com/klauspost/compress/zstd
+github.com/klauspost/compress/zstd/internal/xxhash
+# github.com/klauspost/pgzip v1.2.6
+## explicit
+github.com/klauspost/pgzip
+# github.com/mattn/go-colorable v0.1.13
+## explicit; go 1.15
+github.com/mattn/go-colorable
+# github.com/mattn/go-isatty v0.0.20
+## explicit; go 1.15
+github.com/mattn/go-isatty
+# github.com/mholt/archiver/v3 v3.5.1
+## explicit; go 1.13
+github.com/mholt/archiver/v3
+# github.com/mitchellh/colorstring v0.0.0-20190213212951-d06e56a500db
+## explicit
+github.com/mitchellh/colorstring
+# github.com/nwaples/rardecode v1.1.3
+## explicit
+github.com/nwaples/rardecode
+# github.com/pierrec/lz4/v4 v4.1.21
+## explicit; go 1.14
+github.com/pierrec/lz4/v4
+github.com/pierrec/lz4/v4/internal/lz4block
+github.com/pierrec/lz4/v4/internal/lz4errors
+github.com/pierrec/lz4/v4/internal/lz4stream
+github.com/pierrec/lz4/v4/internal/xxh32
+# github.com/pmezard/go-difflib v1.0.0
+## explicit
+github.com/pmezard/go-difflib/difflib
+# github.com/rivo/uniseg v0.4.7
+## explicit; go 1.18
+github.com/rivo/uniseg
+# github.com/russross/blackfriday/v2 v2.1.0
+## explicit
+github.com/russross/blackfriday/v2
+# github.com/schollz/progressbar/v3 v3.14.5
+## explicit; go 1.13
+github.com/schollz/progressbar/v3
+# github.com/stretchr/testify v1.9.0
+## explicit; go 1.17
+github.com/stretchr/testify/assert
+# github.com/ulikunitz/xz v0.5.12
+## explicit; go 1.12
+github.com/ulikunitz/xz
+github.com/ulikunitz/xz/internal/hash
+github.com/ulikunitz/xz/internal/xlog
+github.com/ulikunitz/xz/lzma
+# github.com/urfave/cli/v2 v2.27.3
+## explicit; go 1.18
+github.com/urfave/cli/v2
+# github.com/voidint/go-update v1.0.0
+## explicit; go 1.14
+github.com/voidint/go-update
+github.com/voidint/go-update/internal/binarydist
+github.com/voidint/go-update/internal/osext
+# github.com/xi2/xz v0.0.0-20171230120015-48954b6210f8
+## explicit
+github.com/xi2/xz
+# github.com/xrash/smetrics v0.0.0-20240521201337-686a1a2994c1
+## explicit; go 1.15
+github.com/xrash/smetrics
+# golang.org/x/net v0.27.0
+## explicit; go 1.18
+golang.org/x/net/html
+golang.org/x/net/html/atom
+# golang.org/x/sys v0.22.0
+## explicit; go 1.18
+golang.org/x/sys/plan9
+golang.org/x/sys/unix
+golang.org/x/sys/windows
+# golang.org/x/term v0.22.0
+## explicit; go 1.18
+golang.org/x/term
+# golang.org/x/text v0.16.0
+## explicit; go 1.18
+golang.org/x/text/cases
+golang.org/x/text/internal
+golang.org/x/text/internal/language
+golang.org/x/text/internal/language/compact
+golang.org/x/text/internal/tag
+golang.org/x/text/language
+golang.org/x/text/transform
+golang.org/x/text/unicode/norm
+# gopkg.in/yaml.v3 v3.0.1
+## explicit
+gopkg.in/yaml.v3
