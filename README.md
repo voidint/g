@@ -34,7 +34,12 @@
   ```shell
   # It is recommended to clear the `GOROOT`, `GOBIN`, and other environment variables before installation.
   $ curl -sSL https://raw.githubusercontent.com/voidint/g/master/install.sh | bash
-  $ echo "unalias g" >> ~/.bashrc # Optional. If other programs (such as `git`) have used `g` as an alias.
+  $ cat << 'EOF' >> ~/.bashrc
+  # Check if the alias 'g' exists before trying to unalias it
+  if [[ -n $(alias g 2>/dev/null) ]]; then
+      unalias g
+  fi
+  EOF 
   $ source "$HOME/.g/env"
   ```
 
