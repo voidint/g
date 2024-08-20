@@ -42,10 +42,10 @@ function package() {
     printf "[2/2] Package\n"
     if [ ${os} == "windows" ]; then
         zip g${release}.${os}-${arch}.zip ./g.exe
-        shasum -a 256 g${release}.${os}-${arch}.zip >> sha256sum.txt
+        shasum -a 256 g${release}.${os}-${arch}.zip >>sha256sum.txt
     else
         tar -czv -f g${release}.${os}-${arch}.tar.gz ./g
-        shasum -a 256 g${release}.${os}-${arch}.tar.gz >> sha256sum.txt
+        shasum -a 256 g${release}.${os}-${arch}.tar.gz >>sha256sum.txt
     fi
 }
 

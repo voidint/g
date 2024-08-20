@@ -15,7 +15,7 @@ function get_arch() {
         ;;
     "armv6l" | "armv7l")
         echo "arm"
-	;;
+        ;;
     "s390x")
         echo "s390x"
         ;;
@@ -58,7 +58,6 @@ export PATH="${HOME}/.g/bin:${GOROOT}/bin:${GOPATH}/bin:$PATH"
 export G_MIRROR=https://golang.google.cn/dl/
 	EOF
 
-
     if [ -x "$(command -v bash)" ]; then
         cat >>${HOME}/.bashrc <<-'EOF'
 
@@ -74,7 +73,6 @@ export G_MIRROR=https://golang.google.cn/dl/
 
 		EOF
     fi
-
 
     echo -e "\nTo configure your current shell, run:\nsource \"$HOME/.g/env\""
 

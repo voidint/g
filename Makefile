@@ -1,7 +1,7 @@
 GO = CGO_ENABLED=0 GO111MODULE=on GOPROXY=https://goproxy.cn,direct go
 BUILD_DATE := $(shell date '+%Y-%m-%d %H:%M:%S')
 GIT_BRANCH := $(shell git symbolic-ref --short -q HEAD)
-GIT_COMMIT_HASH := $(shell git rev-parse HEAD|cut -c 1-8) 
+GIT_COMMIT_HASH := $(shell git rev-parse HEAD|cut -c 1-8)
 GO_FLAGS := -v -ldflags="-X 'github.com/voidint/g/build.Built=$(BUILD_DATE)' -X 'github.com/voidint/g/build.GitCommit=$(GIT_COMMIT_HASH)' -X 'github.com/voidint/g/build.GitBranch=$(GIT_BRANCH)'"
 
 
@@ -76,16 +76,16 @@ clean:
 	rm -f coverage.txt
 
 upgrade-deps:
-	go get -u -v github.com/urfave/cli/v2@latest 
-	go get -u -v github.com/Masterminds/semver/v3@latest 
-	go get -u -v github.com/PuerkitoBio/goquery@latest 
-	go get -u -v github.com/mholt/archiver/v3@latest 
-	go get -u -v github.com/schollz/progressbar/v3@latest 
-	go get -u -v github.com/daviddengcn/go-colortext@latest 
-	go get -u -v github.com/fatih/color@latest 
-	go get -u -v github.com/k0kubun/go-ansi@latest 
-	go get -u -v github.com/agiledragon/gomonkey/v2@latest 
-	go get -u -v github.com/stretchr/testify@latest 
-	go get -u -v golang.org/x/text@latest 
+	go get -u -v github.com/urfave/cli/v2@latest
+	go get -u -v github.com/Masterminds/semver/v3@latest
+	go get -u -v github.com/PuerkitoBio/goquery@latest
+	go get -u -v github.com/mholt/archiver/v3@latest
+	go get -u -v github.com/schollz/progressbar/v3@latest
+	go get -u -v github.com/daviddengcn/go-colortext@latest
+	go get -u -v github.com/fatih/color@latest
+	go get -u -v github.com/k0kubun/go-ansi@latest
+	go get -u -v github.com/agiledragon/gomonkey/v2@latest
+	go get -u -v github.com/stretchr/testify@latest
+	go get -u -v golang.org/x/text@latest
 
 .PHONY: all build install install-tools lint test test-coverage view-coverage package clean upgrade-deps build-linux build-darwin build-windows build-linux-386 build-linux-amd64 build-linux-arm build-linux-arm64 build-linux-s390x build-darwin-amd64 build-darwin-arm64 build-windows-386 build-windows-amd64 build-windows-arm build-windows-arm64
