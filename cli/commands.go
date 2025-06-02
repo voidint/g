@@ -124,6 +124,12 @@ var (
 				},
 			},
 		},
+		{
+			Name:      "mcp",
+			Usage:     "Run in mcp server mode",
+			UsageText: "g mcp",
+			Action:    runMcpServer,
+		},
 	}
 )
 

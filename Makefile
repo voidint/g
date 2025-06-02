@@ -10,7 +10,6 @@ all: install lint test clean
 build:
 	mkdir -p bin
 	$(GO) build $(GO_FLAGS) -o ./bin/g
-	$(GO) build $(GO_FLAGS) -o ./bin/g-mcp-server ./cmd/mcp-server/*.go
 
 install: build
 	$(GO) install $(GO_FLAGS)
