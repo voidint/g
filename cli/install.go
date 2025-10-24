@@ -184,12 +184,12 @@ func switchVersion(vname string) error {
 	targetV := filepath.Join(versionsDir, vname)
 
 	// Recreate symbolic link
-	_ = os.Remove(goroot)
+	_ = os.Remove(gorootDir)
 
-	if err := mkSymlink(targetV, goroot); err != nil {
+	if err := mkSymlink(targetV, gorootDir); err != nil {
 		return errors.WithStack(err)
 	}
-	if output, err := exec.Command(filepath.Join(goroot, "bin", "go"), "version").Output(); err == nil {
+	if output, err := exec.Command(filepath.Join(gorootDir, "bin", "go"), "version").Output(); err == nil {
 		fmt.Printf("Now using %s", strings.TrimPrefix(string(output), "go version "))
 	}
 	return nil

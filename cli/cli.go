@@ -21,7 +21,7 @@ var (
 	ghomeDir     string
 	downloadsDir string
 	versionsDir  string
-	goroot       string
+	gorootDir       string
 )
 
 // Run executes the g command line interface.
@@ -37,7 +37,7 @@ func Run() {
 
 	app.Before = func(ctx *cli.Context) (err error) {
 		ghomeDir = ghome()
-		goroot = filepath.Join(ghomeDir, "go")
+		gorootDir = goroot(ghomeDir)
 		downloadsDir = filepath.Join(ghomeDir, "downloads")
 		if err = os.MkdirAll(downloadsDir, 0750); err != nil {
 			return err
@@ -87,6 +87,7 @@ const (
 	experimentalEnv = "G_EXPERIMENTAL"
 	homeEnv         = "G_HOME"
 	mirrorEnv       = "G_MIRROR"
+	gorootEnv		= "GOROOT"
 )
 
 const (
@@ -105,9 +106,19 @@ func ghome() (dir string) {
 	return filepath.Join(homeDir, ".g")
 }
 
+// goroot returns the goroot directory of go installations.
+func goroot(ghomeDir string) (dir string) {
+	if experimental := os.Getenv(experimentalEnv); strings.EqualFold(experimental, "true") {
+		if dir = os.Getenv(gorootEnv); dir != "" {
+			return dir
+		}
+	}
+	return filepath.Join(ghomeDir, "go")
+}
+
 // inuse detects currently active Go version.
-func inuse(goroot string) (version string) {
-	p, _ := os.Readlink(goroot)
+func inuse(gorootDir string) (version string) {
+	p, _ := os.Readlink(gorootDir)
 	return filepath.Base(p)
 }
 
@@ -118,7 +129,7 @@ func installed() (versions map[string]bool) {
 		return
 	}
 
-	inused := inuse(goroot)
+	inused := inuse(gorootDir)
 	versions = make(map[string]bool, 0)
 	for _, d := range dirs {
 		if !d.IsDir() {

@@ -45,7 +45,7 @@ func Test_ghome(t *testing.T) {
 func Test_inuse(t *testing.T) {
 	t.Run("查询当前使用中的go版本", func(t *testing.T) {
 		rootDir := filepath.Join(os.TempDir(), fmt.Sprintf(".g_%d", time.Now().Unix()))
-		goroot = filepath.Join(rootDir, "go")
+		gorootDir = filepath.Join(rootDir, "go")
 		versionsDir = filepath.Join(rootDir, "versions")
 		vDir := filepath.Join(versionsDir, "1.12.6")
 
@@ -53,8 +53,8 @@ func Test_inuse(t *testing.T) {
 		_ = os.MkdirAll(vDir, 0755)
 		defer os.RemoveAll(rootDir)
 
-		assert.Nil(t, mkSymlink(vDir, goroot))
-		assert.Equal(t, "1.12.6", inuse(goroot))
+		assert.Nil(t, mkSymlink(vDir, gorootDir))
+		assert.Equal(t, "1.12.6", inuse(gorootDir))
 	})
 }
 
