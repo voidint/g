@@ -20,6 +20,7 @@
 - 支持列出已安装的 go 版本号
 - 支持在本地安装多个 go 版本
 - 支持卸载已安装的 go 版本
+- 支持清理已被取代的 go 版本（每个次要版本系列保留最新版）
 - 支持在已安装的 go 版本之间自由切换
 - 支持清空安装包文件缓存
 - 支持软件自我更新（>= 1.5.0）
@@ -157,6 +158,17 @@ go version go1.19.10 darwin/arm64
 ```shell
 $ g uninstall 1.19.10
 Uninstalled go1.19.10
+```
+
+清理已被取代的 go 版本，即每个次要版本系列只保留最新版（当前使用中的版本不会被删除）。可使用`--dry-run`参数预览而不实际删除：
+
+```shell
+$ g prune --dry-run
+Would remove 1.19.10
+Would remove 1.20.4
+$ g prune
+Removed 1.19.10
+Removed 1.20.4
 ```
 
 清空 go 安装包文件缓存

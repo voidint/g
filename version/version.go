@@ -102,6 +102,16 @@ func (v *Version) Name() string {
 	return v.name
 }
 
+// Major returns the major number of the semantic version.
+func (v *Version) Major() uint64 {
+	return v.sv.Major()
+}
+
+// Minor returns the minor number of the semantic version.
+func (v *Version) Minor() uint64 {
+	return v.sv.Minor()
+}
+
 // Packages returns all distribution packages for different OS/ARCH combinations.
 func (v *Version) Packages() []Package {
 	items := make([]Package, 0, len(v.pkgs))
