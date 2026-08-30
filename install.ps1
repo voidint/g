@@ -38,6 +38,7 @@ function setHOME() {
 
 function setPath() {
     $paths = [System.Environment]::GetEnvironmentVariable("PATH", [System.EnvironmentVariableTarget]::User) -split ';'
+    $raw_path_len = $paths.Length
     $newPaths = @("%G_HOME%\bin", "%GOROOT%\bin", "%GOPATH%\bin")
 
     foreach ($p in $newPaths) {
@@ -46,13 +47,23 @@ function setPath() {
             continue
         }
 
-        [System.Environment]::SetEnvironmentVariable(
-            "PATH",
-            [System.Environment]::GetEnvironmentVariable("PATH", [System.EnvironmentVariableTarget]::User) + "$p;",
-            [System.EnvironmentVariableTarget]::User
-        )
-        Write-Host -ForegroundColor Green "$p appended"
+        $paths += "$p"
     }
+
+    if ($raw_path_len -eq $paths.Length) {
+        Write-Output "PATH already setted"
+        return
+    }
+
+    $tp = $paths -join ';'
+
+    [System.Environment]::SetEnvironmentVariable(
+        "PATH",
+        "$tp",
+        [System.EnvironmentVariableTarget]::User
+    )
+
+    Write-Host -ForegroundColor Green "new PATH $tp setted"
 }
 
 function SetEnv () {
