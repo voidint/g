@@ -93,12 +93,12 @@ var (
 		},
 		{
 			Name:      "prune",
-			Usage:     "Remove superseded versions, keeping the newest of each minor series in use",
+			Usage:     "Uninstall superseded versions, keeping the newest of each minor series and the version in use",
 			UsageText: "g prune",
 			Flags: []cli.Flag{
 				&cli.BoolFlag{
 					Name:  "dry-run",
-					Usage: "Show what would be removed without removing",
+					Usage: "Show what would be uninstalled without uninstalling",
 				},
 			},
 			Action: prune,

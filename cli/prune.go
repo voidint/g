@@ -40,20 +40,20 @@ func prune(ctx *cli.Context) error {
 
 	doomed := superseded(items, inuse(goroot))
 	if len(doomed) == 0 {
-		fmt.Println("Nothing to remove")
+		fmt.Println("Nothing to uninstall")
 		return nil
 	}
 
 	dryRun := ctx.Bool("dry-run")
 	for _, v := range doomed {
 		if dryRun {
-			fmt.Printf("Would remove %s\n", v.Name())
+			fmt.Printf("Would uninstall %s\n", v.Name())
 			continue
 		}
 		if err := os.RemoveAll(filepath.Join(versionsDir, v.Name())); err != nil {
-			return cli.Exit(wrapstring(fmt.Sprintf("Failed to remove %q: %s", v.Name(), err.Error())), 1)
+			return cli.Exit(wrapstring(fmt.Sprintf("Uninstall %q failed: %s", v.Name(), err.Error())), 1)
 		}
-		fmt.Printf("Removed %s\n", v.Name())
+		fmt.Printf("Uninstalled %s\n", v.Name())
 	}
 	return nil
 }

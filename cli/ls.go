@@ -33,7 +33,7 @@ import (
 func list(ctx *cli.Context) (err error) {
 	items, err := listLocalVersions(versionsDir)
 	if err != nil || len(items) <= 0 {
-		fmt.Printf("No version installed yet\n\n")
+		fmt.Println("No version installed yet")
 		return nil
 	}
 

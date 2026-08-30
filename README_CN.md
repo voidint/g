@@ -164,11 +164,11 @@ Uninstalled go1.19.10
 
 ```shell
 $ g prune --dry-run
-Would remove 1.19.10
-Would remove 1.20.4
+Would uninstall go1.19.10
+Would uninstall go1.20.4
 $ g prune
-Removed 1.19.10
-Removed 1.20.4
+Uninstalled go1.19.10
+Uninstalled go1.20.4
 ```
 
 清空 go 安装包文件缓存
