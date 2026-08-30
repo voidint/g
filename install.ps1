@@ -6,7 +6,17 @@ param (
 $os = "windows"
 $arch = "amd64"
 
-$base_dir = $base_dir -eq "" ? ($env:G_HOME ? $env:G_HOME : "$HOME\.g") : $base_dir
+# Force TLS 1.2 so that the download works on Windows PowerShell 5.1,
+# which defaults to older TLS versions that GitHub rejects.
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+
+if ([string]::IsNullOrWhiteSpace($base_dir)) {
+    if ([string]::IsNullOrWhiteSpace($env:G_HOME)) {
+        $base_dir = "$HOME\.g"
+    } else {
+        $base_dir = $env:G_HOME
+    }
+}
 $dest_file = "${base_dir}\downloads\g${release}.${os}-${arch}.zip"
 $url = "https://github.com/voidint/g/releases/download/v${release}/g${release}.${os}-${arch}.zip"
 
@@ -28,7 +38,10 @@ function InstallG () {
 
 
 function setHOME() {
+    $default_base_dir = "$HOME\.g"
     if ($base_dir -ne $default_base_dir) {
+        # G_HOME is an experimental feature; enable the switch only when a
+        # custom base dir is used (i.e. not the default ~/.g).
         [System.Environment]::SetEnvironmentVariable("G_EXPERIMENTAL", "true", [System.EnvironmentVariableTarget]::User)
     }
     [System.Environment]::SetEnvironmentVariable("G_HOME", $base_dir, [System.EnvironmentVariableTarget]::User)
