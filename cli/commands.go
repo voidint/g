@@ -92,6 +92,18 @@ var (
 			Action:    uninstall,
 		},
 		{
+			Name:      "prune",
+			Usage:     "Remove superseded versions, keeping the newest of each minor series in use",
+			UsageText: "g prune",
+			Flags: []cli.Flag{
+				&cli.BoolFlag{
+					Name:  "dry-run",
+					Usage: "Show what would be removed without removing",
+				},
+			},
+			Action: prune,
+		},
+		{
 			Name:      "update",
 			Usage:     "Download and install updates to g",
 			UsageText: "g update",

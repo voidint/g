@@ -20,6 +20,7 @@
 - Support for listing installed versions of Go
 - Support for installing multiple versions of Go locally
 - Support for uninstalling installed versions of Go
+- Support for removing superseded versions, keeping the newest of each minor series
 - Support for freely switching between installed versions of Go
 - Support for clearing package file cache
 - Support for self-updating software (>= 1.5.0)
@@ -157,6 +158,17 @@ To uninstall a specific installed Go version:
 ```shell
 $ g uninstall 1.19.10
 Uninstalled go1.19.10
+```
+
+To remove superseded installed versions, keeping only the newest version of each minor series (the version currently in use is never removed). Use `--dry-run` to preview without removing:
+
+```shell
+$ g prune --dry-run
+Would remove 1.19.10
+Would remove 1.20.4
+$ g prune
+Removed 1.19.10
+Removed 1.20.4
 ```
 
 To clear the package file cache for Go installations:
