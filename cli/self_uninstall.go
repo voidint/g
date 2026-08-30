@@ -58,7 +58,7 @@ func selfUninstall(*cli.Context) error {
 			if err = os.RemoveAll(rmPaths[i]); err != nil {
 				manRmPaths = append(manRmPaths, rmPaths[i])
 			} else {
-				fmt.Println("Remove", rmPaths[i])
+				fmt.Println("Removed", rmPaths[i])
 			}
 		}
 

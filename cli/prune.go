@@ -40,7 +40,7 @@ func prune(ctx *cli.Context) error {
 
 	doomed := superseded(items, inuse(goroot))
 	if len(doomed) == 0 {
-		fmt.Println("Nothing to uninstall")
+		fmt.Println("No superseded versions to uninstall")
 		return nil
 	}
 
@@ -51,7 +51,7 @@ func prune(ctx *cli.Context) error {
 			continue
 		}
 		if err := os.RemoveAll(filepath.Join(versionsDir, v.Name())); err != nil {
-			return cli.Exit(wrapstring(fmt.Sprintf("Uninstall %q failed: %s", v.Name(), err.Error())), 1)
+			return cli.Exit(wrapstring(fmt.Sprintf("Failed to uninstall %q: %s", v.Name(), err.Error())), 1)
 		}
 		fmt.Printf("Uninstalled %s\n", v.Name())
 	}

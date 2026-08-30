@@ -35,7 +35,7 @@ func clean(*cli.Context) (err error) {
 
 	for i := range entries {
 		if err = os.RemoveAll(filepath.Join(downloadsDir, entries[i].Name())); err == nil {
-			fmt.Println("Remove", entries[i].Name())
+			fmt.Println("Removed", entries[i].Name())
 		}
 	}
 	return nil

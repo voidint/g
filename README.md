@@ -110,7 +110,7 @@ $ g ls-remote stable
 To install a specific version of Go (e.g., 1.20.5):
 
 ```shell
-$ g install 1.14.7
+$ g install 1.20.5
 Downloading 100% [===============] (92/92 MB, 12 MB/s)
 Computing checksum with SHA256
 Checksums matched
@@ -157,27 +157,27 @@ To uninstall a specific installed Go version:
 
 ```shell
 $ g uninstall 1.19.10
-Uninstalled go1.19.10
+Uninstalled 1.19.10
 ```
 
 To uninstall superseded installed versions, keeping only the newest version of each minor series (the version currently in use is never removed). Use `--dry-run` to preview without uninstalling:
 
 ```shell
 $ g prune --dry-run
-Would uninstall go1.19.10
-Would uninstall go1.20.4
+Would uninstall 1.19.10
+Would uninstall 1.20.4
 $ g prune
-Uninstalled go1.19.10
-Uninstalled go1.20.4
+Uninstalled 1.19.10
+Uninstalled 1.20.4
 ```
 
 To clear the package file cache for Go installations:
 
 ```shell
 $ g clean
-Remove go1.18.10.darwin-arm64.tar.gz
-Remove go1.19.10.darwin-arm64.tar.gz
-Remove go1.20.5.darwin-arm64.tar.gz
+Removed go1.18.10.darwin-arm64.tar.gz
+Removed go1.19.10.darwin-arm64.tar.gz
+Removed go1.20.5.darwin-arm64.tar.gz
 ```
 
 To view the version information of `g` itself:
@@ -202,8 +202,8 @@ To uninstall the `g` software itself:
 $ g self uninstall
 Are you sure you want to uninstall g? (Y/n)
 y
-Remove /Users/voidint/.g/bin/g
-Remove /Users/voidint/.g
+Removed /Users/voidint/.g/bin/g
+Removed /Users/voidint/.g
 ```
 
 ## FAQ

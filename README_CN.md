@@ -110,7 +110,7 @@ $ g ls-remote stable
 安装目标 go 版本`1.20.5`
 
 ```shell
-$ g install 1.14.7
+$ g install 1.20.5
 Downloading 100% [===============] (92/92 MB, 12 MB/s)
 Computing checksum with SHA256
 Checksums matched
@@ -157,27 +157,27 @@ go version go1.19.10 darwin/arm64
 
 ```shell
 $ g uninstall 1.19.10
-Uninstalled go1.19.10
+Uninstalled 1.19.10
 ```
 
 清理已被取代的 go 版本，即每个次要版本系列只保留最新版（当前使用中的版本不会被删除）。可使用`--dry-run`参数预览而不实际删除：
 
 ```shell
 $ g prune --dry-run
-Would uninstall go1.19.10
-Would uninstall go1.20.4
+Would uninstall 1.19.10
+Would uninstall 1.20.4
 $ g prune
-Uninstalled go1.19.10
-Uninstalled go1.20.4
+Uninstalled 1.19.10
+Uninstalled 1.20.4
 ```
 
 清空 go 安装包文件缓存
 
 ```shell
 $ g clean
-Remove go1.18.10.darwin-arm64.tar.gz
-Remove go1.19.10.darwin-arm64.tar.gz
-Remove go1.20.5.darwin-arm64.tar.gz
+Removed go1.18.10.darwin-arm64.tar.gz
+Removed go1.19.10.darwin-arm64.tar.gz
+Removed go1.20.5.darwin-arm64.tar.gz
 ```
 
 查看 g 版本信息
@@ -202,8 +202,8 @@ You are up to date! g v1.5.0 is the latest version.
 $ g self uninstall
 Are you sure you want to uninstall g? (Y/n)
 y
-Remove /Users/voidint/.g/bin/g
-Remove /Users/voidint/.g
+Removed /Users/voidint/.g/bin/g
+Removed /Users/voidint/.g
 ```
 
 ## FAQ
